@@ -4,7 +4,7 @@ This is a responsive hotel booking web app built using **React**, **Vite**, and 
 
 ## Features
 
-- Fast destination search (coming soon)
+- Fast destination search - https://github.com/Faustch/destination-search
 - Hotel listings with filters and sorting
 - Responsive design using Tailwind CSS
 - Built with Vite for fast dev experience
