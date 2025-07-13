@@ -14,4 +14,12 @@ This is a responsive hotel booking web app built using **React**, **Vite**, and 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev 
+```
+
+## Workload Distrubtion
+UI/UX: Vernice, Liu Zhen
+Destination Search (Autocomplete): Faustina, Deva
+Hotel Filtering (based on provided Hotel API): Javier
+Hotel Room Details: Matthaeus
+Booking Hotel Room, Account Management and Payment: Jing Kang, Megan
