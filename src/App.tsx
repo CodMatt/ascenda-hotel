@@ -1,38 +1,67 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './index.css' // make sure this is your Tailwind file
+import Confirmation from './components/Confirmation'
+import SuccessPage from './components/SuccessPage'
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+
+
+
+class Booking {
+  id;
+  key;
+  name;
+  rates;
+  duration;
+  checkin;
+  checkout;
+  noAdults;
+  noChildren;
+
+  constructor(id: string, key: string, name: string, 
+    rates: number, duration: number, checkin: Date, checkout: Date,
+    noAdults: number, noChildren: number){
+    this.id = id;
+    this.key = key;
+    this.name = name;
+    this.rates = rates;
+    this.duration = duration;
+    this.checkin = checkin;
+    this.checkout = checkout;
+    this.noAdults = noAdults;
+    this.noChildren = noChildren;
+  }
+}
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dummyDate = new Date();
+
+  const dummyDate2 = new Date();
+  dummyDate2.setDate(dummyDate2.getDate() + 2);
+
+  const dummyData = new Booking("dummyId", "dummyKey", "dummyName", 105.20, 2, dummyDate, dummyDate2, 2, 1);
+
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-white flex flex-col items-center justify-center text-gray-800 font-sans">
-      <div className="flex gap-8 mb-6">
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="w-20 hover:scale-110 transition" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="w-20 hover:scale-110 transition" alt="React logo" />
-        </a>
-      </div>
 
-      <h1 className="text-4xl font-bold mb-4">Vite + React + Tailwind 🎉</h1>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Confirmation id = {dummyData.id} key = {dummyData.key} 
+      name = {dummyData.name} rates = {dummyData.rates} 
+      duration = {dummyData.duration}
+      checkin = {dummyData.checkin} checkout = {dummyData.checkout}
+      noAdults = {dummyData.noAdults}  noChildren = {dummyData.noChildren}/> } />
 
-      <div className="bg-white shadow p-4 rounded-lg mb-4">
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          count is {count}
-        </button>
-      </div>
+        <Route path="/success" element={<SuccessPage />} />
 
-      <p className="text-gray-600">Edit <code>src/App.tsx</code> and save to test HMR</p>
-      <p className="mt-2 text-sm text-gray-500">
-        Click on the logos to learn more.
-      </p>
-    </div>
+      </Routes>
+    </Router>
+    
+
   )
 }
 
