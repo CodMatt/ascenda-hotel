@@ -63,12 +63,19 @@ export default function HotelSearchPage() {
 
   // lazy loading 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        console.log("👀 Lazy loading more hotels...");
-        setVisibleCount((prev) => prev + 10);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          console.log("Lazy loading more hotels...");
+          setVisibleCount((prev) => prev + 10);
+        }
+      },
+      {
+        root: null,         // observe in viewport
+        rootMargin: "0px",
+        threshold: 0.1      // trigger when 10% is visible
       }
-    });
+    );
   
     const current = observerRef.current;
     if (current) {
@@ -80,7 +87,8 @@ export default function HotelSearchPage() {
         observer.unobserve(current);
       }
     };
-  }, []);// updates to visibleCount
+  }, [observerRef.current]);
+  
   
 
   // Sorting hotels based on price or rating  
