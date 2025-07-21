@@ -8,13 +8,15 @@ export default function HotelSearchPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"none" | "priceAsc" | "priceDesc" | "starAsc" | "starDesc">("none"); // Price and Star Filter
+  const [filterStar, setFilterStar] = useState<number | null>(null); // filter for number of stars
 
 
 
-  const destinationId = "RsBU";
-  const checkin = "2025-10-01";
-  const checkout = "2025-10-07";
-  const guests = "2";
+
+  const destinationId = "RsBU"; // Fixed destination ID FOR NOW. 
+  const checkin = "2025-10-01"; // Fixed checkin FOR NOW
+  const checkout = "2025-10-07"; // Fixed checkout for now
+  const guests = "2"; // Fixed no. of guests for now 
 
   // Fetching Hotel data
   useEffect(() => {
@@ -92,28 +94,37 @@ export default function HotelSearchPage() {
   
 
   // Sorting hotels based on price or rating  
-  const sortedHotels = [...hotelData].sort((a, b) => {
-    if (sortBy === "starAsc") {
-      return (a.rating ?? 0) - (b.rating ?? 0);
-    } else if (sortBy === "starDesc") {
-      return (b.rating ?? 0) - (a.rating ?? 0);
-    }
-  
-    const aHasPrice = a.price !== null;
-    const bHasPrice = b.price !== null;
-  
-    if (!aHasPrice && !bHasPrice) return 0;
-    if (!aHasPrice) return 1;
-    if (!bHasPrice) return -1;
-  
-    if (sortBy === "priceAsc") {
-      return a.price - b.price;
-    } else if (sortBy === "priceDesc") {
-      return b.price - a.price;
-    }
-  
-    return 0;
-  });
+const filteredHotels = filterStar
+? hotelData.filter((hotel) => Math.floor(hotel.rating ?? 0) === filterStar)
+: hotelData;
+
+const sortedHotels =
+  sortBy === "none"
+    ? filteredHotels
+    : [...filteredHotels].sort((a, b) => {
+        if (sortBy === "starAsc") {
+          return (a.rating ?? 0) - (b.rating ?? 0);
+        } else if (sortBy === "starDesc") {
+          return (b.rating ?? 0) - (a.rating ?? 0);
+        }
+
+        const aHasPrice = a.price !== null;
+        const bHasPrice = b.price !== null;
+
+        if (!aHasPrice && !bHasPrice) return 0;
+        if (!aHasPrice) return 1;
+        if (!bHasPrice) return -1;
+
+        if (sortBy === "priceAsc") {
+          return a.price - b.price;
+        } else if (sortBy === "priceDesc") {
+          return b.price - a.price;
+        }
+
+        return 0;
+      });
+
+
   
 
   return (
@@ -177,6 +188,32 @@ export default function HotelSearchPage() {
           Clear All Sorts
         </button>
 
+        // Star Filter 
+        <div className="flex flex-wrap gap-4 mt-2">
+          {[5, 4, 3].map((star) => (
+            <button
+              key={star}
+              onClick={() =>
+                setFilterStar((prev) => (prev === star ? null : star))
+              }
+              className={`px-4 py-2 rounded ${
+                filterStar === star
+                  ? "bg-yellow-500 text-white"
+                  : "bg-gray-200 text-gray-800"
+              }`}
+            >
+              Only {star}-Star Hotels
+            </button>
+          ))}
+        </div>
+          
+          {/* Clear Star Filter Button */}
+        <button
+          onClick={() => setFilterStar(null)}
+          className="px-4 py-2 rounded bg-gray-300 text-black"
+        >
+          Clear Star Filter
+        </button>
         
       </div>
 
