@@ -5,6 +5,7 @@ import { loadStripe } from "@stripe/stripe-js"; // install
 
 import axios from "axios";
 
+import { useLocation } from "react-router-dom";
 
 import PaymentForm from './PaymentForm'
 
@@ -30,12 +31,14 @@ interface Booking {
 }
 
 
-
 function Confirmation(booking: Booking){
     const formatRates = booking.rates.toFixed(2); 
     const totalCost = booking.rates*booking.duration;
 
-
+    const location = useLocation();
+    const name = location.state?.firstName || false;
+    
+   
 
     const stripePromise = initStripe();
 
@@ -64,7 +67,7 @@ function Confirmation(booking: Booking){
     return (
         <>
         <div>
-        <h1>{booking.name}</h1>
+        <h1>{name}'s booking</h1>
         <h5>From: {booking.checkin.toDateString()} To: {booking.checkout.toDateString()}</h5>
         <h6>Number of guests: {booking.noAdults} adults </h6>
         <h3>Per night: ${formatRates}</h3>
@@ -74,7 +77,7 @@ function Confirmation(booking: Booking){
         
         <div>
         {clientSecretSettings.loading ? (
-            <h3>Loading ...</h3>
+            <h1>Loading ...</h1>
         ) : (
             <Elements
             stripe={stripePromise}

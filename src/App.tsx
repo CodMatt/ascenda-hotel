@@ -3,6 +3,7 @@ import { useState } from 'react'
 import './index.css' // make sure this is your Tailwind file
 import Confirmation from './components/Confirmation'
 import SuccessPage from './components/SuccessPage'
+import PersonalInfoForm from './components/PersonalInfoForm'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -50,7 +51,9 @@ function App() {
 
     <Router>
       <Routes>
-        <Route path="/" element={<Confirmation id = {dummyData.id} key = {dummyData.key} 
+        <Route path="/bookingdetails" element={<PersonalInfoForm />} />
+
+        <Route path="/payment" element={<Confirmation id = {dummyData.id} key = {dummyData.key} 
       name = {dummyData.name} rates = {dummyData.rates} 
       duration = {dummyData.duration}
       checkin = {dummyData.checkin} checkout = {dummyData.checkout}
