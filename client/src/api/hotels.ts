@@ -14,3 +14,17 @@ export async function fetchHotelsByDestination(destinationId: string) {
   if (!res.ok) throw new Error("Failed to fetch hotel list");
   return res.json();
 }
+
+export async function fetchHotelDetails(hotelId: string) {
+  const url = `${HOTEL_API}/${hotelId}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch hotel details");
+  return res.json();
+}
+
+export async function fetchHotelRoomPrices(hotelId: string, destinationId: string, checkin: string, checkout: string, guests: string) {
+  const url = `${HOTEL_API}/${hotelId}/price?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch hotel room prices");
+  return res.json();
+}
