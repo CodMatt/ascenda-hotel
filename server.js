@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 import Fastify from 'fastify';
 
 // Require the framework and instantiate it
-const fastify = Fastify({ logger: true });
+const fastify = Fastify({ logger: true, formbody: true });
 const stripe = new Stripe("sk_test_");
 
 
@@ -15,10 +15,13 @@ fastify.get("/publishable-key", () => {
 });
 
 // Create a payment intent and return its client secret
-fastify.post("/create-payment-intent", async () => {
-
+fastify.post("/create-payment-intent", async (request, reply) => {
+  const { totalCost } = request.body;
+  console.log(totalCost);
+  
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 1009, // in cents
+    amount: totalCost, // in cents
+    
     currency: "SGD",
     payment_method_types: ["card"],
     

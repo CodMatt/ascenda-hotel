@@ -1,11 +1,26 @@
 import React, {useState} from 'react';
 import PhoneInput from 'react-phone-number-input'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function PersonalInfoForm(){
 
-  let navigate = useNavigate();
-      // Collected info to save in Db
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // INFO FROM DummyPage (provided by previous feature)
+  const hotelId = location.state.hotelId;
+  const destId = location.state.destId;
+  const key = location.state.key;
+  const rates = location.state.rates;
+  const checkin = location.state.checkin;
+  const checkout = location.state.checkout;
+  const noAdults = location.state.noAdults;
+  const noChildren = location.state.noChildren;
+
+  const duration = Math.abs((checkout-checkin)/(60*60*24*1000));
+  
+
+  // INFO COLLECTED HERE
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [salutation, setSalutation] = useState('');
@@ -15,14 +30,62 @@ function PersonalInfoForm(){
 
   const validSalutations = ["Mr", "Mrs", "Ms", "Miss"];
 
+  
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(phoneNumber);
-    navigate("/payment", {state: {firstName: firstName }});
+    navigate("/payment", {
+      state: {
+      firstName: firstName,
+      lastName: lastName,
+      salutation: salutation,
+      phoneNumber: phoneNumber,
+      emailAddress: emailAddress,
+      specialRequest: specialRequest,
+      hotelId: hotelId, 
+      destId: destId, 
+      key: key,
+      rates: rates,
+      checkin: checkin,
+      checkout: checkout,
+      noAdults: noAdults,
+      noChildren: noChildren,
+      duration: duration,
+     }});
   };
 
   return(
-    
+    <>
+    <table border={1}>
+      <tbody>
+        <tr>
+          <td>Hotel ID: </td><td>{hotelId}</td>
+        </tr>
+        <tr>
+          <td>Destination ID: </td><td>{destId}</td>
+        </tr>
+        <tr>
+          <td>Booking Key: </td><td>{key}</td>
+        </tr>
+        <tr>
+          <td>Room per-night Rate: </td><td>{rates}</td>
+        </tr>
+        <tr>
+          <td>Check-in Date: </td><td>{checkin.toDateString()}</td>
+        </tr>
+        <tr>
+          <td>Check-out Date: </td><td>{checkout.toDateString()}</td>
+        </tr>
+        <tr>
+          <td>No. Adults: </td><td>{noAdults}</td>
+        </tr>
+        <tr>
+          <td>No. Children: </td><td>{noChildren}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br/>
+
     <form id = 'personal-details-form' onSubmit = {handleSubmit} method="post">
         
       <label className = "salutation">Salutation: </label>
@@ -77,7 +140,7 @@ function PersonalInfoForm(){
       <style>
         {`
           .phone-flag .PhoneInputCountryIcon {
-            display: none;
+            width: 5%;
           }
         `}
       </style>
@@ -129,6 +192,7 @@ function PersonalInfoForm(){
       </button>
       
     </form>
+    </>
   );
 
 

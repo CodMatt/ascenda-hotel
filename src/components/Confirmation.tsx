@@ -17,28 +17,33 @@ const initStripe = async () => {
     return loadStripe(publishableKey);
 }
 
-interface Booking {
-  id: string;
-  key: string;
-  name: string;
-  rates: number;
-  duration: number;
-  checkin: Date;
-  checkout: Date;
-  noAdults: number;
-  noChildren: number;
-  
-}
-
-
-function Confirmation(booking: Booking){
-    const formatRates = booking.rates.toFixed(2); 
-    const totalCost = booking.rates*booking.duration;
-
+function Confirmation(){
     const location = useLocation();
-    const name = location.state?.firstName || false;
-    
-   
+
+     // INFO FROM PaymentInfoForm (provided by previous feature)
+    const bookingInfo = location.state;
+
+    // NOT TO USE - FOR REF (info contained by bookingInfo)
+    // state: {
+    //   firstName: firstName,
+    //   lastName: lastName,
+    //   salutation: salutation,
+    //   phoneNumber: phoneNumber,
+    //   emailAddress: emailAddress,
+    //   specialRequest: specialRequest,
+    //   hotelId: hotelId, 
+    //   destId: destId, 
+    //   key: key,
+    //   rates: rates,
+    //   checkin: checkin,
+    //   checkout: checkout,
+    //   noAdults: noAdults,
+    //   noChildren: noChildren,
+    //   duration: duration }
+
+
+    const totalCost = bookingInfo.rates*bookingInfo.duration;
+    const totalCostInCents = bookingInfo.rates*bookingInfo.duration*100;
 
     const stripePromise = initStripe();
 
@@ -46,11 +51,10 @@ function Confirmation(booking: Booking){
         clientSecret: "",
         loading: true, // display once backend has replied
     });
-
-    // to run on component mount
+    
     useEffect(() => {
         async function createPaymentIntent(){ // async call to server to create stripe payment intent
-            const response = await axios.post("/api/create-payment-intent", {});
+            const response = await axios.post("/api/create-payment-intent", {totalCost: totalCostInCents});
             
             setClientSecretSettings({ // save client's secret key
                 clientSecret: response.data.client_secret, // needed to complete payment using stripe element/ui
@@ -60,19 +64,11 @@ function Confirmation(booking: Booking){
 
         createPaymentIntent();
     }, []);
-
-    
-
     
     return (
         <>
         <div>
-        <h1>{name}'s booking</h1>
-        <h5>From: {booking.checkin.toDateString()} To: {booking.checkout.toDateString()}</h5>
-        <h6>Number of guests: {booking.noAdults} adults </h6>
-        <h3>Per night: ${formatRates}</h3>
-        <h3>Total: ${totalCost}</h3> 
-        
+            <h1>Total Cost: {totalCost}</h1>
         </div>
         
         <div>
@@ -80,27 +76,25 @@ function Confirmation(booking: Booking){
             <h1>Loading ...</h1>
         ) : (
             <Elements
-            stripe={stripePromise}
-            options={{
-                clientSecret: clientSecretSettings.clientSecret,
-                appearance: { theme: "night",
-                    variables: {
-                    colorPrimary: '#92b8ddff',
-                    colorBackground: '',
-                    colorText: 'rgba(199, 201, 228, 1)',
-                    colorDanger: '#df1b41',
-                    fontFamily: 'system-ui',
-                    spacingUnit: '2px',
-                    borderRadius: '4px',
-                    // See all possible variables below
-                }
-                },
-                
-                
-            }}
-            >
-            <PaymentForm />
-
+                stripe={stripePromise}
+                options={{
+                    clientSecret: clientSecretSettings.clientSecret,
+                    appearance: { theme: "stripe",
+                        variables: {
+                        // colorPrimary: '#92b8ddff',
+                        // colorBackground: '',
+                        // colorText: 'rgba(9, 9, 10, 1)',
+                        // colorDanger: '#df1b41',
+                        // fontFamily: 'system-ui',
+                        // spacingUnit: '2px',
+                        // borderRadius: '4px',
+                        // See all possible variables below
+                    }
+                    },
+                    
+                }}
+                >
+                <PaymentForm/>
             </Elements>
         )}
         </div>
