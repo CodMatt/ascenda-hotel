@@ -23,6 +23,7 @@ import Database from './models/db';
 */
 
 const bookingRoutes = require('./repos/bookingRepo');
+const UserRoutes = require('./repos/UserRepo');
 
 const app = express();
 
@@ -38,6 +39,7 @@ Database.testConnection().then(isConnected =>{
 // This will create the table if it does not exist
 // and will not delete existing data
 bookingRoutes.sync();
+UserRoutes.sync();
 
 // **** Middleware **** //
 
@@ -78,7 +80,7 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
 
 // **** FrontEnd Content **** //
 
-// // Set views directory (html)
+// Set views directory (html)
 // const viewsDir = path.join(__dirname, 'views');
 // app.set('views', viewsDir);
 
@@ -88,12 +90,12 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
 
 // // Nav to users pg by default
 // app.get('/', (_: Request, res: Response) => {
-//   return res.redirect('/users');
+//   return res.redirect('/forms');
 // });
 
 // // Redirect to login if not logged in.
-// app.get('/users', (_: Request, res: Response) => {
-//   return res.sendFile('users.html', { root: viewsDir });
+// app.get('/forms', (_: Request, res: Response) => {
+//   return res.sendFile('booking.html', { root: viewsDir });
 // });
 
 

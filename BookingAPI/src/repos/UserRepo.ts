@@ -1,12 +1,32 @@
 import { IUser } from '@src/models/User';
 import { getRandomInt } from '@src/common/util/misc';
+import db from '../models/db';
 
-//import orm from './MockOrm';
+const tableName = "User";
 
-// this is an example of a repository file
-// it is used to provide functions to get, add, update, and delete users
-// it uses a mock ORM to simulate database operations
+/******************************************************************************
+                                Syncing
+******************************************************************************/
 
+export async function sync() {
+    try {
+        const [result] = await db.getPool().query(`
+            CREATE TABLE IF NOT EXISTS ${tableName} ( 
+                id VARCHAR(255) PRIMARY KEY,
+                username VARCHAR(255),
+                password VARCHAR(255),
+                last_name VARCHAR(255),
+                first_name VARCHAR(255),
+                salutation VARCHAR(255),
+                email VARCHAR(255),
+                created_at TIMESTAMP
+            )
+        `);
+    } catch (error) {
+        console.error("database connection failed. " + error);
+        throw error;
+    }
+}
 
 /******************************************************************************
                                 Functions
@@ -15,120 +35,110 @@ import { getRandomInt } from '@src/common/util/misc';
 /**
  * Get one user.
  */
-async function getOne(email: string): Promise<IUser | null> {
-  const db = await orm.openDb();
-  for (const user of db.users) {
-    if (user.email === email) {
-      return user;
-    }
-  }
-  return null;
+export async function getOne(id: string): Promise<IUser | null> {
+    const [rows] : [any[], any] = await db.getPool().query(
+        `SELECT * FROM ${tableName} WHERE id = ?`,
+        [id]
+    );
+    return rows[0];
+}
+export async function getEmailOne(id: string): Promise<IUser | null> {
+    const [rows] : [any[], any] = await db.getPool().query(
+        `SELECT * FROM ${tableName} WHERE email = ?`,
+        [id]
+    );
+    return rows[0];
 }
 
 /**
  * See if a user with the given id exists.
  */
-async function persists(id: number): Promise<boolean> {
-  const db = await orm.openDb();
-  for (const user of db.users) {
-    if (user.id === id) {
-      return true;
-    }
-  }
-  return false;
+export async function exists(id: string): Promise<boolean> {
+    const [rows]: [any[], any] = await db.getPool().query(
+        `SELECT id FROM ${tableName} WHERE id = ?`,
+        [id]
+    );
+    return rows.length > 0;
 }
 
 /**
  * Get all users.
  */
-async function getAll(): Promise<IUser[]> {
-  const db = await orm.openDb();
-  return db.users;
+export async function getAll(): Promise<IUser[]> {
+    const [rows]: [any[], any] = await db.getPool().query(
+        `SELECT * FROM ${tableName}`
+    );
+    return rows;
 }
 
 /**
  * Add one user.
  */
-async function add(user: IUser): Promise<void> {
-  const db = await orm.openDb();
-  user.id = getRandomInt();
-  db.users.push(user);
-  return orm.saveDb(db);
+export async function add(user: IUser): Promise<void> {
+    await db.getPool().query(
+        `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [user.id, user.username, user.password, user.first_name, user.last_name, 
+         user.salutations, user.email, user.created]
+    );
 }
 
 /**
  * Update a user.
  */
-async function update(user: IUser): Promise<void> {
-  const db = await orm.openDb();
-  for (let i = 0; i < db.users.length; i++) {
-    if (db.users[i].id === user.id) {
-      const dbUser = db.users[i];
-      db.users[i] = {
-        ...dbUser,
-        name: user.name,
-        email: user.email,
-      };
-      return orm.saveDb(db);
-    }
-  }
+export async function update(user: IUser): Promise<void> {
+    await db.getPool().query(
+        `UPDATE ${tableName} 
+         SET username = ?, password = ?, first_name = ?, last_name = ?, 
+             salutation = ?, email = ?
+         WHERE id = ?`,
+        [user.username, user.password, user.first_name, user.last_name,
+         user.salutations, user.email, user.id]
+    );
 }
 
 /**
  * Delete one user.
  */
-async function delete_(id: number): Promise<void> {
-  const db = await orm.openDb();
-  for (let i = 0; i < db.users.length; i++) {
-    if (db.users[i].id === id) {
-      db.users.splice(i, 1);
-      return orm.saveDb(db);
-    }
-  }
+export async function deleteOne(id: string): Promise<void> {
+    await db.getPool().query(
+        `DELETE FROM ${tableName} WHERE id = ?`,
+        [id]
+    );
 }
-
 
 // **** Unit-Tests Only **** //
 
 /**
  * Delete every user record.
  */
-async function deleteAllUsers(): Promise<void> {
-  const db = await orm.openDb();
-  db.users = [];
-  return orm.saveDb(db);
+export async function deleteAllForTest(): Promise<void> {
+    await db.getPool().query(`DELETE FROM ${tableName}`);
 }
 
 /**
- * Insert multiple users. Can't do multiple at once cause using a plain file 
- * for nmow.
+ * Insert multiple users.
  */
-async function insertMult(
-  users: IUser[] | readonly IUser[],
-): Promise<IUser[]> {
-  const db = await orm.openDb(),
-    usersF = [ ...users ];
-  for (const user of usersF) {
-    user.id = getRandomInt();
-    user.created = new Date();
-  }
-  db.users = [ ...db.users, ...users ];
-  await orm.saveDb(db);
-  return usersF;
+export async function insertManyForTest(users: IUser[]): Promise<void> {
+    for (const user of users) {
+        await add(user);
+    }
 }
-
 
 /******************************************************************************
                                 Export default
 ******************************************************************************/
 
 export default {
-  getOne,
-  persists,
-  getAll,
-  add,
-  update,
-  delete: delete_,
-  deleteAllUsers,
-  insertMult,
+    sync,
+    getOne,
+    exists,
+    getAll,
+    add,
+    update,
+    getEmailOne,
+    deleteOne,
+    // Test only functions
+    deleteAllForTest,
+    insertManyForTest
 } as const;

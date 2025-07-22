@@ -3,7 +3,6 @@ import { parseObject, TParseOnError } from 'jet-validators/utils';
 
 import { isRelationalKey, transIsDate } from '@src/common/util/validators';
 import { IModel } from './common/types';
-import { isDate } from 'util/types';
 
 
 /******************************************************************************
@@ -11,7 +10,7 @@ import { isDate } from 'util/types';
 ******************************************************************************/
 
 const DEFAULT_USER_VALS = (): IBooking => ({
-  id: -1,
+  id:'',
   dest_id: '',
   hotel_id: '',
   nights: 0,
@@ -53,7 +52,7 @@ export interface IBooking extends IModel {
 
 // Initialize the "parsebooking" function
 const parseBooking = parseObject<IBooking>({
-  id: isRelationalKey,
+  id: isString,
   dest_id: isString,
   hotel_id: isString,
   nights: isNumber,

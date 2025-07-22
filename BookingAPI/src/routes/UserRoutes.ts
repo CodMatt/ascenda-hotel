@@ -1,0 +1,185 @@
+import express from 'express';
+import * as userRepo from '../repos/UserRepo';
+import { IUser } from '../models/User'; // Assuming this is your user model interface
+
+const router = express.Router();
+
+// CREATE user
+router.post('/', async (req, res) => {
+    try {
+        const {
+            id,
+            username,
+            password,
+            first_name,
+            last_name,
+            salutations,
+            email
+        } = req.body;
+
+        // Validate required fields
+        if (!username || !password || !email) {
+            return res.status(400).json({ error: 'Username, password, and email are required' });
+        }
+
+        const now = new Date();
+        const user: IUser = {
+            id: id || `user-${Date.now()}`,
+            username,
+            password, // Note: In production, you should hash the password before storing
+            first_name: first_name || '',
+            last_name: last_name || '',
+            salutations: salutations || '',
+            email,
+            created: now
+        };
+
+        const result = await userRepo.add(user);
+        res.status(201).json({ 
+            message: 'User created successfully',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                created: user.created
+            } // Don't return password in response
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Failed to create user',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+// READ all users (consider adding authentication/authorization for this route)
+router.get('/', async (_req, res) => {
+    try {
+        const users = await userRepo.getAll();
+        // Sanitize user data before returning (remove passwords)
+        const sanitizedUsers = users.map(user => ({
+            id: user.id,
+            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            created: user.created
+        }));
+        res.json(sanitizedUsers);
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Failed to fetch users',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+// READ user by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await userRepo.getOne(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        // Return sanitized user data
+        res.json({
+            id: user.id,
+            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            created: user.created
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Failed to fetch user',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+// UPDATE user
+router.put('/:id', async (req, res) => {
+    try {
+        // Only allow specific fields to be updated
+        const allowedFields = [
+            'username', 'first_name', 'last_name', 
+            'salutations', 'email'
+        ];
+        
+        const updates: Partial<IUser> = {};
+        for (const key of allowedFields) {
+            if (req.body[key] !== undefined) {
+                updates[key as keyof IUser] = req.body[key];
+            }
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ error: 'No valid fields to update' });
+        }
+
+        const result = await userRepo.update({
+            ...updates,
+            id: req.params.id // Ensure we're updating the correct user
+        } as IUser);
+
+        res.json({ 
+            message: 'User updated successfully',
+            updatedFields: Object.keys(updates)
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Failed to update user',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+// DELETE user
+router.delete('/:id', async (req, res) => {
+    try {
+        const result = await userRepo.deleteOne(req.params.id);
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Failed to delete user',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+// User login route (additional authentication endpoint)
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Username and password are required' });
+        }
+
+        const user = await userRepo.getEmailOne(email);
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // In a real application, you would verify the hashed password here
+        if (user.password !== password) { // This is just for example - use bcrypt in production
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // Return a sanitized user object (without password)
+        res.json({
+            id: user.id,
+            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Login failed',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+export default router;

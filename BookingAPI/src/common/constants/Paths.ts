@@ -11,4 +11,7 @@ export default {
   Booking: {
     Base: '/booking'
   },
+  Users:{
+    Base:'/users'
+  }
 } as const;

@@ -1,75 +1,51 @@
-import { isString } from "jet-validators";
-import { IModel } from "./common/types";
-import { isDate } from "util/types";
 import { parseObject, TParseOnError } from 'jet-validators/utils';
+import { isString } from 'jet-validators';
+import { error } from 'console';
 
 /**
- * ACCOUNT
- * user_id
- * username
- * password
- * first_name
- * last_name
- * salutaions
+ * userBooking
+ * Booking_id
+ * User_id
  */
+
 
 /******************************************************************************
                                  Constants
 ******************************************************************************/
 
-const DEFAULT_USER_VALS = (): IUser =>({
-    id:'',
-    username: '',
-    password: '',
-    first_name: '',
-    last_name: '',
-    salutations: '',
-    email:'',
-    created: new Date(),
+const DEFAULT_USERBOOKING_VALS =(): IUserBooking=>({
+    booking_id: '',
+    user_id:''
 });
 
 /******************************************************************************
                                   Types
 ******************************************************************************/
 
-export interface IUser extends IModel{
-    username: string;
-    password: string;
-    first_name: string;
-    last_name: string;
-    email:string,
-    salutations: string;
-    created: Date;
+export interface IUserBooking{
+    booking_id: string;
+    user_id: string;
 }
+
 
 /******************************************************************************
                                   Setup
 ******************************************************************************/
 
-const parseUser = parseObject<IUser>({
-    id: isString,
-    username: isString,
-    password: isString,
-    first_name: isString,
-    last_name: isString,
-    salutations: isString,
-    email:isString,
-    created: isDate
+const parseUserBooking = parseObject<IUserBooking>({
+    booking_id: isString,
+    user_id: isString
 });
 
 /******************************************************************************
                                  Functions
 ******************************************************************************/
 
-function __new__(user?: Partial<IUser>): IUser{
-    const retVal = { ...DEFAULT_USER_VALS(), ...user };
-    return parseUser(retVal, errors => {
-    throw new Error('Setup new user failed ' + JSON.stringify(errors, null, 2));
-  });
-}
-
-function test(arg: unknown, errCb?: TParseOnError): arg is IUser {
-  return !!parseUser(arg, errCb);
+function __new__(userBooking?: Partial<IUserBooking>):IUserBooking{
+    const retVal = {... DEFAULT_USERBOOKING_VALS(),...userBooking};
+    return parseUserBooking(retVal, errors =>{
+        throw new Error('Setup new userBooking failed ' + JSON.stringify(errors, null, 2));
+    });
 }
 
 // /******************************************************************************

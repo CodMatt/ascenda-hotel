@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import Paths from '@src/common/constants/Paths';
 import BookingRoutes from './BookingRoutes';
+import UserRoutes from './UserRoutes';
 
 
 /******************************************************************************
@@ -12,11 +13,18 @@ const apiRouter = Router();
 
 // ** Add BookingRouter ** //
 apiRouter.use(Paths.Booking.Base, BookingRoutes)
+apiRouter.use(Paths.Users.Base, UserRoutes)
 
 // ** Add other routers here ** //
 // Add more routers as needed
 /******************************************************************************
                                 Export default
 ******************************************************************************/
+
+
+
+
+
+
 
 export default apiRouter;
