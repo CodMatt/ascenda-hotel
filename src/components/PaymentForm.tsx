@@ -13,6 +13,8 @@ function PaymentForm() {
 
   const [cardDeclined, setCardDeclined] = useState(false);
 
+  const [errorMsg, setErrorMsg] = useState("");
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
@@ -32,11 +34,14 @@ function PaymentForm() {
       }
     });
 
-    if (result.error){
-      console.log(result.error);
+    if (result.error.decline_code === "card_not_supported"){
+      setErrorMsg("Card not supported!");
       setCardDeclined(true);
       setTimeout(() => setCardDeclined(false), 3000);
-    } 
+    } else if (result.error){
+      setErrorMsg("Payment Declined!");
+      console.log(result.error);
+    }
 
     setIsProcessing(false);
   }
@@ -60,7 +65,7 @@ function PaymentForm() {
       
     </form>
     
-    {cardDeclined? <CardDeclinedNotification/>:null}
+    {cardDeclined? <CardDeclinedNotification errorMsg = {errorMsg}/>:null}
     </div>
   );
 };

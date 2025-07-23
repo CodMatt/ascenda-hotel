@@ -39,7 +39,9 @@ function Confirmation(){
     //   checkout: checkout,
     //   noAdults: noAdults,
     //   noChildren: noChildren,
-    //   duration: duration }
+    //   duration: duration,
+    //   authToken: authToken,
+    //  }
 
 
     const totalCost = bookingInfo.rates*bookingInfo.duration;

@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import PhoneInput from 'react-phone-input-2'
 import { useNavigate, useLocation } from "react-router-dom";
-
+import PhoneNumberCodes from '../lib/PhoneNumberCodes';
+import isPhoneNumberValid from '../lib/IsPhoneNumberValid';
+import CountryCodes from '../lib/PhoneNumberCodes';
 
 function GuestInfoForm(){
 
@@ -18,16 +19,31 @@ function GuestInfoForm(){
   const noAdults = location.state.noAdults;
   const noChildren = location.state.noChildren;
 
+  const authToken = location.state.authToken;
+
   const duration = Math.abs((checkout-checkin)/(60*60*24*1000));
   
 
   // INFO COLLECTED HERE
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [salutation, setSalutation] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [emailAddress, setEmailAddress] = useState('');
-  const [specialRequest, setSpecialRequest] = useState('');
+  const [firstName, setFirstName] = useState(location.state.firstName);
+  const [lastName, setLastName] = useState(location.state.lastName);
+  const [salutation, setSalutation] = useState(location.state.salutation);
+  const [phoneNumber, setPhoneNumber] = useState(location.state.phoneNumber);
+  const [emailAddress, setEmailAddress] = useState(location.state.emailAddress);
+  const [specialRequest, setSpecialRequest] = useState(location.state.specialRequest);
+
+  const countryCodes : { [key: string]: [number | number[], string] } = CountryCodes;
+  const [country, setCountry] = useState('');
+  const [countryCode, setCountryCode] = useState('');
+
+  const updateCountry = (country: string) => {
+      setCountry(country);
+    if (Object.keys(countryCodes).includes(country)){
+      setCountryCode(countryCodes[country][1]);
+    } else {
+      setCountryCode('');
+    } 
+  }
 
   const validSalutations = ["Mr", "Mrs", "Ms", "Miss"];
 
@@ -39,7 +55,7 @@ function GuestInfoForm(){
       firstName: firstName,
       lastName: lastName,
       salutation: salutation,
-      phoneNumber: phoneNumber,
+      phoneNumber: countryCode + phoneNumber,
       emailAddress: emailAddress,
       specialRequest: specialRequest,
       hotelId: hotelId, 
@@ -51,6 +67,7 @@ function GuestInfoForm(){
       noAdults: noAdults,
       noChildren: noChildren,
       duration: duration,
+      authToken: authToken,
      }});
   };
 
@@ -58,8 +75,10 @@ function GuestInfoForm(){
     navigate("/"); // go back to hotel searching page
   }
 
+
   return(
     <>
+
     <table border={1}>
       <tbody>
         <tr>
@@ -92,78 +111,125 @@ function GuestInfoForm(){
     <br/>
 
     <form id = 'personal-details-form' onSubmit = {handleSubmit} method="post">
-        
-      <label className = "salutation">Salutation: </label>
+      
+      {authToken?(
+            <table border={1}>
+        <tbody>
+            <tr>
+            <td>Name: </td><td>{firstName} {lastName}</td>
+            </tr>
+            <tr>
+            <td>Salutation: </td><td>{salutation}</td>
+            </tr>
+            <tr>
+            <td>Phone Number: </td><td>{phoneNumber}</td>
+            </tr>
+            <tr>
+            <td>Email Address: </td><td>{emailAddress}</td>
+            </tr>
+            
+        </tbody>
+        </table>
+        ) : (
+          <><label className = "salutation">Salutation: </label>
 
-      <select name="salutation" onChange={(event) => setSalutation(event.target.value)} defaultValue= "" required = {true}>
-        <option value = "" key = "select">Select One</option>
-        {validSalutations.map((validSalutation) => (
-          <option value={validSalutation} key={validSalutation}>{validSalutation}</option>
-        )
-        )}
-        
-        <option value="" key = "others">Others</option>
-      </select>
+            <select name="salutation" onChange={(event) => setSalutation(event.target.value)} defaultValue= "" required = {true}>
+              <option value = "" key = "select">Select One</option>
+              {validSalutations.map((validSalutation) => (
+                <option value={validSalutation} key={validSalutation}>{validSalutation}</option>
+              )
+              )}
+              
+              <option value="" key = "others">Others</option>
+            </select>
+            
+            <input
+              type="text"
+              placeholder="Salutation (if others)"
+              value={salutation}
+              onChange={(event) => setSalutation(event.target.value)}
+              required = {true}
+              disabled = {validSalutations.includes(salutation)? true : false}
+
+            />
+          
+            <br/>
+
+            <label className = "firstName">First Name: </label>
+            <input
+              name="firstName"
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              required = {true}
+              onChange={(event) => setFirstName(event.target.value)}
+            />
+
+
+
+            <label className = "lastName"> Last Name: </label>
+            <input
+              name="lastName"
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(event) => setLastName(event.target.value)}
+              required = {true}
+            />
+            <br/>
+
+
+            <label className = "phoneCode"> Country: </label>
+            <select name="phoneCode" onChange={(event) => updateCountry(event.target.value)} defaultValue= "" required = {true}>
+              <option value = "" key = "select">Select One</option>
+              {Object.keys(countryCodes).map((countryCode) => (
+                <option value={countryCode} key={countryCode}>{countryCode}</option>
+              )
+              )}
+            
+              <option value="others" key = "others">Others</option>
+            </select>
+
+            <br/>
+
+            <label className = "countryCode"> Phone number: +</label>
+            <input
+              name="country code"
+              type="text"
+              placeholder="Country Code (if others)"
+              value={countryCode}
+              onChange={(event) => setCountryCode(event.target.value)}
+              required = {true}
+              disabled = {country=="others"?false:true}
+
+            />
+
+            <input
+              name="phoneNumber"
+              type="text"
+              placeholder="Phone Number"
+              value={phoneNumber}
+              onChange={(event) => setPhoneNumber(event.target.value)}
+              required = {true}
+              disabled = {countryCode?false:true}
+            />
+
+            <br/>
+
+          
+            <label className = "emailAddress">Email Address: </label>
+            <input
+              name="emailAddress"
+              type="email"
+              placeholder="Email Address"
+              value={emailAddress}
+              onChange={(event) => setEmailAddress(event.target.value)}
+              required = {true}
+            />
+
+        </>)}
 
       
-      
-      <input
-        type="text"
-        placeholder="Salutation (if others)"
-        value={salutation}
-        onChange={(event) => setSalutation(event.target.value)}
-        required = {salutation==="Others"? true : false}
-        disabled = {validSalutations.includes(salutation)? true : false}
-
-      />
-    
-      <br/>
-
-      <label className = "firstName">First Name: </label>
-      <input
-        name="firstName"
-        type="text"
-        placeholder="First Name"
-        value={firstName}
-        required = {true}
-        onChange={(event) => setFirstName(event.target.value)}
-      />
-
-
-
-      <label className = "lastName"> Last Name: </label>
-      <input
-        name="lastName"
-        type="text"
-        placeholder="Last Name"
-        value={lastName}
-        onChange={(event) => setLastName(event.target.value)}
-        required = {true}
-      />
-      <br/>
-
-
-      <label className = "phoneNumber">Phone Number: </label>
-      <PhoneInput
-      
-        placeholder="Phone number"
-        country={'sg'}
-        value={phoneNumber}
-        enableSearch={true}
-        onChange={(number) => setPhoneNumber(number)}
-        
-      />
-
-      <label className = "emailAddress">Email Address: </label>
-      <input
-        name="emailAddress"
-        type="email"
-        placeholder="Email Address"
-        value={emailAddress}
-        onChange={(event) => setEmailAddress(event.target.value)}
-        required = {true}
-      />
-
       <br/>
       <label className = "specialRequest">Special Request: </label>
       <br/>

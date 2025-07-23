@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 
-const CardDeclinedNotification = () => {
-    const notif = "Card declined. Payment failed.";
+interface CardDeclinedNotificationProps {
+    errorMsg: string;
+}
 
-    return <h3>{notif}</h3>
+const CardDeclinedNotification = ({errorMsg}: CardDeclinedNotificationProps) => {;
+
+    return <h3>{errorMsg}</h3>
 }
 
 export default CardDeclinedNotification;
