@@ -27,6 +27,7 @@ const DEFAULT_USER_VALS = (): IUser =>({
     last_name: '',
     salutations: '',
     email:'',
+    phone_num:'',
     created: new Date(),
 });
 
@@ -39,7 +40,8 @@ export interface IUser extends IModel{
     password: string;
     first_name: string;
     last_name: string;
-    email:string,
+    email:string;
+    phone_num:string;
     salutations: string;
     created: Date;
 }
@@ -56,6 +58,7 @@ const parseUser = parseObject<IUser>({
     last_name: isString,
     salutations: isString,
     email:isString,
+    phone_num: isString,
     created: isDate
 });
 

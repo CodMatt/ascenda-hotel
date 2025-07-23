@@ -19,6 +19,7 @@ export async function sync() {
                 first_name VARCHAR(255),
                 salutation VARCHAR(255),
                 email VARCHAR(255),
+                phone_num VARCHAR (15),
                 created_at TIMESTAMP
             )
         `);
@@ -76,10 +77,10 @@ export async function getAll(): Promise<IUser[]> {
  */
 export async function add(user: IUser): Promise<void> {
     await db.getPool().query(
-        `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, phone_num,created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)`,
         [user.id, user.username, user.password, user.first_name, user.last_name, 
-         user.salutations, user.email, user.created]
+         user.salutations, user.email,user.phone_num, user.created]
     );
 }
 
@@ -90,10 +91,10 @@ export async function update(user: IUser): Promise<void> {
     await db.getPool().query(
         `UPDATE ${tableName} 
          SET username = ?, password = ?, first_name = ?, last_name = ?, 
-             salutation = ?, email = ?
+             salutation = ?, email = ?, phone_num = ?
          WHERE id = ?`,
         [user.username, user.password, user.first_name, user.last_name,
-         user.salutations, user.email, user.id]
+         user.salutations, user.email, user.phone_num, user.id]
     );
 }
 

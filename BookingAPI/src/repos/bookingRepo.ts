@@ -20,7 +20,7 @@ export async function sync() {
             user_reference VARCHAR(100),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_reference) REFERENCES User(id)
+            FOREIGN KEY (user_reference) REFERENCES User(id) ON DELETE CASCADE
         )
         `);
     } catch (error) {
@@ -30,9 +30,9 @@ export async function sync() {
 }
 
 // CREATE
-export async function createBooking(booking: IBooking) {
+export async function createBooking(booking: IBooking, connection?: any) {
     const sql = `
-        INSERT INTO ${tableName} 
+        INSERT INTO booking 
         (booking_id, destination_id, hotel_id, nights, start_date, end_date, adults, children, msg_to_hotel, price, user_reference)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
@@ -49,9 +49,12 @@ export async function createBooking(booking: IBooking) {
         booking.price,
         booking.user_ref
     ];
-    const [result] = await db.getPool().query(sql, params);
+
+    const conn = connection || db.getPool();
+    const [result] = await conn.query(sql, params);
     return result;
 }
+
 
 // READ (by ID)
 export async function getBookingById(booking_id: string) {

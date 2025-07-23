@@ -26,6 +26,7 @@ import Database from './models/db';
 
 const bookingRoutes = require('./repos/bookingRepo');
 const UserRoutes = require('./repos/UserRepo');
+const nonAcctRoute = require('./repos/nonAccountRepo');
 
 const app = express();
 
@@ -40,6 +41,7 @@ Database.testConnection().then(isConnected =>{
 // Sync booking routes
 // This will create the table if it does not exist
 // and will not delete existing data
+nonAcctRoute.sync();
 bookingRoutes.sync();
 UserRoutes.sync();
 

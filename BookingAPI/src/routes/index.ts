@@ -3,6 +3,7 @@ import { Router } from 'express';
 import Paths from '@src/common/constants/Paths';
 import BookingRoutes from './BookingRoutes';
 import UserRoutes from './UserRoutes';
+import noAcctRoutes from './noAcctRoutes'
 
 
 /******************************************************************************
@@ -11,6 +12,7 @@ import UserRoutes from './UserRoutes';
 
 const apiRouter = Router();
 
+apiRouter.use(Paths.noAcct.Base, noAcctRoutes)
 apiRouter.use(Paths.Booking.Base, BookingRoutes)
 apiRouter.use(Paths.Users.Base, UserRoutes)
 
@@ -19,11 +21,6 @@ apiRouter.use(Paths.Users.Base, UserRoutes)
 /******************************************************************************
                                 Export default
 ******************************************************************************/
-
-
-
-
-
 
 
 export default apiRouter;

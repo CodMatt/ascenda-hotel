@@ -17,12 +17,13 @@ router.post('/', async (req, res) => {
             first_name,
             last_name,
             salutations,
-            email
+            email,
+            phone_num
         } = req.body;
 
         // Validate required fields
-        if (!username || !password || !email) {
-            return res.status(400).json({ error: 'Username, password, and email are required' });
+        if (!username || !password || !email ||!phone_num) {
+            return res.status(400).json({ error: 'Username, password, email and phone number are required' });
         }
 
         const now = new Date();
@@ -34,6 +35,7 @@ router.post('/', async (req, res) => {
             last_name: last_name || '',
             salutations: salutations || '',
             email,
+            phone_num,
             created: now
         };
 
@@ -49,6 +51,10 @@ router.post('/', async (req, res) => {
                 id: user.id,
                 username: user.username,
                 email: user.email,
+                phone_num: user.phone_num,
+                salutations: user.salutations,
+                first_name: user.first_name,
+                last_name: user.last_name,
                 created: user.created
             }
         });
@@ -89,7 +95,8 @@ router.post('/login', async (req, res) => {
                 username: user.username,
                 first_name: user.first_name,
                 last_name: user.last_name,
-                email: user.email
+                email: user.email,
+                phone_num: user.phone_num
             }
         });
     } catch (error) {
@@ -118,6 +125,7 @@ router.get('/', async (_req, res) => {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
+            phone_num: user.phone_num,
             created: user.created
         }));
         res.json(sanitizedUsers);
@@ -143,6 +151,7 @@ router.get('/:id', async (req, res) => {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
+            phone_num: user.email,
             created: user.created
         });
     } catch (error) {
@@ -159,7 +168,7 @@ router.put('/:id', async (req, res) => {
         // Only allow specific fields to be updated
         const allowedFields = [
             'username', 'first_name', 'last_name', 
-            'salutations', 'email'
+            'salutations', 'email', 'phone_num'
         ];
         
         const updates: Partial<IUser> = {};

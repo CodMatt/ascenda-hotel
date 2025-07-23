@@ -13,5 +13,8 @@ export default {
   },
   Users:{
     Base:'/users'
+  },
+  noAcct:{
+    Base:'/Details'
   }
 } as const;

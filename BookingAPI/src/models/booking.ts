@@ -75,8 +75,8 @@ const parseBooking = parseObject<IBooking>({
 /**
  * New user object.
  */
-function __new__(user?: Partial<IBooking>): IBooking {
-  const retVal = { ...DEFAULT_USER_VALS(), ...user };
+function __new__(booking?: Partial<IBooking>): IBooking {
+  const retVal = { ...DEFAULT_USER_VALS(), ...booking };
   return parseBooking(retVal, errors => {
     throw new Error('Setup new user failed ' + JSON.stringify(errors, null, 2));
   });
