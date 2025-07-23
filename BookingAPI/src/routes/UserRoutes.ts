@@ -1,6 +1,9 @@
 import express from 'express';
 import * as userRepo from '../repos/UserRepo';
 import { IUser } from '../models/User'; 
+import { hashPassword } from '@src/common/util/auth';
+
+import { generateToken, authenticateJWT, comparePasswords } from '@src/common/util/auth';
 
 const router = express.Router();
 
@@ -26,7 +29,7 @@ router.post('/', async (req, res) => {
         const user: IUser = {
             id: id || `user-${Date.now()}`,
             username,
-            password, // Note: In production, you should hash the password before storing
+            password: await hashPassword(password), // Hash the password
             first_name: first_name || '',
             last_name: last_name || '',
             salutations: salutations || '',
@@ -35,14 +38,19 @@ router.post('/', async (req, res) => {
         };
 
         const result = await userRepo.add(user);
+        
+        // Generate token for immediate login
+        const token = generateToken(user);
+        
         res.status(201).json({ 
             message: 'User created successfully',
+            token,
             user: {
                 id: user.id,
                 username: user.username,
                 email: user.email,
                 created: user.created
-            } // Don't return password in response
+            }
         });
     } catch (error) {
         res.status(500).json({ 
@@ -52,6 +60,53 @@ router.post('/', async (req, res) => {
     }
 });
 
+// User login route (additional authentication endpoint)
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        const user = await userRepo.getEmailOne(email);
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const isMatch = await comparePasswords(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // Generate JWT token
+        const token = generateToken(user);
+
+        // Return token and sanitized user data
+        res.json({
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Login failed',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+
+// Protect routes with JWT authentication
+router.use(authenticateJWT);
+
+/**
+ * All routes below this line will require authentication
+*/
 // READ all users (consider adding authentication/authorization for this route)
 router.get('/', async (_req, res) => {
     try {
@@ -148,38 +203,6 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-// User login route (additional authentication endpoint)
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Username and password are required' });
-        }
 
-        const user = await userRepo.getEmailOne(email);
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        // In a real application, you would verify the hashed password here
-        if (user.password !== password) { // This is just for example - use bcrypt in production
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        // Return a sanitized user object (without password)
-        res.json({
-            id: user.id,
-            username: user.username,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email
-        });
-    } catch (error) {
-        res.status(500).json({ 
-            error: 'Login failed',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
-    }
-});
 
 export default router;

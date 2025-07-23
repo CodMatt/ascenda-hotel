@@ -12,6 +12,8 @@ import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
 import { RouteError } from '@src/common/util/route-errors';
 import { NodeEnvs } from '@src/common/constants';
 
+import cors from 'cors';
+
 //models
 import Database from './models/db';
 
@@ -52,6 +54,13 @@ app.use(express.urlencoded({extended: true}));
 if (ENV.NodeEnv === NodeEnvs.Dev) {
   app.use(morgan('dev'));
 }
+
+// Add to middleware section
+app.use(cors({
+  origin: ENV.NodeEnv === NodeEnvs.Production ? 'https://your-production-domain.com' : '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Security
 if (ENV.NodeEnv === NodeEnvs.Production) {

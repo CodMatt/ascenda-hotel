@@ -1,4 +1,4 @@
-import jetEnv, { num } from 'jet-env';
+import jetEnv, { num, str } from 'jet-env';
 import { isEnumVal } from 'jet-validators';
 
 import { NodeEnvs } from '.';
@@ -11,7 +11,16 @@ import { NodeEnvs } from '.';
 const ENV = jetEnv({
   NodeEnv: isEnumVal(NodeEnvs),
   Port: num,
+  JwtSecret: str,
+  JwtExpiration: str,
+  // Add other environment variables as needed
 });
+
+// Set default values for development
+if (ENV.NodeEnv === NodeEnvs.Dev) {
+  ENV.JwtSecret = ENV.JwtSecret || 'your-dev-secret-key'; // Never use this in production!
+  ENV.JwtExpiration = ENV.JwtExpiration || '1h'; // 1 hour expiration for dev
+}
 
 
 /******************************************************************************

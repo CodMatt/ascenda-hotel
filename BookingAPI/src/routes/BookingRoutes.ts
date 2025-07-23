@@ -2,6 +2,8 @@ import express from 'express';
 import * as bookingRepo from '../repos/bookingRepo';
 import { IBooking } from '../models/booking'; // Add this import if IBooking is defined in models/IBooking.ts
 
+import { authenticateJWT } from '@src/common/util/auth';
+
 const router = express.Router();
 
 // CREATE booking
@@ -72,18 +74,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// get booking by user
-router.get('/user/:id', async (req, res) => {
-    try {
-        const booking = await bookingRepo.getBookingByUser(req.params.id);
-        if (!booking) {
-            return res.status(404).json({ error: 'Booking not found' });
-        }
-        res.json(booking);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch booking', details: error });
-    }
-});
+
 
 // UPDATE booking
 router.put('/:id', async (req, res) => {
@@ -107,6 +98,22 @@ router.put('/:id', async (req, res) => {
         res.json({ message: 'Booking updated', result });
     } catch (error) {
         res.status(500).json({ error: 'Failed to update booking', details: error });
+    }
+});
+
+
+router.use(authenticateJWT);
+// All routes below this line will require authentication
+// get booking by user
+router.get('/:id', async (req, res) => {
+    try {
+        const booking = await bookingRepo.getBookingByUser(req.params.id);
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        res.json(booking);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch booking', details: error });
     }
 });
 

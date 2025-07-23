@@ -3,6 +3,8 @@ import { IModel } from "./common/types";
 import { isDate } from "util/types";
 import { parseObject, TParseOnError } from 'jet-validators/utils';
 
+import { hashPassword } from '@src/common/util/auth';
+
 /**
  * ACCOUNT
  * user_id
@@ -61,9 +63,15 @@ const parseUser = parseObject<IUser>({
                                  Functions
 ******************************************************************************/
 
-function __new__(user?: Partial<IUser>): IUser{
-    const retVal = { ...DEFAULT_USER_VALS(), ...user };
-    return parseUser(retVal, errors => {
+async function __new__(user?: Partial<IUser>): Promise<IUser> {
+  const retVal = { ...DEFAULT_USER_VALS(), ...user };
+  
+  // Hash password if provided
+  if (retVal.password) {
+    retVal.password = await hashPassword(retVal.password);
+  }
+  
+  return parseUser(retVal, errors => {
     throw new Error('Setup new user failed ' + JSON.stringify(errors, null, 2));
   });
 }

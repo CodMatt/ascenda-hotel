@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.5",
     "mssql": "^11.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
