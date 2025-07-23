@@ -1,6 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchHotelDetails, fetchHotelRoomPrices } from "../api/hotels";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import * as L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
 export default function HotelDetailsPage() {
   const { hotelId } = useParams<{ hotelId: string }>();
@@ -47,10 +59,25 @@ export default function HotelDetailsPage() {
       <p className="mb-2">{hotel.address}</p>
       <p className="mb-2">⭐ {hotel.rating}</p>
       <div className="mb-4">
-        {/* Map component here */}
-        <div style={{ height: "300px", width: "100%" }}>
-          {/* TODO: Integrate Leaflet or Google Maps */}
-          <span>Map goes here (lat: {hotel.latitude}, lng: {hotel.longitude})</span>
+        <div className="mb-4" style={{ height: "300px", width: "100%" }}>
+          <MapContainer
+            center={[hotel.latitude, hotel.longitude]}
+            zoom={15}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={[hotel.latitude, hotel.longitude]}>
+              <Popup>
+                {hotel.name}
+                <br />
+                {hotel.address}
+              </Popup>
+            </Marker>
+          </MapContainer>
         </div>
       </div>
       <h2 className="text-2xl font-semibold mb-2">Available Rooms</h2>
