@@ -87,7 +87,7 @@ export async function add(user: IUser): Promise<void> {
 /**
  * Update a user.
  */
-export async function update(user: IUser): Promise<void> {
+export async function update(user: Partial<IUser>): Promise<void> {
     await db.getPool().query(
         `UPDATE ${tableName} 
          SET username = ?, password = ?, first_name = ?, last_name = ?, 

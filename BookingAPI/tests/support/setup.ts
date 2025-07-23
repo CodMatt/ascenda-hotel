@@ -1,26 +1,22 @@
+import dotenv from 'dotenv';
+import db from '../../src/models/db';
 
-import { beforeAll } from 'vitest';
-import supertest, { Test } from 'supertest';
-import TestAgent from 'supertest/lib/agent';
+dotenv.config({ path: '.env.test' });
 
-import app from '@src/server';
-import MockOrm from '@src/repos/MockOrm';
-
-
-/******************************************************************************
-                                    Run
-******************************************************************************/
-
-let agent: TestAgent<Test>;
-
+// Setup test database connection
 beforeAll(async () => {
-  agent = supertest.agent(app);
-  await MockOrm.cleanDb();
+  await db.initialize();
 });
 
+// Clean up after each test
+afterEach(async () => {
+  // Clear all tables
+  await db.getPool().query('DELETE FROM booking');
+  await db.getPool().query('DELETE FROM nonAccount');
+  await db.getPool().query('DELETE FROM User');
+});
 
-/******************************************************************************
-                                    Export
-******************************************************************************/
-
-export { agent };
+// Close connection after all tests
+afterAll(async () => {
+  await db.getPool().end();
+});
