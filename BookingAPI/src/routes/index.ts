@@ -11,7 +11,6 @@ import UserRoutes from './UserRoutes';
 
 const apiRouter = Router();
 
-// ** Add BookingRouter ** //
 apiRouter.use(Paths.Booking.Base, BookingRoutes)
 apiRouter.use(Paths.Users.Base, UserRoutes)
 

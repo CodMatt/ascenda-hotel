@@ -17,9 +17,10 @@ export async function sync() {
             children INT DEFAULT 0,
             msg_to_hotel TEXT,
             price DECIMAL(10, 2) NOT NULL,
-            booking_reference VARCHAR(100) UNIQUE NOT NULL,
+            user_reference VARCHAR(100),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_reference) REFERENCES User(id)
         )
         `);
     } catch (error) {
@@ -32,7 +33,7 @@ export async function sync() {
 export async function createBooking(booking: IBooking) {
     const sql = `
         INSERT INTO ${tableName} 
-        (booking_id, destination_id, hotel_id, nights, start_date, end_date, adults, children, msg_to_hotel, price, booking_reference)
+        (booking_id, destination_id, hotel_id, nights, start_date, end_date, adults, children, msg_to_hotel, price, user_reference)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [
@@ -46,7 +47,7 @@ export async function createBooking(booking: IBooking) {
         booking.children,
         booking.msg_to_hotel,
         booking.price,
-        booking.booking_ref
+        booking.user_ref
     ];
     const [result] = await db.getPool().query(sql, params);
     return result;
@@ -58,6 +59,14 @@ export async function getBookingById(booking_id: string) {
     const [rows]: [any[], any] = await db.getPool().query(sql, [booking_id]);
     return rows[0];
 }
+
+// READ (by ID)
+export async function getBookingByUser(user_ref: string) {
+    const sql = `SELECT * FROM ${tableName} WHERE booking_id = ?`;
+    const [rows]: [any[], any] = await db.getPool().query(sql, [user_ref]);
+    return rows[0];
+}
+
 
 // READ (all)
 export async function getAllBookings() {
@@ -79,5 +88,11 @@ export async function updateBooking(booking_id: string, updates: Partial<IBookin
 export async function deleteBooking(booking_id: string) {
     const sql = `DELETE FROM ${tableName} WHERE booking_id = ?`;
     const [result] = await db.getPool().query(sql, [booking_id]);
+    return result;
+}
+
+export async function deleteAllUserBooking(user_ref: string) {
+    const sql = `DELETE FROM ${tableName} WHERE user_ref = ?`;
+    const [result] = await db.getPool().query(sql, [user_ref]);
     return result;
 }

@@ -19,7 +19,7 @@ const DEFAULT_USER_VALS = (): IBooking => ({
   adults:0,
   children: 0,
   msg_to_hotel: '',
-  booking_ref: '',
+  user_ref:'',
   price: 0,
   created: new Date(),
   updated_at: new Date()
@@ -39,7 +39,7 @@ export interface IBooking extends IModel {
   adults: number;
   children: number;
   msg_to_hotel: string;
-  booking_ref: string;
+  user_ref: string;
   price: number;
   updated_at: Date;
 
@@ -61,7 +61,7 @@ const parseBooking = parseObject<IBooking>({
   adults: isNumber,
   children: isNumber,
   msg_to_hotel: isString,
-  booking_ref: isString,
+  user_ref: isString,
   price: isNumber,
   created: transIsDate,
   updated_at: transIsDate

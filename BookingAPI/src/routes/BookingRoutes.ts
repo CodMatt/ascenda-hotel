@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
             children,
             msg_to_hotel,
             price,
-            booking_ref
+            user_ref
         } = req.body;
 
         if (!dest_id || !hotel_id || !start_date || !end_date) {
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
             children: children || 0,
             msg_to_hotel: msg_to_hotel || '',
             price: price || 0,
-            booking_ref: booking_ref || `ref-${Math.random().toString(36).substring(2, 15)}`,
+            user_ref: user_ref || null,
             updated_at: now,
             created: now
         };
@@ -72,13 +72,26 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// get booking by user
+router.get('/user/:id', async (req, res) => {
+    try {
+        const booking = await bookingRepo.getBookingByUser(req.params.id);
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        res.json(booking);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch booking', details: error });
+    }
+});
+
 // UPDATE booking
 router.put('/:id', async (req, res) => {
     try {
         // Only allow valid IBooking fields to be updated
         const allowedFields = [
             'dest_id', 'hotel_id', 'nights', 'start_date', 'end_date',
-            'adults', 'children', 'msg_to_hotel', 'price', 'booking_ref'
+            'adults', 'children', 'msg_to_hotel', 'price'
         ];
         const updates: Partial<IBooking> = {};
         for (const key of allowedFields) {

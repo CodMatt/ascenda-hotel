@@ -1,6 +1,6 @@
 import express from 'express';
 import * as userRepo from '../repos/UserRepo';
-import { IUser } from '../models/User'; // Assuming this is your user model interface
+import { IUser } from '../models/User'; 
 
 const router = express.Router();
 

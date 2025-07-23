@@ -41,6 +41,7 @@ Database.testConnection().then(isConnected =>{
 bookingRoutes.sync();
 UserRoutes.sync();
 
+
 // **** Middleware **** //
 
 // Basic middleware
