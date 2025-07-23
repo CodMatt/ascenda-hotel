@@ -80,16 +80,6 @@ function Confirmation(){
                 options={{
                     clientSecret: clientSecretSettings.clientSecret,
                     appearance: { theme: "stripe",
-                        variables: {
-                        // colorPrimary: '#92b8ddff',
-                        // colorBackground: '',
-                        // colorText: 'rgba(9, 9, 10, 1)',
-                        // colorDanger: '#df1b41',
-                        // fontFamily: 'system-ui',
-                        // spacingUnit: '2px',
-                        // borderRadius: '4px',
-                        // See all possible variables below
-                    }
                     },
                     
                 }}

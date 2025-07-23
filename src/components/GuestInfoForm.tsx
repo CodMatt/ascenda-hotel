@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import PhoneInput from 'react-phone-number-input'
+import PhoneInput from 'react-phone-input-2'
 import { useNavigate, useLocation } from "react-router-dom";
 
-function PersonalInfoForm(){
+
+function GuestInfoForm(){
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,6 +53,10 @@ function PersonalInfoForm(){
       duration: duration,
      }});
   };
+
+  const handleSubmit2 = async () => {
+    navigate("/"); // go back to hotel searching page
+  }
 
   return(
     <>
@@ -124,9 +129,9 @@ function PersonalInfoForm(){
         onChange={(event) => setFirstName(event.target.value)}
       />
 
-      <br/>
 
-      <label className = "lastName">Last Name: </label>
+
+      <label className = "lastName"> Last Name: </label>
       <input
         name="lastName"
         type="text"
@@ -137,24 +142,16 @@ function PersonalInfoForm(){
       />
       <br/>
 
-      <style>
-        {`
-          .phone-flag .PhoneInputCountryIcon {
-            width: 5%;
-          }
-        `}
-      </style>
 
       <label className = "phoneNumber">Phone Number: </label>
       <PhoneInput
-        
-        className="phone-flag"
-        name="phoneNumber"
+      
         placeholder="Phone number"
-        defaultCountry="SG"
+        country={'sg'}
         value={phoneNumber}
-        onChange={(value) => setPhoneNumber}
-        required = {true}
+        enableSearch={true}
+        onChange={(number) => setPhoneNumber(number)}
+        
       />
 
       <label className = "emailAddress">Email Address: </label>
@@ -187,10 +184,18 @@ function PersonalInfoForm(){
       
       <button id="button-text">
         <span id="button-text">
-          {"Confirm"}
+          {"Proceed to Payment"}
         </span>
       </button>
       
+    </form>
+
+    <form id = 'go-back' onSubmit = {handleSubmit2}>
+      <button id="button-text2">
+        <span id="button-text2">
+          {"Change Booking Details"}
+        </span>
+      </button>
     </form>
     </>
   );
@@ -198,4 +203,4 @@ function PersonalInfoForm(){
 
 }
 
-export default PersonalInfoForm;
+export default GuestInfoForm;

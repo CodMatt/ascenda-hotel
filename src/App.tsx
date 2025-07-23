@@ -3,7 +3,7 @@ import { useState } from 'react'
 import './index.css' // make sure this is your Tailwind file
 import Confirmation from './components/Confirmation'
 import SuccessPage from './components/SuccessPage'
-import PersonalInfoForm from './components/PersonalInfoForm'
+import GuestInfoForm from './components/GuestInfoForm'
 import DummyPage from './components/DummyPage'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -22,7 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<DummyPage/>}/>
 
-        <Route path="/bookingdetails" element={<PersonalInfoForm />} />
+        <Route path="/bookingdetails" element={<GuestInfoForm />} />
 
         <Route path="/payment" element={<Confirmation/> } />
 

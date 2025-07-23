@@ -6,12 +6,12 @@ import Fastify from 'fastify';
 
 // Require the framework and instantiate it
 const fastify = Fastify({ logger: true, formbody: true });
-const stripe = new Stripe("sk_test_");
+const stripe = new Stripe(process.env.STRIPE_SK);
 
 
 // Fetch the publishable key to initialize Stripe.js
 fastify.get("/publishable-key", () => {
-  return { publishable_key: "pk_test_" };
+  return { publishable_key: process.env.STRIPE_PK};
 });
 
 // Create a payment intent and return its client secret
