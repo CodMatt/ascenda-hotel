@@ -5,6 +5,7 @@ const BASE_URL = 'https://hotelapi.loyalty.dev/api';
 
 router.get('/prices', async (req, res) => {
   const { destination_id, checkin, checkout, guests } = req.query;
+  console.log('/prices hit!', req.query);
   if (!destination_id || !checkin || !checkout || !guests) {
     return res.status(400).json({ error: 'Missing query params' });
   }
