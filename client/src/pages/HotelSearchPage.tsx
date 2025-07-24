@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotelPrices, fetchHotelsByDestination } from "../api/hotels";
+import { useLocation } from "react-router-dom";
+
 
 export default function HotelSearchPage() {
   const [visibleCount, setVisibleCount] = useState(30); // start with 10
@@ -13,10 +15,26 @@ export default function HotelSearchPage() {
 
 
 
-  const destinationId = "RsBU"; // Fixed destination ID FOR NOW. 
+  /*const destinationId = "RsBU"; // Fixed destination ID FOR NOW. 
   const checkin = "2025-10-01"; // Fixed checkin FOR NOW
   const checkout = "2025-10-07"; // Fixed checkout for now
-  const guests = "2"; // Fixed no. of guests for now 
+  const guests = "2"; // Fixed no. of guests for now */
+ 
+  const location = useLocation();
+  const searchParams = (location.state as any)?.searchParams;
+  const {
+    destinationId,
+    checkin,
+    checkout,
+    guests
+  } = searchParams ?? {};
+
+    console.log("Received searchParams on HotelSearchPage:", {
+      destinationId,
+      checkin,
+      checkout,
+      guests
+    });
 
   // Fetching Hotel data
   useEffect(() => {
