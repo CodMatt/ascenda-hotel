@@ -22,7 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<DummyPage/>}/>
 
-        <Route path="/bookingdetails" element={<GuestInfoForm />} />
+        <Route path="/guestinfo" element={<GuestInfoForm />} />
 
         <Route path="/payment" element={<Confirmation/> } />
 

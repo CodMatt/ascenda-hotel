@@ -24,24 +24,26 @@ function Confirmation(){
     const bookingInfo = location.state;
 
     // NOT TO USE - FOR REF (info contained by bookingInfo)
-    // state: {
-    //   firstName: firstName,
-    //   lastName: lastName,
-    //   salutation: salutation,
-    //   phoneNumber: phoneNumber,
-    //   emailAddress: emailAddress,
-    //   specialRequest: specialRequest,
-    //   hotelId: hotelId, 
-    //   destId: destId, 
-    //   key: key,
-    //   rates: rates,
-    //   checkin: checkin,
-    //   checkout: checkout,
-    //   noAdults: noAdults,
-    //   noChildren: noChildren,
-    //   duration: duration,
-    //   authToken: authToken,
-    //  }
+        // state: {
+        //     firstName: firstName,
+        //     lastName: lastName,
+        //     salutation: salutation,
+        //     phoneNumber: countryCode + phoneNumber,
+        //     emailAddress: emailAddress,
+        //     hotelId: hotelId, 
+        //     destId: destId, 
+        //     hotelName: hotelName,
+        //     hotelAddr: hotelAddr,
+        //     key: key,
+        //     rates: rates,
+        //     checkin: checkin,
+        //     checkout: checkout,
+        //     noAdults: noAdults,
+        //     noChildren: noChildren,
+        //     duration: duration,
+        //     authToken: authToken,
+        //     specialRequest: specialRequest,
+        // }
 
 
     const totalCost = bookingInfo.rates*bookingInfo.duration;

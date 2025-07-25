@@ -8,8 +8,10 @@ function Booking(){
     const navigate = useNavigate();
 
     // FOR TESTING
-    const dummyHotelId = "dummyHotelId"
-    const dummyDestId = "dummyDestId";
+    const dummyHotelId = "Dummy Hotel ID"
+    const dummyDestId = "Dummy Destination ID";
+    const dummyHotelName = "Dummy Hotel Name";
+    const dummyHotelAddr = "Dummy Hotel Address";
     const dummyKey = "dummyKey";
     const dummyRates = 105.20;
     const dummyNoAdults = 2;
@@ -49,10 +51,12 @@ function Booking(){
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        navigate("/bookingdetails", 
+        navigate("/guestinfo", 
             {state: {
                 hotelId: dummyHotelId,
                 destId: dummyDestId, 
+                hotelName: dummyHotelName,
+                hotelAddr: dummyHotelAddr,
                 key: dummyKey,
                 rates: dummyRates,
                 checkin: dummyDate,
@@ -73,6 +77,8 @@ function Booking(){
         <div>
         <h2>Destination ID: {dummyDestId}</h2>
         <h2>Hotel ID: {dummyHotelId}</h2>
+        <h2>Hotel Name: {dummyHotelName}</h2>
+        <h2>Hotel Address: {dummyHotelAddr}</h2>
         <h2>From: {dummyDate.toDateString()} To: {dummyDate2.toDateString()}</h2>
         <h2>Number of guests: {dummyNoAdults} adults | {dummyNoChildren} children</h2>
         <h2>Per night: ${dummyRates}</h2>

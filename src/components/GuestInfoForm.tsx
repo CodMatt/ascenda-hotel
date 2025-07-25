@@ -1,8 +1,20 @@
 import React, {useState} from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import PhoneNumberCodes from '../lib/PhoneNumberCodes';
+
+import BookingDetails from './BookingDetails' // For booking details display
+
+// validity check functions
 import isPhoneNumberValid from '../lib/IsPhoneNumberValid';
-import CountryCodes from '../lib/PhoneNumberCodes';
+import isNameValid from '../lib/IsNameValid';
+import isEmailValid from '../lib/IsEmailValid';
+
+import CountryCodes from '../lib/CountryCodes';
+
+// For error pop-up when entered details are not valid
+import InvalidPhoneNotification from './notifications/InvalidPhoneNotification';
+import InvalidEmailNotification from './notifications/InvalidEmailNotification';
+import InvalidFirstNameNotification from './notifications/InvalidFirstNameNotification';
+import InvalidLastNameNotification from './notifications/InvalidLastNameNotification';
 
 function GuestInfoForm(){
 
@@ -12,6 +24,8 @@ function GuestInfoForm(){
   // INFO FROM DummyPage (provided by previous feature)
   const hotelId = location.state.hotelId;
   const destId = location.state.destId;
+  const hotelName = location.state.hotelName;
+  const hotelAddr = location.state.hotelAddr;
   const key = location.state.key;
   const rates = location.state.rates;
   const checkin = location.state.checkin;
@@ -47,28 +61,40 @@ function GuestInfoForm(){
 
   const validSalutations = ["Mr", "Mrs", "Ms", "Miss"];
 
+  const [showErrors, setShowErrors] = useState(false);
+
   
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+
+
     event.preventDefault();
-    navigate("/payment", {
-      state: {
-      firstName: firstName,
-      lastName: lastName,
-      salutation: salutation,
-      phoneNumber: countryCode + phoneNumber,
-      emailAddress: emailAddress,
-      specialRequest: specialRequest,
-      hotelId: hotelId, 
-      destId: destId, 
-      key: key,
-      rates: rates,
-      checkin: checkin,
-      checkout: checkout,
-      noAdults: noAdults,
-      noChildren: noChildren,
-      duration: duration,
-      authToken: authToken,
-     }});
+      if (isNameValid(firstName) && isNameValid(lastName) && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode)){
+        navigate("/payment", {
+        state: {
+        firstName: firstName,
+        lastName: lastName,
+        salutation: salutation,
+        phoneNumber: countryCode + phoneNumber,
+        emailAddress: emailAddress,
+        hotelId: hotelId, 
+        destId: destId, 
+        hotelName: hotelName,
+        hotelAddr: hotelAddr,
+        key: key,
+        rates: rates,
+        checkin: checkin,
+        checkout: checkout,
+        noAdults: noAdults,
+        noChildren: noChildren,
+        duration: duration,
+        authToken: authToken,
+        specialRequest: specialRequest,
+        }});
+
+      } else {
+        setShowErrors(true);
+      }
+      
   };
 
   const handleSubmit2 = async () => {
@@ -79,34 +105,11 @@ function GuestInfoForm(){
   return(
     <>
 
-    <table border={1}>
-      <tbody>
-        <tr>
-          <td>Hotel ID: </td><td>{hotelId}</td>
-        </tr>
-        <tr>
-          <td>Destination ID: </td><td>{destId}</td>
-        </tr>
-        <tr>
-          <td>Booking Key: </td><td>{key}</td>
-        </tr>
-        <tr>
-          <td>Room per-night Rate: </td><td>{rates}</td>
-        </tr>
-        <tr>
-          <td>Check-in Date: </td><td>{checkin.toDateString()}</td>
-        </tr>
-        <tr>
-          <td>Check-out Date: </td><td>{checkout.toDateString()}</td>
-        </tr>
-        <tr>
-          <td>No. Adults: </td><td>{noAdults}</td>
-        </tr>
-        <tr>
-          <td>No. Children: </td><td>{noChildren}</td>
-        </tr>
-      </tbody>
-    </table>
+    <BookingDetails hotelName = {hotelName} 
+    hotelAddr = {hotelAddr} rates = {rates} 
+    checkin = {checkin} checkout = {checkout} 
+    noAdults = {noAdults} noChildren = {noChildren}  />
+
 
     <br/>
 
@@ -165,8 +168,6 @@ function GuestInfoForm(){
               onChange={(event) => setFirstName(event.target.value)}
             />
 
-
-
             <label className = "lastName"> Last Name: </label>
             <input
               name="lastName"
@@ -214,21 +215,33 @@ function GuestInfoForm(){
               disabled = {countryCode?false:true}
             />
 
+            
+
             <br/>
 
           
             <label className = "emailAddress">Email Address: </label>
             <input
               name="emailAddress"
-              type="email"
+              type="textt"
               placeholder="Email Address"
               value={emailAddress}
               onChange={(event) => setEmailAddress(event.target.value)}
               required = {true}
             />
 
-        </>)}
+            
 
+        </>)}
+        {showErrors?
+        <>
+        {!isNameValid(firstName)? <InvalidFirstNameNotification />:null}
+        {!isNameValid(lastName)? <InvalidLastNameNotification />:null}
+        {!isPhoneNumberValid(phoneNumber, country, countryCode)? <InvalidPhoneNotification />:null}
+        {!isEmailValid(emailAddress)? <InvalidEmailNotification />:null}
+        </>
+        : null}
+        
       
       <br/>
       <label className = "specialRequest">Special Request: </label>
@@ -248,8 +261,8 @@ function GuestInfoForm(){
       
       
       
-      <button id="button-text">
-        <span id="button-text">
+      <button id="payment-button">
+        <span id="payment-button">
           {"Proceed to Payment"}
         </span>
       </button>
@@ -257,8 +270,8 @@ function GuestInfoForm(){
     </form>
 
     <form id = 'go-back' onSubmit = {handleSubmit2}>
-      <button id="button-text2">
-        <span id="button-text2">
+      <button id="bdetails-button" >
+        <span id="bdetails-button">
           {"Change Booking Details"}
         </span>
       </button>

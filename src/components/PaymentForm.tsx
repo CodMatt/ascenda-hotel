@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 import {useStripe, useElements, PaymentElement, AddressElement} from '@stripe/react-stripe-js';
 
-import CardDeclinedNotification from './CardDeclinedNotification';
+import CardDeclinedNotification from './notifications/CardDeclinedNotification';
 
 
 function PaymentForm() {
