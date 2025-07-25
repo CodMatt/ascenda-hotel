@@ -18,7 +18,7 @@ const DEFAULT_NONACCT_VALS = (): INonAcct=>({
     booking_id:'',
     first_name:'',
     last_name: '',
-    salutations: '',
+    salutation: '',
     email:'',
     phone_num:''
 });
@@ -27,7 +27,7 @@ export interface INonAcct{
     booking_id:string,
     first_name: string,
     last_name: string,
-    salutations: string,
+    salutation: string,
     email: string,
     phone_num: string
 }
@@ -36,7 +36,7 @@ const parseNonAcct = parseObject<INonAcct>({
     booking_id: isString,
     first_name: isString,
     last_name: isString, 
-    salutations: isString,
+    salutation: isString,
     email: isString,
     phone_num: isString
 });

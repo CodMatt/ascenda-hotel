@@ -5,7 +5,6 @@ describe('User Repository', () => {
   beforeAll(async () => {
     await userRepo.sync();
   });
-
   describe('add', () => {
     it('should add a new user', async () => {
       const testUser = await User.new({
@@ -18,7 +17,6 @@ describe('User Repository', () => {
 
       await userRepo.add(testUser);
       const retrievedUser = await userRepo.getOne('test-user-1');
-      expect(retrievedUser).toBeDefined();
       expect(retrievedUser?.username).toBe('testuser');
       expect(retrievedUser?.email).toBe('test@example.com');
     });
@@ -26,9 +24,15 @@ describe('User Repository', () => {
 
   describe('getOne', () => {
     it('should return a user by id', async () => {
-      const testUser = await User.new({ id: 'test-user-2' });
-      await userRepo.add(testUser);
+      const testUser = await User.new({
+        id: 'test-user-2',
+        username: 'testuser2',
+        password: 'testpass',
+        email: 'test2@example.com',
+        phone_num: '1234567890'
+      });
 
+      await userRepo.add(testUser);
       const result = await userRepo.getOne('test-user-2');
       expect(result?.id).toBe('test-user-2');
     });
@@ -47,7 +51,7 @@ describe('User Repository', () => {
       });
       await userRepo.add(testUser);
 
-      const result = await userRepo.getEmailOne('unique@example.com');
+      const result:any = await userRepo.getEmailOne('unique@example.com');
       expect(result?.id).toBe('test-user-3');
     });
   });
@@ -83,11 +87,11 @@ describe('User Repository', () => {
       });
       await userRepo.add(testUser);
 
-      await userRepo.update({
+      await userRepo.update('test-user-5', await User.new({
         id: 'test-user-5',
         username: 'newname',
         email: 'new@example.com'
-      });
+      }));
 
       const updatedUser = await userRepo.getOne('test-user-5');
       expect(updatedUser?.username).toBe('newname');

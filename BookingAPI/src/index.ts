@@ -23,7 +23,6 @@ server.listen(ENV.Port, err => {
     logger.err(err.message);
   } else {
     // Log the server start message
-    console.log("this works");
     logger.info(SERVER_START_MSG);
   }
 });

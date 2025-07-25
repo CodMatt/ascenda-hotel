@@ -35,7 +35,7 @@ export async function addNoAcctInfo(noAcctInfo: INonAcct, connection?: any) {
         noAcctInfo.booking_id,
         noAcctInfo.last_name,
         noAcctInfo.first_name,
-        noAcctInfo.salutations,
+        noAcctInfo.salutation,
         noAcctInfo.email,
         noAcctInfo.phone_num
     ];

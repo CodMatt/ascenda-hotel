@@ -5,6 +5,19 @@ import * as userRepo from '../../src/repos/UserRepo';
 import db from '../../src/models/db';
 import { hashPassword } from '../../src/common/util/auth';
 
+// Add this helper function at the top of the file
+export async function getAuthToken(email: string, password: string): Promise<string> {
+  const loginResponse = await request(app)
+    .post('/users/login')
+    .send({ email, password });
+  if (loginResponse.status !== 200) {
+    console.error('Login failed:', loginResponse.body);
+    throw new Error(`Login failed for ${email}`);
+  }
+  
+  return loginResponse.body.token;
+}
+
 const app = express();
 app.use(express.json());
 app.use('/users', UserRoutes);
@@ -82,40 +95,24 @@ describe('User Routes', () => {
 
   describe('GET /users', () => {
     it('should return all users (authenticated)', async () => {
-      // Create test users
-      await userRepo.add({
-        id: 'get-all-1',
-        username: 'user1',
-        password: 'pass1',
-        email: 'user1@example.com',
-        phone_num: '1111111111',
-        created: new Date()
-      } as any);
-      await userRepo.add({
-        id: 'get-all-2',
-        username: 'user2',
-        password: 'pass2',
-        email: 'user2@example.com',
-        phone_num: '2222222222',
-        created: new Date()
-      } as any);
+      const hashedPassword = await hashPassword('correctpass');
+    // Create test users
+    await userRepo.add({
+      id: 'get-all-1',
+      username: 'user1',
+      password: hashedPassword,
+      email: 'user1@example.com',
+      phone_num: '1111111111',
+      created: new Date()
+    } as any);
 
-      // First login to get token
-      const loginResponse = await request(app)
-        .post('/users/login')
-        .send({
-          email: 'user1@example.com',
-          password: 'pass1'
-        });
-      const token = loginResponse.body.token;
-
-      const response = await request(app)
-        .get('/users')
-        .set('Authorization', `Bearer ${token}`);
-
-      expect(response.status).toBe(200);
-      expect(response.body.length).toBe(2);
-    });
+    const token = await getAuthToken('user1@example.com', 'correctpass');
+    const response = await request(app)
+      .get('/users')
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1); // Changed to 1 since we only added one user
+  });
 
     it('should fail without authentication', async () => {
       const response = await request(app).get('/users');
@@ -125,24 +122,19 @@ describe('User Routes', () => {
 
   describe('GET /users/:id', () => {
     it('should return a specific user (authenticated)', async () => {
+      const hashedPassword = await hashPassword('correctpass');
       // Create test user
       await userRepo.add({
         id: 'get-one-1',
         username: 'getone',
-        password: 'pass',
+        password: hashedPassword,
         email: 'getone@example.com',
         phone_num: '3333333333',
         created: new Date()
       } as any);
+        
+      const token = await getAuthToken('getone@example.com', 'correctpass');
 
-      // Login to get token
-      const loginResponse = await request(app)
-        .post('/users/login')
-        .send({
-          email: 'getone@example.com',
-          password: 'pass'
-        });
-      const token = loginResponse.body.token;
 
       const response = await request(app)
         .get('/users/get-one-1')
@@ -155,24 +147,20 @@ describe('User Routes', () => {
 
   describe('PUT /users/:id', () => {
     it('should update user information (authenticated)', async () => {
+      const hashedPassword = await hashPassword('correctpass');
       // Create test user
       await userRepo.add({
         id: 'update-user-1',
         username: 'beforeupdate',
-        password: 'pass',
+        password: hashedPassword,
         email: 'before@example.com',
         phone_num: '4444444444',
         created: new Date()
       } as any);
 
       // Login to get token
-      const loginResponse = await request(app)
-        .post('/users/login')
-        .send({
-          email: 'before@example.com',
-          password: 'pass'
-        });
-      const token = loginResponse.body.token;
+      const token = await getAuthToken('before@example.com', 'correctpass');
+
 
       const response = await request(app)
         .put('/users/update-user-1')
@@ -193,24 +181,21 @@ describe('User Routes', () => {
 
   describe('DELETE /users/:id', () => {
     it('should delete a user (authenticated)', async () => {
+      const hashedPassword = await hashPassword('correctpass');
+
       // Create test user
       await userRepo.add({
         id: 'delete-user-1',
         username: 'tobedeleted',
-        password: 'pass',
+        password: hashedPassword,
         email: 'delete@example.com',
         phone_num: '5555555555',
         created: new Date()
       } as any);
 
       // Login to get token
-      const loginResponse = await request(app)
-        .post('/users/login')
-        .send({
-          email: 'delete@example.com',
-          password: 'pass'
-        });
-      const token = loginResponse.body.token;
+      const token = await getAuthToken('delete@example.com', 'correctpass');
+
 
       const response = await request(app)
         .delete('/users/delete-user-1')

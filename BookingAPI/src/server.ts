@@ -23,10 +23,10 @@ import Database from './models/db';
 /* 
  * settings up a basic express server to get information from the database
 */
-
+const nonAcctRoute = require('./repos/nonAccountRepo');
 const bookingRoutes = require('./repos/bookingRepo');
 const UserRoutes = require('./repos/UserRepo');
-const nonAcctRoute = require('./repos/nonAccountRepo');
+
 
 const app = express();
 

@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
             user_ref,
             first_name,
             last_name,
-            salutations,
+            salutation,
             phone_num,
             email
         } = req.body;
@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
         
         await bookingRepo.createBooking(booking, connection);
         if (booking.user_ref === null) {
-            if (!first_name || !last_name || !salutations || !phone_num || !email) {
+            if (!first_name || !last_name || !salutation || !phone_num || !email) {
                 return res.status(400).json({ error: 'Fill in customer details' });
             }
 
@@ -69,7 +69,7 @@ router.post('/', async (req, res) => {
                 booking_id: bookingId,
                 first_name,
                 last_name,
-                salutations,
+                salutation,
                 phone_num,
                 email
             };

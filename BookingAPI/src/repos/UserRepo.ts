@@ -20,7 +20,7 @@ export async function sync() {
                 salutation VARCHAR(255),
                 email VARCHAR(255),
                 phone_num VARCHAR (15),
-                created_at TIMESTAMP
+                created TIMESTAMP
             )
         `);
     } catch (error) {
@@ -41,12 +41,12 @@ export async function getOne(id: string): Promise<IUser | null> {
         `SELECT * FROM ${tableName} WHERE id = ?`,
         [id]
     );
-    return rows[0];
+    return rows[0] || null;
 }
-export async function getEmailOne(id: string): Promise<IUser | null> {
+export async function getEmailOne(email: string): Promise<IUser | null> {
     const [rows] : [any[], any] = await db.getPool().query(
         `SELECT * FROM ${tableName} WHERE email = ?`,
-        [id]
+        [email]
     );
     return rows[0];
 }
@@ -77,25 +77,24 @@ export async function getAll(): Promise<IUser[]> {
  */
 export async function add(user: IUser): Promise<void> {
     await db.getPool().query(
-        `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, phone_num,created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)`,
+        `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, phone_num, created)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?,? )`,
         [user.id, user.username, user.password, user.first_name, user.last_name, 
-         user.salutations, user.email,user.phone_num, user.created]
+         user.salutation, user.email,user.phone_num, user.created]
     );
 }
 
 /**
  * Update a user.
  */
-export async function update(user: Partial<IUser>): Promise<void> {
-    await db.getPool().query(
+export async function update(p0: string, user: Partial<IUser>): Promise<void> {
+    const fields = Object.keys(user).map(key => `${key} = ?`).join(', ');
+    const values = Object.values(user);
+    const sql = 
         `UPDATE ${tableName} 
-         SET username = ?, password = ?, first_name = ?, last_name = ?, 
-             salutation = ?, email = ?, phone_num = ?
-         WHERE id = ?`,
-        [user.username, user.password, user.first_name, user.last_name,
-         user.salutations, user.email, user.phone_num, user.id]
-    );
+         SET ${fields}
+         WHERE id = ?`;
+    const [result] = await db.getPool().query(sql, [...values, p0]);
 }
 
 /**

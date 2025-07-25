@@ -1,19 +1,36 @@
 import dotenv from 'dotenv';
 import db from '../../src/models/db';
 
+import * as userRepo from '../../src/repos/UserRepo';
+import * as bookingRepo from '../../src/repos/bookingRepo';
+import * as nonAccountRepo from '../../src/repos/nonAccountRepo';
+
 dotenv.config({ path: '.env.test' });
 
 // Setup test database connection
 beforeAll(async () => {
   await db.initialize();
+  // Create tables in proper order
+  await userRepo.sync();
+  await bookingRepo.sync();
+  await nonAccountRepo.sync();
+  
 });
 
+
+
+
 // Clean up after each test
+
 afterEach(async () => {
-  // Clear all tables
-  await db.getPool().query('DELETE FROM booking');
-  await db.getPool().query('DELETE FROM nonAccount');
-  await db.getPool().query('DELETE FROM User');
+  const pool = db.getPool();
+  
+  // Clear data in reverse order of foreign key dependencies
+  await pool.query('DELETE FROM nonAccount');
+  await pool.query('DELETE FROM booking');
+  await pool.query('DELETE FROM User');
+  
+
 });
 
 // Close connection after all tests

@@ -74,3 +74,4 @@ export function authenticateJWT(
     res.status(401).json({ error: 'Authorization header required' });
   }
 }
+

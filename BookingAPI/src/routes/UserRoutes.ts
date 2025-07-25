@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
             password,
             first_name,
             last_name,
-            salutations,
+            salutation,
             email,
             phone_num
         } = req.body;
@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
             password: await hashPassword(password), // Hash the password
             first_name: first_name || '',
             last_name: last_name || '',
-            salutations: salutations || '',
+            salutation: salutation || '',
             email,
             phone_num,
             created: now
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
                 username: user.username,
                 email: user.email,
                 phone_num: user.phone_num,
-                salutations: user.salutations,
+                salutation: user.salutation,
                 first_name: user.first_name,
                 last_name: user.last_name,
                 created: user.created
@@ -168,7 +168,7 @@ router.put('/:id', async (req, res) => {
         // Only allow specific fields to be updated
         const allowedFields = [
             'username', 'first_name', 'last_name', 
-            'salutations', 'email', 'phone_num'
+            'salutation', 'email', 'phone_num', 'created_at'
         ];
         
         const updates: Partial<IUser> = {};
@@ -177,12 +177,12 @@ router.put('/:id', async (req, res) => {
                 updates[key as keyof IUser] = req.body[key];
             }
         }
-
+            
         if (Object.keys(updates).length === 0) {
             return res.status(400).json({ error: 'No valid fields to update' });
         }
 
-        const result = await userRepo.update({
+        const result = await userRepo.update(req.params.id,{
             ...updates,
             id: req.params.id // Ensure we're updating the correct user
         } as IUser);

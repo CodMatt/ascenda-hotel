@@ -1,5 +1,4 @@
 import booking from '../../src/models/booking';
-import { jest } from '@jest/globals';
 
 describe('Booking Model', () => {
   describe('__new__', () => {
@@ -40,6 +39,8 @@ describe('Booking Model', () => {
         dest_id: 'test-dest',
         hotel_id: 'test-hotel',
         nights: 3,
+        start_date: testDate,
+        end_date: testDate,
         adults: 2,
         price: 100
       });
@@ -66,8 +67,8 @@ describe('Booking Model', () => {
       expect(booking.test({ dest_id: 123 })).toBe(false);
     });
 
-    it('should call error callback for invalid objects', () => {
-      const mockErrorCb = jest.fn();
+     it('should call error callback for invalid objects', () => {
+      const mockErrorCb = vi.fn(); 
       booking.test({}, mockErrorCb);
       expect(mockErrorCb).toHaveBeenCalled();
     });

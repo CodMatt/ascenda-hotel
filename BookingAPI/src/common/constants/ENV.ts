@@ -23,6 +23,12 @@ if (ENV.NodeEnv === NodeEnvs.Dev) {
 }
 
 
+// Set default values for development
+if (ENV.NodeEnv === NodeEnvs.Test) {
+  ENV.Port = ENV.Port || 4000;
+  ENV.JwtSecret = ENV.JwtSecret || 'your-dev-secret-key'; // Never use this in production!
+  ENV.JwtExpiration = ENV.JwtExpiration || '1h'; // 1 hour expiration for dev
+}
 /******************************************************************************
                             Export default
 ******************************************************************************/

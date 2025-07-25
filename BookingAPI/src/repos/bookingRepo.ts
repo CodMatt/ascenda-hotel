@@ -11,8 +11,8 @@ export async function sync() {
             destination_id VARCHAR(50),
             hotel_id VARCHAR(50),
             nights INT NOT NULL,
-            start_date DATE NOT NULL,
-            end_date DATE NOT NULL,
+            start_date DATETIME NOT NULL,
+            end_date DATETIME NOT NULL,
             adults INT NOT NULL,
             children INT DEFAULT 0,
             msg_to_hotel TEXT,
@@ -44,9 +44,9 @@ export async function createBooking(booking: IBooking, connection?: any) {
         booking.start_date,
         booking.end_date,
         booking.adults,
-        booking.children,
-        booking.msg_to_hotel,
-        booking.price,
+        booking.children || 0,
+        booking.msg_to_hotel || '',
+        booking.price ,
         booking.user_ref
     ];
 
@@ -60,7 +60,7 @@ export async function createBooking(booking: IBooking, connection?: any) {
 export async function getBookingById(booking_id: string) {
     const sql = `SELECT * FROM ${tableName} WHERE booking_id = ?`;
     const [rows]: [any[], any] = await db.getPool().query(sql, [booking_id]);
-    return rows[0];
+    return rows[0] || undefined;
 }
 
 // READ (by ID)

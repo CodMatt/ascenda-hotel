@@ -7,6 +7,7 @@ const config = defineConfig({
     environment: 'node',
     setupFiles: ['config.ts', './tests/support/setup.ts'],
     isolate: true,
+    maxConcurrency: 1,
   },
   resolve: {
     alias: {

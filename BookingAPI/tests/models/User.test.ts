@@ -10,7 +10,7 @@ describe('User Model', () => {
         password: '',
         first_name: '',
         last_name: '',
-        salutations: '',
+        salutation: '',
         email: '',
         phone_num: ''
       });

@@ -8,7 +8,7 @@ describe('NonAcct Model', () => {
         booking_id: '',
         first_name: '',
         last_name: '',
-        salutations: '',
+        salutation: '',
         email: '',
         phone_num: ''
       });
@@ -27,7 +27,7 @@ describe('NonAcct Model', () => {
         booking_id: 'test-id',
         first_name: 'John',
         last_name: 'Doe',
-        salutations: '',
+        salutation: '',
         email: 'john@example.com',
         phone_num: '1234567890'
       });

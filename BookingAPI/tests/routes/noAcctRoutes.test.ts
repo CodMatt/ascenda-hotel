@@ -3,6 +3,8 @@ import express from 'express';
 import noAcctRoutes from '../../src/routes/noAcctRoutes';
 import * as bookingRepo from '../../src/repos/bookingRepo';
 import * as nonAccountRepo from '../../src/repos/nonAccountRepo';
+import * as userRepo from '../../src/repos/UserRepo';
+
 import db from '../../src/models/db';
 
 const app = express();
@@ -11,8 +13,17 @@ app.use('/non-account', noAcctRoutes);
 
 describe('NonAcct Routes', () => {
   beforeAll(async () => {
-    await bookingRepo.sync();
     await nonAccountRepo.sync();
+    await bookingRepo.sync();
+    await userRepo.add({
+      id: "user-1",
+      username: 'testuser',
+      password: 'hashedpass',
+      email: 'test@example.com',
+      phone_num: '1234567890',
+      created: new Date()
+    } as any);
+    
   });
 
   describe('GET /non-account/:HotelId', () => {
@@ -21,6 +32,9 @@ describe('NonAcct Routes', () => {
       const booking1 = {
         id: 'hotel-booking-route-1',
         hotel_id: 'test-hotel-route',
+        nights: 3,
+        adults:2,
+        price:0,
         start_date: new Date(),
         end_date: new Date(),
         created: new Date(),
@@ -29,6 +43,9 @@ describe('NonAcct Routes', () => {
       const booking2 = {
         id: 'hotel-booking-route-2',
         hotel_id: 'test-hotel-route',
+        nights:2,
+        adults:2,
+        price:0,
         start_date: new Date(),
         end_date: new Date(),
         created: new Date()
@@ -41,7 +58,7 @@ describe('NonAcct Routes', () => {
         booking_id: 'hotel-booking-route-2',
         first_name: 'Guest',
         last_name: 'User',
-        salutations: 'Mr',
+        salutation: 'Mr',
         email: 'guest@example.com',
         phone_num: '1234567890'
       });
