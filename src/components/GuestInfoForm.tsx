@@ -35,9 +35,8 @@ function GuestInfoForm(){
 
   const authToken = location.state.authToken;
 
-  const duration = Math.abs((checkout-checkin)/(60*60*24*1000));
+  const duration = Math.abs((checkout-checkin)/(60*60*24*1000)); 
   
-
   // INFO COLLECTED HERE
   const [firstName, setFirstName] = useState(location.state.firstName);
   const [lastName, setLastName] = useState(location.state.lastName);
@@ -68,32 +67,33 @@ function GuestInfoForm(){
 
 
     event.preventDefault();
-      if (isNameValid(firstName) && isNameValid(lastName) && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode)){
-        navigate("/payment", {
-        state: {
-        firstName: firstName,
-        lastName: lastName,
-        salutation: salutation,
-        phoneNumber: countryCode + phoneNumber,
-        emailAddress: emailAddress,
-        hotelId: hotelId, 
-        destId: destId, 
-        hotelName: hotelName,
-        hotelAddr: hotelAddr,
-        key: key,
-        rates: rates,
-        checkin: checkin,
-        checkout: checkout,
-        noAdults: noAdults,
-        noChildren: noChildren,
-        duration: duration,
-        authToken: authToken,
-        specialRequest: specialRequest,
-        }});
+    console.log(authToken);
+    if (authToken || (isNameValid(firstName) && isNameValid(lastName) && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode))){
+      navigate("/payment", {
+      state: {
+      firstName: firstName,
+      lastName: lastName,
+      salutation: salutation,
+      phoneNumber: countryCode + " " + phoneNumber,
+      emailAddress: emailAddress,
+      hotelId: hotelId, 
+      destId: destId, 
+      hotelName: hotelName,
+      hotelAddr: hotelAddr,
+      key: key,
+      rates: rates,
+      checkin: checkin,
+      checkout: checkout,
+      noAdults: noAdults,
+      noChildren: noChildren,
+      duration: duration,
+      authToken: authToken,
+      specialRequest: specialRequest,
+      }});
 
-      } else {
-        setShowErrors(true);
-      }
+    } else {
+      setShowErrors(true);
+    }
       
   };
 
@@ -130,6 +130,7 @@ function GuestInfoForm(){
             <tr>
             <td>Email Address: </td><td>{emailAddress}</td>
             </tr>
+            
             
         </tbody>
         </table>

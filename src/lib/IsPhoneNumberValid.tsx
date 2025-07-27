@@ -1,6 +1,9 @@
 import CountryCodes from './CountryCodes';
 const isPhoneNumberValid = (phoneNumber: string, country: string, countryCode: string) => {
 
+        if (!phoneNumber || !country || !countryCode){
+            return false;
+        }
         const countryCodes : { [key: string]: [number | number[], string] } = CountryCodes;
         
         // check if inputs are numbers for others
