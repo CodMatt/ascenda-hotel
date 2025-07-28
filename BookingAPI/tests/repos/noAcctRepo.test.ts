@@ -1,29 +1,11 @@
 import * as nonAcctRepo from '../../src/repos/nonAccountRepo';
 import nonAcct from '../../src/models/nonAcct';
 import * as bookingRepo from '../../src/repos/bookingRepo';
-import booking from '../../src/models/booking';
-import db from '../../src/models/db';
-import * as userRepo from '../../src/repos/UserRepo';
+import HelperFunctions from 'tests/support/HelperFunctions';
 
 describe('NonAcct Repository', () => {
-  let testUserId: string;
   let testBookingId: string;
-
   beforeAll(async () => {
-    await bookingRepo.sync();
-    await nonAcctRepo.sync();
-
-    // Create test User
-    testUserId = 'test-user-' + Date.now();
-    await userRepo.add({
-      id: testUserId,
-      username: 'testuser',
-      password: 'hashedpass',
-      email: 'test@example.com',
-      phone_num: '1234567890',
-      created: new Date()
-    } as any);
-
     // Create test booking
     testBookingId = 'test-booking-' + Date.now();
     await bookingRepo.createBooking({
@@ -37,7 +19,7 @@ describe('NonAcct Repository', () => {
       children: 0,
       price: 100,
     } as any);
-
+    //testBookingId = await HelperFunctions.generateBooking(false);
   });
 
   describe('addNoAcctInfo', () => {

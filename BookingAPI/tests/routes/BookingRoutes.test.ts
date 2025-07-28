@@ -4,8 +4,7 @@ import bookingRoutes from '../../src/routes/BookingRoutes';
 import * as bookingRepo from '../../src/repos/bookingRepo';
 import * as nonAccountRepo from '../../src/repos/nonAccountRepo';
 import * as userRepo from '../../src/repos/UserRepo';
-
-import { getAuthToken } from './UserRoutes.test';
+import HelperFunctions from 'tests/support/HelperFunctions';
 import { hashPassword } from '../../src/common/util/auth';
 
 
@@ -16,19 +15,26 @@ app.use('/booking', bookingRoutes);
 describe('Booking Routes', () => {
   let testUserId: String;
   beforeEach(async () => {
-    await bookingRepo.sync();
-    await nonAccountRepo.sync();
-    testUserId = 'test-user-' + Date.now();
-    const hashedPassword = await hashPassword('correctpass');
+    try{
+      await bookingRepo.sync();
+      await nonAccountRepo.sync();
+      testUserId = 'test-user-' + Date.now();
+      const hashedPassword = await hashPassword('correctpass');
+      testUserId = await HelperFunctions.generateUser();
+      // await userRepo.add({
+      //   id: testUserId,
+      //   username: 'testuser',
+      //   password: hashedPassword,
+      //   email: 'test@example.com',
+      //   phone_num: '1234567890',
+      //   created: new Date()
+      // } as any);
+    }catch(error){
+      console.log("before each error: "+ error);
+      throw error;
+    }
+
     
-    await userRepo.add({
-      id: testUserId,
-      username: 'testuser',
-      password: hashedPassword,
-      email: 'test@example.com',
-      phone_num: '1234567890',
-      created: new Date()
-    } as any);
   });
   describe('POST /booking', () => {
     it('should create a new booking with account', async () => {
@@ -44,7 +50,7 @@ describe('Booking Routes', () => {
         adults: 1, // Required
         children: 0,
         price: 100, // Required
-        user_ref: testUserId,
+        user_ref: await testUserId,
         msg_to_hotel: '', // Required string field
       });
       console.log("response: "+ response.error);
@@ -183,13 +189,13 @@ describe('Booking Routes', () => {
         nights: 1,
         adults: 2,
         children: 0,
-        user_ref:testUserId,
+        user_ref:await testUserId,
         price: 100,
 
         msg_to_hotel: ''
       };
       await bookingRepo.createBooking(testBooking);
-      const token = await getAuthToken('test@example.com', 'correctpass');
+      const token = await HelperFunctions.getAuthToken('test@example.com', 'correctpass');
           const response = await request(app)
             .delete('/booking/delete-booking-1')
             .set('Authorization', `Bearer ${token}`);

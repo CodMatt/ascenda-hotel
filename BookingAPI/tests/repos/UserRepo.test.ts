@@ -1,18 +1,23 @@
 import * as userRepo from '../../src/repos/UserRepo';
 import User from '../../src/models/User';
+import db from '../../src/models/db';
+import HelperFunctions from 'tests/support/HelperFunctions';
 
 describe('User Repository', () => {
-  beforeAll(async () => {
-    await userRepo.sync();
-  });
+
+
   describe('add', () => {
     it('should add a new user', async () => {
       const testUser = await User.new({
         id: 'test-user-1',
         username: 'testuser',
-        password: 'testpass',
+        password: 'hashedpass',
+        first_name:'nabei',
+        last_name:'asomth8',
+        salutation:'somein',
         email: 'test@example.com',
-        phone_num: '1234567890'
+        phone_num: '1234567890',
+        created: new Date()
       });
 
       await userRepo.add(testUser);
@@ -24,17 +29,16 @@ describe('User Repository', () => {
 
   describe('getOne', () => {
     it('should return a user by id', async () => {
-      const testUser = await User.new({
-        id: 'test-user-2',
-        username: 'testuser2',
-        password: 'testpass',
-        email: 'test2@example.com',
-        phone_num: '1234567890'
-      });
-
-      await userRepo.add(testUser);
-      const result = await userRepo.getOne('test-user-2');
-      expect(result?.id).toBe('test-user-2');
+      // const testUser = await User.new({
+      //   id: 'test-user-2',
+      //   username: 'testuser2',
+      //   password: 'testpass',
+      //   email: 'test2@example.com',
+      //   phone_num: '1234567890'
+      // });
+      const testUser = await HelperFunctions.generateUser();
+      const result = await userRepo.getOne(testUser);
+      expect(result?.id).toBe(testUser);
     });
 
     it('should return null for non-existent user', async () => {
@@ -68,11 +72,13 @@ describe('User Repository', () => {
 
   describe('getAll', () => {
     it('should return all users', async () => {
+      const initialCount = (await userRepo.getAll()).length;
+    
       await userRepo.add(await User.new({ id: 'user-1' }));
       await userRepo.add(await User.new({ id: 'user-2' }));
 
       const result = await userRepo.getAll();
-      expect(result.length).toBe(2);
+      expect(result.length).toBe(initialCount + 2);
       expect(result.some(u => u.id === 'user-1')).toBe(true);
       expect(result.some(u => u.id === 'user-2')).toBe(true);
     });

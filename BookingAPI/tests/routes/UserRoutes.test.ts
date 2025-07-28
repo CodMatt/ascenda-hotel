@@ -2,31 +2,14 @@ import request from 'supertest';
 import express from 'express';
 import UserRoutes from '../../src/routes/UserRoutes';
 import * as userRepo from '../../src/repos/UserRepo';
-import db from '../../src/models/db';
 import { hashPassword } from '../../src/common/util/auth';
-
-// Add this helper function at the top of the file
-export async function getAuthToken(email: string, password: string): Promise<string> {
-  const loginResponse = await request(app)
-    .post('/users/login')
-    .send({ email, password });
-  if (loginResponse.status !== 200) {
-    console.error('Login failed:', loginResponse.body);
-    throw new Error(`Login failed for ${email}`);
-  }
-  
-  return loginResponse.body.token;
-}
-
+import HelperFunctions from 'tests/support/HelperFunctions';
+ 
 const app = express();
 app.use(express.json());
 app.use('/users', UserRoutes);
 
 describe('User Routes', () => {
-  beforeAll(async () => {
-    await userRepo.sync();
-  });
-
   describe('POST /users', () => {
     it('should create a new user', async () => {
       const response = await request(app)
@@ -106,7 +89,7 @@ describe('User Routes', () => {
       created: new Date()
     } as any);
 
-    const token = await getAuthToken('user1@example.com', 'correctpass');
+    const token = await HelperFunctions.getAuthToken('user1@example.com', 'correctpass');
     const response = await request(app)
       .get('/users')
       .set('Authorization', `Bearer ${token}`);
@@ -133,7 +116,7 @@ describe('User Routes', () => {
         created: new Date()
       } as any);
         
-      const token = await getAuthToken('getone@example.com', 'correctpass');
+      const token = await HelperFunctions.getAuthToken('getone@example.com', 'correctpass');
 
 
       const response = await request(app)
@@ -159,7 +142,7 @@ describe('User Routes', () => {
       } as any);
 
       // Login to get token
-      const token = await getAuthToken('before@example.com', 'correctpass');
+      const token = await HelperFunctions.getAuthToken('before@example.com', 'correctpass');
 
 
       const response = await request(app)
@@ -194,7 +177,7 @@ describe('User Routes', () => {
       } as any);
 
       // Login to get token
-      const token = await getAuthToken('delete@example.com', 'correctpass');
+      const token = await HelperFunctions.getAuthToken('delete@example.com', 'correctpass');
 
 
       const response = await request(app)

@@ -50,6 +50,10 @@ export async function createBooking(booking: IBooking, connection?: any) {
         booking.user_ref
     ];
 
+    if(booking.user_ref == ''){
+        booking.user_ref = null;
+    }
+
     const conn = connection || db.getPool();
     const [result] = await conn.query(sql, params);
     return result;
@@ -98,4 +102,15 @@ export async function deleteAllUserBooking(user_ref: string) {
     const sql = `DELETE FROM ${tableName} WHERE user_ref = ?`;
     const [result] = await db.getPool().query(sql, [user_ref]);
     return result;
+}
+
+export default{
+    sync,
+    createBooking,
+    getBookingById,
+    getBookingByUser,
+    getAllBookings,
+    updateBooking,
+    deleteBooking,
+    deleteAllUserBooking
 }

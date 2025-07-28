@@ -14,23 +14,21 @@ beforeAll(async () => {
   await userRepo.sync();
   await bookingRepo.sync();
   await nonAccountRepo.sync();
-  
 });
-
-
-
 
 // Clean up after each test
 
 afterEach(async () => {
   const pool = db.getPool();
-  
   // Clear data in reverse order of foreign key dependencies
-  await pool.query('DELETE FROM nonAccount');
-  await pool.query('DELETE FROM booking');
-  await pool.query('DELETE FROM User');
-  
-
+  try{
+    await pool.query('DELETE FROM nonAccount');
+    await pool.query('DELETE FROM booking');
+    await pool.query('DELETE FROM User');
+  }catch(error){
+    console.log("error deleting data: " + error)
+    throw error;
+  }
 });
 
 // Close connection after all tests

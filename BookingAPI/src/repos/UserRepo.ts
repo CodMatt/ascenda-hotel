@@ -14,11 +14,11 @@ export async function sync() {
             CREATE TABLE IF NOT EXISTS ${tableName} ( 
                 id VARCHAR(255) PRIMARY KEY,
                 username VARCHAR(255),
-                password VARCHAR(255),
+                password VARCHAR(255) NOT NULL, 
                 last_name VARCHAR(255),
                 first_name VARCHAR(255),
                 salutation VARCHAR(255),
-                email VARCHAR(255),
+                email VARCHAR(255) UNIQUE,
                 phone_num VARCHAR (15),
                 created TIMESTAMP
             )

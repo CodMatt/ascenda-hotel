@@ -41,9 +41,9 @@ Database.testConnection().then(isConnected =>{
 // Sync booking routes
 // This will create the table if it does not exist
 // and will not delete existing data
-nonAcctRoute.sync();
-bookingRoutes.sync();
 UserRoutes.sync();
+bookingRoutes.sync();
+nonAcctRoute.sync();
 
 
 // **** Middleware **** //

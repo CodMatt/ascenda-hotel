@@ -12,7 +12,7 @@ describe('Booking Model', () => {
         adults: 0,
         children: 0,
         msg_to_hotel: '',
-        user_ref: '',
+        user_ref: null,
         price: 0
       });
       expect(newBooking.start_date).toBeInstanceOf(Date);

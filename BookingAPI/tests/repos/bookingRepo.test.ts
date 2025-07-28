@@ -1,11 +1,13 @@
 import * as bookingRepo from '../../src/repos/bookingRepo';
-import UserRepo, * as userRepo from '../../src/repos/UserRepo'
 import booking from '../../src/models/booking';
-import db from '../../src/models/db'
+import HelperFunctions from 'tests/support/HelperFunctions';
+//helper function
+
 
 describe('Booking Repository', () => {
   // 1. Declare ALL test variables at the top
   
+  // common variables used
   let testUserId: string;
   let start_date = new Date("1995-12-17T00:00:00");
   let end_date = new Date("1995-12-20T03:24:00");
@@ -14,25 +16,8 @@ describe('Booking Repository', () => {
   // before all does not work lmao
   beforeEach(async () => {
     // Create test users
-    testUserId = `test-user-${Date.now()}`;
-    await userRepo.add({
-      id: testUserId,
-      username: 'testuser',
-      password: 'hashedpass',
-      first_name:'nabei',
-      last_name:'asomth8',
-      salutation:'somein',
-      email: 'test@example.com',
-      phone_num: '1234567890',
-      created: new Date()
-    })
-    
-    // Verify users were created
-    const users = await UserRepo.getAll();
-    console.log('Test users created:', users.map(u => u.id));
+    testUserId = await HelperFunctions.generateUser();
   });
-
-
 
   describe('createBooking', () => {
     it('should create a new booking', async () => {
@@ -46,7 +31,7 @@ describe('Booking Repository', () => {
         adults: 2,
         children: 0,
         price: 300.12,
-        user_ref: testUserId, // Use the test user ID
+        user_ref: await testUserId, // Use the test user ID
         msg_to_hotel:"",
         created: start_date,
         updated_at: end_date

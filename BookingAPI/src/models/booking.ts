@@ -1,4 +1,4 @@
-import { isNumber, isString } from 'jet-validators';
+import { isNull, isNumber, isString } from 'jet-validators';
 import { parseObject, TParseOnError } from 'jet-validators/utils';
 
 import { isRelationalKey, transIsDate } from '@src/common/util/validators';
@@ -8,6 +8,9 @@ import { IModel } from './common/types';
 /******************************************************************************
                                  Constants
 ******************************************************************************/
+
+const isStringOrNull = (value: unknown): value is string | null => 
+  typeof value === 'string' || value === null;
 
 const DEFAULT_USER_VALS = (): IBooking => ({
   id:'',
@@ -19,7 +22,7 @@ const DEFAULT_USER_VALS = (): IBooking => ({
   adults:0,
   children: 0,
   msg_to_hotel: '',
-  user_ref:'',
+  user_ref: null,
   price: 0,
   created: new Date(),
   updated_at: new Date()
@@ -39,7 +42,7 @@ export interface IBooking extends IModel {
   adults: number;
   children: number;
   msg_to_hotel: string;
-  user_ref: string;
+  user_ref: string|null;
   price: number;
   updated_at: Date;
 
@@ -61,7 +64,7 @@ const parseBooking = parseObject<IBooking>({
   adults: isNumber,
   children: isNumber,
   msg_to_hotel: isString,
-  user_ref: isString,
+  user_ref: isStringOrNull,
   price: isNumber,
   created: transIsDate,
   updated_at: transIsDate

@@ -8,12 +8,13 @@ export async function sync(){
     try{
         await db.getPool().query(`
             CREATE TABLE IF NOT EXISTS ${tableName}(
-                    booking_id VARCHAR(50) PRIMARY KEY,
+                    booking_id VARCHAR(50) NOT NULL,
                     last_name VARCHAR(255) NOT NULL,
                     first_name VARCHAR(255) NOT NULL,
                     salutation VARCHAR(255) NOT NULL,
                     email varchar(50) NOT NULL,
                     phone_num varchar(15) NOT NULL,
+                    PRIMARY KEY (booking_id, last_name, first_name),
                     FOREIGN KEY (booking_id) REFERENCES booking(booking_id) on DELETE CASCADE
             )
             `);
