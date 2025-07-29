@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
-import { useLocation } from "react-router-dom";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
+import { useLocation } from "react-router-dom";
+
+
 
 export default function HotelSearchPage() {
   const [visibleCount, setVisibleCount] = useState(30); // Lazy loading state to control visibility 
@@ -24,8 +26,6 @@ export default function HotelSearchPage() {
   const checkout = searchParams.get("checkout") ?? "2025-12-07";
   const guests = searchParams.get("guests") ?? "2";  
 
-
-  // Effect: Load hotel data from the backend when params change
   useEffect(() => {
     if (!destinationId || !checkin || !checkout || !guests) {
       console.error("Missing query params", { destinationId, checkin, checkout, guests });
