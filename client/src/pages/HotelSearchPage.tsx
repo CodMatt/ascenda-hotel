@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
 import { useLocation } from "react-router-dom";
-
-
+import MapboxMap from '../components/MapboxMap'; // adjust path if needed
 
 export default function HotelSearchPage() {
   const [visibleCount, setVisibleCount] = useState(30); // Lazy loading state to control visibility 
@@ -23,14 +22,13 @@ export default function HotelSearchPage() {
   const destinationId = searchParams.get("destination_id") ?? "RsBU";
   const checkin = searchParams.get("checkin") ?? "2025-12-01";
   const checkout = searchParams.get("checkout") ?? "2025-12-07";
-  const guests = searchParams.get("guests") ?? "2";
-  
+  const guests = searchParams.get("guests") ?? "2";  
 
 
   // Effect: Load hotel data from the backend when params change
   useEffect(() => {
     if (!destinationId || !checkin || !checkout || !guests) {
-      console.error("❌ Missing query params", { destinationId, checkin, checkout, guests });
+      console.error("Missing query params", { destinationId, checkin, checkout, guests });
       setError("Missing required search parameters.");
       setLoading(false);
       return;
@@ -43,10 +41,10 @@ export default function HotelSearchPage() {
       setError(null);
       try {
         const result = await fetchHotels(destinationId, checkin, checkout, guests);
-        console.log("✅ Total hotels received:", result.hotels.length);
+        console.log("Total hotels received:", result.hotels.length);
         setHotelData(result.hotels);
       } catch (err: any) {
-        console.error("❌ Failed to load hotels:", err.message || err);
+        console.error("Failed to load hotels:", err.message || err);
         setError("Failed to load hotel data. Please try again.");
       } finally {
         setLoading(false);
@@ -110,9 +108,29 @@ export default function HotelSearchPage() {
           return 0;
         });
 
+    // Extract only hotels that have valid coordinates and format them for the MapboxMap 
+    const hotelsWithCoords = hotelData
+      .filter((hotel) => hotel.latitude && hotel.longitude) // Filter no lat/lng hotels
+      .map((hotel) => ({ // map filtered hotels by mapboxmap
+        name: hotel.name, 
+        address: hotel.address,
+        coordinates: {
+          lat: hotel.latitude,
+          lng: hotel.longitude,
+        },
+      }));
+
+  
   return (
     <div className="p-6 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Hotel Search Results</h1>
+      <MapboxMap
+        hotels={hotelsWithCoords}
+        onHotelSelect={(hotelName) => {
+          console.log("Hotel selected from map:", hotelName);
+          // TODO: redirect to hotel details upon clicking 
+        }}
+      />
 
       <div className="mb-4 flex flex-wrap gap-4">
         <button onClick={() => setSortBy("priceAsc")} className={`px-4 py-2 rounded ${sortBy === "priceAsc" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>Price: Low to High</button>
