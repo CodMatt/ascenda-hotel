@@ -10,7 +10,8 @@ router.get('/prices', async (req, res) => {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/hotels/prices?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=SGD&country_code=SG&guests=${guests}&partner_id=1`);
+    console.log("Calling Loyalty API with URL:", `${BASE_URL}/hotels/prices?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=SGD&country_code=SG&guests=${guests}&partner_id=1089`);
+    const response = await fetch(`${BASE_URL}/hotels/prices?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=SGD&country_code=SG&guests=${guests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`);
     const data = await response.json();
     res.json(data);
   } catch (err) {
@@ -54,7 +55,8 @@ router.get('/:id/price', async (req, res) => {
      return res.status(400).json({ error: 'Missing query params' });
   }
 
-  const url = `${BASE_URL}/hotels/${id}/price?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&guests=${guests}&lang=en_US&currency=SGD&country_code=SG&partner_id=1`;
+  const url = `${BASE_URL}/hotels/${id}/price?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&guests=${guests}&lang=en_US&currency=SGD&country_code=SG&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
+
 
   try {
     const response = await fetch(url);

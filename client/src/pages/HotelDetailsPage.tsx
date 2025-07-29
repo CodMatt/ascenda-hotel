@@ -30,27 +30,16 @@
 
     useEffect(() => {
       async function loadDetails() {
-        console.log("=== Fetching Hotel Details ===");
-        console.log("hotelId:", hotelId);
-        console.log("destinationId:", destinationId);
-        console.log("checkin:", checkin);
-        console.log("checkout:", checkout);
-        console.log("guests:", guests);
         setLoading(true);
         setError(null);
         try {
-          
-          const [hotelRes, priceRes] = await Promise.all([
+        const [hotelRes, priceRes] = await Promise.all([
             fetchHotelDetails(hotelId!),
             fetchHotelRoomPrices(hotelId!, destinationId, checkin, checkout, guests),
           ]);
           setHotel(hotelRes);
           setRooms(priceRes.rooms || []);
-          console.log("Hotel response:", hotelRes);
-          console.log("Room response:", priceRes);
-          console.log("Rooms array:", priceRes.rooms);
         } catch (err: any) {
-          console.error("Failed to fetch data:", err);
           setError("Failed to load hotel details");
         } finally {
           setLoading(false);
