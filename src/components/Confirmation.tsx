@@ -16,11 +16,12 @@ const initStripe = async () => {
 
     return loadStripe(publishableKey);
 }
-
+    
 function Confirmation(){
-    const location = useLocation();
+    
 
      // INFO FROM PaymentInfoForm (provided by previous feature)
+    const location = useLocation();
     const bookingInfo = location.state;
 
     // NOT TO USE - FOR REF (info contained by bookingInfo)
@@ -44,9 +45,8 @@ function Confirmation(){
         //     authToken: authToken,
         //     specialRequest: specialRequest,
         // }
+    console.log("Booking Info in Confirmation:", bookingInfo);
 
-
-    const totalCost = bookingInfo.rates*bookingInfo.duration;
     const totalCostInCents = bookingInfo.rates*bookingInfo.duration*100;
 
     const stripePromise = initStripe();
@@ -71,9 +71,7 @@ function Confirmation(){
     
     return (
         <>
-        <div>
-            <h1>Total Cost: {totalCost}</h1>
-        </div>
+
         
         <div>
         {clientSecretSettings.loading ? (

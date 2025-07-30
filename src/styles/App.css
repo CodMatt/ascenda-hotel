@@ -1,8 +1,7 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  color: black;
+  min-height: 100vh;
+  width: 100%;
 }
 
 .logo {
@@ -39,4 +38,12 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Ensure page containers work properly */
+.payment-page,
+.booking-info-page,
+.success-page {
+  width: 100%;
+  min-height: 100vh;
 }

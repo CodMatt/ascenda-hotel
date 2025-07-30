@@ -1,27 +1,36 @@
 import React, {useState} from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
-import BookingDetails from './BookingDetails' // For booking details display
+import BookingSummary from './BookingSummary' // For booking details display
 
 // validity check functions
-import isPhoneNumberValid from '../lib/IsPhoneNumberValid';
-import isNameValid from '../lib/IsNameValid';
-import isEmailValid from '../lib/IsEmailValid';
+import isPhoneNumberValid from './lib/IsPhoneNumberValid';
+import isNameValid from './lib/IsNameValid';
+import isEmailValid from './lib/IsEmailValid';
+import isCountryValid from './lib/IsCountryValid';
 
-import CountryCodes from '../lib/CountryCodes';
+import CountryCodes from './lib/CountryCodes';
 
 // For error pop-up when entered details are not valid
 import InvalidPhoneNotification from './notifications/InvalidPhoneNotification';
 import InvalidEmailNotification from './notifications/InvalidEmailNotification';
 import InvalidFirstNameNotification from './notifications/InvalidFirstNameNotification';
 import InvalidLastNameNotification from './notifications/InvalidLastNameNotification';
+import InvalidCountryNotification from './notifications/InvalidCountryNotification';
+
+// others
+import calculateNights from './lib/CalculateNights';
+import calculateTotalPrice from './lib/CalculateTotalPrice';
+
+
+import '../styles/GuestInfoForm.css';
 
 function GuestInfoForm(){
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // INFO FROM DummyPage (provided by previous feature)
+  // data fetched from previous page
   const hotelId = location.state.hotelId;
   const destId = location.state.destId;
   const hotelName = location.state.hotelName;
@@ -35,9 +44,14 @@ function GuestInfoForm(){
 
   const authToken = location.state.authToken;
 
-  const duration = Math.abs((checkout-checkin)/(60*60*24*1000)); 
-  
-  // INFO COLLECTED HERE
+  const duration = calculateNights(checkin, checkout);
+
+  // Additional data needed for next few pages
+  const userRef = location.state.userRef;
+  const roomType = location.state.roomType;
+
+
+  // Info collected from user in this page
   const [firstName, setFirstName] = useState(location.state.firstName);
   const [lastName, setLastName] = useState(location.state.lastName);
   const [salutation, setSalutation] = useState(location.state.salutation);
@@ -46,12 +60,16 @@ function GuestInfoForm(){
   const [specialRequest, setSpecialRequest] = useState(location.state.specialRequest);
 
   const countryCodes : { [key: string]: [number | number[], string] } = CountryCodes;
-  const [country, setCountry] = useState('');
-  const [countryCode, setCountryCode] = useState('');
+
+  // Use country and countryCode from previous page if auth user, otherwise start empty
+  const [country, setCountry] = useState(authToken ? (location.state.country || '') : '');
+  const [countryCode, setCountryCode] = useState(authToken ? (location.state.countryCode || '') : '');
+
+  
 
   const updateCountry = (country: string) => {
       setCountry(country);
-    if (Object.keys(countryCodes).includes(country)){
+    if (country && Object.keys(countryCodes).includes(country)){
       setCountryCode(countryCodes[country][1]);
     } else {
       setCountryCode('');
@@ -64,36 +82,37 @@ function GuestInfoForm(){
 
   
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-
-
     event.preventDefault();
-    console.log(authToken);
-    if (authToken || (isNameValid(firstName) && isNameValid(lastName) && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode))){
-      navigate("/payment", {
-      state: {
-      firstName: firstName,
-      lastName: lastName,
-      salutation: salutation,
-      phoneNumber: countryCode + " " + phoneNumber,
-      emailAddress: emailAddress,
-      hotelId: hotelId, 
-      destId: destId, 
-      hotelName: hotelName,
-      hotelAddr: hotelAddr,
-      key: key,
-      rates: rates,
-      checkin: checkin,
-      checkout: checkout,
-      noAdults: noAdults,
-      noChildren: noChildren,
-      duration: duration,
-      authToken: authToken,
-      specialRequest: specialRequest,
-      }});
+      if (authToken || (isNameValid(firstName) && isNameValid(lastName) && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode))){
+        navigate("/payment", {
+        state: {
+        userRef: userRef,
+        roomType: roomType,
 
-    } else {
-      setShowErrors(true);
-    }
+        firstName: firstName,
+        lastName: lastName,
+        salutation: salutation,
+        phoneNumber: countryCode + " " + phoneNumber, // split by country code & phone number
+        emailAddress: emailAddress,
+        hotelId: hotelId, 
+        destId: destId, 
+        hotelName: hotelName,
+        hotelAddr: hotelAddr,
+        key: key,
+        rates: rates,
+        checkin: checkin,
+        checkout: checkout,
+        noAdults: noAdults,
+        noChildren: noChildren,
+        duration: duration,
+        authToken: authToken,
+        specialRequest: specialRequest,
+        totalPrice: calculateTotalPrice(rates, checkin, checkout, "dollars"),
+        }});
+
+      } else {
+        setShowErrors(true);
+      }
       
   };
 
@@ -103,184 +122,205 @@ function GuestInfoForm(){
 
 
   return(
-    <>
+    <div className="payment-page">
+      <div className="progress-bar">
+        {/* <div className="progress-step completed">✓</div> */}
+        <div className="progress-step completed">✓</div>
+        <div className="progress-step active">2</div>
+        <div className="progress-step">3</div>
+        <div className="progress-step">4</div>
+      </div>
 
-    <BookingDetails hotelName = {hotelName} 
-    hotelAddr = {hotelAddr} rates = {rates} 
-    checkin = {checkin} checkout = {checkout} 
-    noAdults = {noAdults} noChildren = {noChildren}  />
+      <h1>Payment Details</h1>
 
+      <div className="payment-container">
+        <div className="payment-form">
+          <h2>Enter Personal Information</h2>
 
-    <br/>
-
-    <form id = 'personal-details-form' onSubmit = {handleSubmit} method="post">
-      
-      {authToken?(
-            <table border={1}>
-        <tbody>
-            <tr>
-            <td>Name: </td><td>{firstName} {lastName}</td>
-            </tr>
-            <tr>
-            <td>Salutation: </td><td>{salutation}</td>
-            </tr>
-            <tr>
-            <td>Phone Number: </td><td>{phoneNumber}</td>
-            </tr>
-            <tr>
-            <td>Email Address: </td><td>{emailAddress}</td>
-            </tr>
+          <form id='personal-details-form' onSubmit={handleSubmit} method="post">
             
+            {authToken ? (
+              // If user is authenticated
+              <div className="authenticated-user-info">
+                <h3>Your Information</h3>
+                <div className="user-info-grid">
+                  <div className="info-row">
+                    <strong>Name:</strong> <span>{firstName} {lastName}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Salutation:</strong> <span>{salutation}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Phone Number:</strong> <span>{phoneNumber}</span>
+                  </div>
+                  <div className="info-row">
+                    <strong>Email Address:</strong> <span>{emailAddress}</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // If user is not authenticated
+              <>
+                <div className="form-group">
+                  <label>Salutation</label>
+                  <div className="salutation-row">
+                    <select 
+                      name="salutation" 
+                      onChange={(event) => setSalutation(event.target.value)} 
+                      defaultValue="" 
+                      required={true}
+                    >
+                      <option value="" key="select">Select One</option>
+                      {validSalutations.map((validSalutation) => (
+                        <option value={validSalutation} key={validSalutation}>{validSalutation}</option>
+                      ))}
+                      <option value="" key="others">Others</option>
+                    </select>
+                    
+                    <input
+                      type="text"
+                      placeholder="Salutation (if others)"
+                      value={salutation}
+                      onChange={(event) => setSalutation(event.target.value)}
+                      required={true}
+                      disabled={validSalutations.includes(salutation)}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>First Name</label>
+                  <input
+                    name="firstName"
+                    type="text"
+                    placeholder="First Name"
+                    value={firstName}
+                    required={true}
+                    onChange={(event) => setFirstName(event.target.value)}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Last Name</label>
+                  <input
+                    name="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    required={true}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Country</label>
+                  <select 
+                    name="phoneCode" 
+                    onChange={(event) => updateCountry(event.target.value)} 
+                    defaultValue="" 
+                    required={true}
+                  >
+                    <option value="" key="select">Select One</option>
+                    {Object.keys(countryCodes).map((countryCode) => (
+                      <option value={countryCode} key={countryCode}>{countryCode}</option>
+                    ))}
+                    <option value="others" key="others">Others</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Phone Number</label>
+                  <div className="phone-number-row">
+                    <input
+                      name="country code"
+                      type="text"
+                      placeholder="Code"
+                      value={countryCode}
+                      onChange={(event) => setCountryCode(event.target.value)}
+                      required={true}
+                      disabled={country === "others" ? false : true}
+                      className="phone-code-select"
+                    />
+                    <input
+                      name="phoneNumber"
+                      type="text"
+                      placeholder="Phone Number"
+                      value={phoneNumber}
+                      onChange={(event) => setPhoneNumber(event.target.value)}
+                      required={true}
+                      disabled={countryCode ? false : true}
+                      className="phone-number-input"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Email Address</label>
+                  <input
+                    name="emailAddress"
+                    type="text"
+                    placeholder="Email Address"
+                    value={emailAddress}
+                    onChange={(event) => setEmailAddress(event.target.value)}
+                    required={true}
+                  />
+                </div>
+              </>
+            )}
             
-        </tbody>
-        </table>
-        ) : (
-          <><label className = "salutation">Salutation: </label>
+            <div className="form-group">
+              <label>Special Request</label>
+              <textarea
+                name="specialRequest"
+                className="specialReqBox"
+                placeholder="Special Request (max: 150 characters)"
+                value={specialRequest}
+                required={false}
+                maxLength={150}
+                onChange={(event) => setSpecialRequest(event.target.value)}
+              />
+            </div>
 
-            <select name="salutation" onChange={(event) => setSalutation(event.target.value)} defaultValue= "" required = {true}>
-              <option value = "" key = "select">Select One</option>
-              {validSalutations.map((validSalutation) => (
-                <option value={validSalutation} key={validSalutation}>{validSalutation}</option>
-              )
-              )}
-              
-              <option value="" key = "others">Others</option>
-            </select>
-            
-            <input
-              type="text"
-              placeholder="Salutation (if others)"
-              value={salutation}
-              onChange={(event) => setSalutation(event.target.value)}
-              required = {true}
-              disabled = {validSalutations.includes(salutation)? true : false}
+            {showErrors && (
+              (!isNameValid(firstName) || 
+              !isNameValid(lastName) || 
+              !isCountryValid(country) ||
+              !isPhoneNumberValid(phoneNumber, country, countryCode) || 
+              !isEmailValid(emailAddress)) && (
+              <div className="error-notifications">
+                {!isNameValid(firstName) && <InvalidFirstNameNotification />}
+                {!isNameValid(lastName) && <InvalidLastNameNotification />}
+                {!isCountryValid(country) && <InvalidCountryNotification />}
+                {!isPhoneNumberValid(phoneNumber, country, countryCode) && <InvalidPhoneNotification />}
+                {!isEmailValid(emailAddress) && <InvalidEmailNotification />}
+              </div>
+            ))}
 
-            />
-          
-            <br/>
+            <div className="payment-actions">
+              <button type="submit" className="pay-btn" id="payment-button">
+                <span>Proceed to Payment</span>
+              </button>
+            </div>
+          </form>
 
-            <label className = "firstName">First Name: </label>
-            <input
-              name="firstName"
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              required = {true}
-              onChange={(event) => setFirstName(event.target.value)}
-            />
+          <div className="payment-actions" style={{ marginTop: '15px' }}>
+            <button 
+              type="button"
+              className="back-btn"
+              onClick={handleSubmit2}
+            >
+              <span>Change Booking Details</span>
+            </button>
+          </div>
+        </div>
 
-            <label className = "lastName"> Last Name: </label>
-            <input
-              name="lastName"
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(event) => setLastName(event.target.value)}
-              required = {true}
-            />
-            <br/>
-
-
-            <label className = "phoneCode"> Country: </label>
-            <select name="phoneCode" onChange={(event) => updateCountry(event.target.value)} defaultValue= "" required = {true}>
-              <option value = "" key = "select">Select One</option>
-              {Object.keys(countryCodes).map((countryCode) => (
-                <option value={countryCode} key={countryCode}>{countryCode}</option>
-              )
-              )}
-            
-              <option value="others" key = "others">Others</option>
-            </select>
-
-            <br/>
-
-            <label className = "countryCode"> Phone number: +</label>
-            <input
-              name="country code"
-              type="text"
-              placeholder="Country Code (if others)"
-              value={countryCode}
-              onChange={(event) => setCountryCode(event.target.value)}
-              required = {true}
-              disabled = {country=="others"?false:true}
-
-            />
-
-            <input
-              name="phoneNumber"
-              type="text"
-              placeholder="Phone Number"
-              value={phoneNumber}
-              onChange={(event) => setPhoneNumber(event.target.value)}
-              required = {true}
-              disabled = {countryCode?false:true}
-            />
-
-            
-
-            <br/>
-
-          
-            <label className = "emailAddress">Email Address: </label>
-            <input
-              name="emailAddress"
-              type="textt"
-              placeholder="Email Address"
-              value={emailAddress}
-              onChange={(event) => setEmailAddress(event.target.value)}
-              required = {true}
-            />
-
-            
-
-        </>)}
-        {showErrors?
-        <>
-        {!isNameValid(firstName)? <InvalidFirstNameNotification />:null}
-        {!isNameValid(lastName)? <InvalidLastNameNotification />:null}
-        {!isPhoneNumberValid(phoneNumber, country, countryCode)? <InvalidPhoneNotification />:null}
-        {!isEmailValid(emailAddress)? <InvalidEmailNotification />:null}
-        </>
-        : null}
-        
-      
-      <br/>
-      <label className = "specialRequest">Special Request: </label>
-      <br/>
-
-      <textarea
-        name="specialRequest"
-        className="specialReqBox"
-        placeholder="Special Request (max: 100 characters)"
-        value={specialRequest}
-        required={false}
-        maxLength={150}
-        onChange={(event) => setSpecialRequest(event.target.value)}
-      />
-
-      <br/>
-      
-      
-      
-      <button id="payment-button">
-        <span id="payment-button">
-          {"Proceed to Payment"}
-        </span>
-      </button>
-      
-    </form>
-
-    <form id = 'go-back' onSubmit = {handleSubmit2}>
-      <button id="bdetails-button" >
-        <span id="bdetails-button">
-          {"Change Booking Details"}
-        </span>
-      </button>
-    </form>
-    </>
+        <BookingSummary hotelName = {hotelName} 
+          hotelAddr = {hotelAddr} rates = {rates} 
+          checkin = {checkin} checkout = {checkout} 
+          noAdults = {noAdults} noChildren = {noChildren}/>
+      </div>
+    </div>
   );
-
-
 }
 
 export default GuestInfoForm;

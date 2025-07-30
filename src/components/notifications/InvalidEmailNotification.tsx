@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+
 
 
 const InvalidEmailNotification = () => {;
 
-    return <p>Invalid Email Address - format should be xxx@xxx.xxx</p>
+    return <p><strong>Invalid Email Address</strong> - format should be xxx@xxx.xxx</p>
 }
 
 export default InvalidEmailNotification;

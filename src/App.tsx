@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import './index.css' // make sure this is your Tailwind file
 import Confirmation from './components/Confirmation'
-import SuccessPage from './components/SuccessPage'
+import SuccessForm from './components/SuccessForm'
 import GuestInfoForm from './components/GuestInfoForm'
 import DummyPage from './components/DummyPage'
 
@@ -26,7 +26,7 @@ function App() {
 
         <Route path="/payment" element={<Confirmation/> } />
 
-        <Route path="/success" element={<SuccessPage />} />
+        <Route path="/success" element={<SuccessForm />} />
 
       </Routes>
     </Router>

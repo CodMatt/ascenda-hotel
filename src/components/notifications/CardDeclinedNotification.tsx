@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+
 
 interface CardDeclinedNotificationProps {
     errorMsg: string;
@@ -6,7 +6,7 @@ interface CardDeclinedNotificationProps {
 
 const CardDeclinedNotification = ({errorMsg}: CardDeclinedNotificationProps) => {;
 
-    return <h3>{errorMsg}</h3>
+    return <h3><strong>Card Declined</strong> - {errorMsg}</h3>
 }
 
 export default CardDeclinedNotification;
