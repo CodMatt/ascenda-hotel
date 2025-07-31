@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
-
 const router = express.Router();
-
+import { fetchWithRetry } from '../utils/fetchWithRetry'; // Utility function to fetch hotel data with retry logic
 
 /**
  * Fetches data from a given URL with automatic retry logic.
@@ -14,43 +13,6 @@ const router = express.Router();
  * @param delayMs - Delay between retries in milliseconds
  * @returns Response JSON or fallback with empty hotel list
  */ 
-
-// Helper: Retry fetching hotel price data until available or max attempts reached
-async function fetchWithRetry(url: string, maxAttempts = 15, delayMs = 1500): Promise<any> {
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    console.log(`Attempt ${attempt}/${maxAttempts} - Fetching: ${url}`);
-
-    try {
-      const res = await fetch(url);
-
-      if (!res.ok) {
-        console.warn(`Request failed with status ${res.status}`);
-        continue;
-      }
-
-      const data = await res.json();
-      const hotelCount = data?.hotels?.length ?? 0;
-      console.log(`Attempt ${attempt} - Retrieved ${hotelCount} hotels`);
-
-      // If at least one hotel is found, return the data immediately
-      if (hotelCount > 0) {
-        console.log(`Hotels found on attempt ${attempt}`);
-        return data;
-      }
-    } catch (err) {
-      console.warn(`Attempt ${attempt} - Fetch error:`, err);
-    }
-
-    // Wait before the next attempt
-    if (attempt < maxAttempts) {
-      await new Promise((resolve) => setTimeout(resolve, delayMs));
-    }
-  }
-
-  // All attempts exhausted, return fallback empty result
-  console.warn("All fetch attempts completed without results.");
-  return { hotels: [], completed: true };
-}
 
 
 /**
@@ -84,7 +46,7 @@ router.get("/search", async (req: Request, res: Response): Promise<void> => {
     const detailsUrl = `https://hotelapi.loyalty.dev/api/hotels?destination_id=${destination_id}`;
 
     // Fetch hotel price and availability data with retries
-    const priceData = await fetchWithRetry(priceUrl);
+    const priceData = await fetchWithRetry(priceUrl); 
 
     // Fetch static hotel info (name, address, image, etc.)
     const hotelResponse = await fetch(detailsUrl);

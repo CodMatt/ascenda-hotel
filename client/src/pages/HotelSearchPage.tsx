@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom"; 
+import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
 
 
 
@@ -87,26 +88,8 @@ export default function HotelSearchPage() {
     ? hotelData.filter((hotel) => Math.floor(hotel.rating ?? 0) === filterStar)
     : hotelData;
 
-  // Sort hotels by selected criteria (price or star rating)
-  const sortedHotels =
-    sortBy === "none"
-      ? filteredHotels
-      : [...filteredHotels].sort((a, b) => {
-          if (sortBy === "starAsc") return (a.rating ?? 0) - (b.rating ?? 0);
-          if (sortBy === "starDesc") return (b.rating ?? 0) - (a.rating ?? 0);
-
-          const aHasPrice = a.price !== null;
-          const bHasPrice = b.price !== null;
-
-          if (!aHasPrice && !bHasPrice) return 0;
-          if (!aHasPrice) return 1;
-          if (!bHasPrice) return -1;
-
-          if (sortBy === "priceAsc") return a.price - b.price;
-          if (sortBy === "priceDesc") return b.price - a.price;
-
-          return 0;
-        });
+  // Sort hotels by selected criteria (price or star rating)--> Taken from utils/sortHotels
+  const sortedHotels = sortHotels(filteredHotels, sortBy);
 
     // Extract only hotels that have valid coordinates and format them for the MapboxMap 
     const hotelsWithCoords = hotelData
