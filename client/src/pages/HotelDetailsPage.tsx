@@ -32,9 +32,9 @@ export default function HotelDetailsPage() {
     suffix: string;
     count: number;
   }) {
-    const [currentValidIndex, setCurrentValidIndex] = useState(0); //Store the current display as the nth valid image
-    const [validImages, setValidImages] = useState<number[]>([]);  //Store a list of indexes for all images that can be loaded normally
-    const [isLoading, setIsLoading] = useState(true);  //Boolean value indicating whether the image is being verified
+    const [currentValidIndex, setCurrentValidIndex] = useState(0); 
+    const [validImages, setValidImages] = useState<number[]>([]);  
+    const [isLoading, setIsLoading] = useState(true);  
 
     // Pre-validate all images
     useEffect(() => {
@@ -44,11 +44,11 @@ export default function HotelDetailsPage() {
         
         // Create promises to check each image
         const imagePromises = Array.from({ length: count }, (_, i) => {
-          return new Promise<number | null>((resolve) => {  // either resolve with the index or null if the image is broken
+          return new Promise<number | null>((resolve) => {  
             const img = new Image();
-            img.onload = () => resolve(i);  // If the image loads successfully, resolve with the index
-            img.onerror = () => resolve(null);  // If the image fails to load, resolve with null
-            img.src = `${prefix}${i + 1}${suffix}`;  // Construct the image URL
+            img.onload = () => resolve(i);  
+            img.onerror = () => resolve(null);  
+            img.src = `${prefix}${i + 1}${suffix}`;  
           });
         });
 
@@ -58,12 +58,12 @@ export default function HotelDetailsPage() {
         // Filter out null values (broken images)
         results.forEach((result) => {
           if (result !== null) {
-            validImageIndexes.push(result); // Add valid image index to the list
+            validImageIndexes.push(result); 
           }
         });
 
         setValidImages(validImageIndexes);
-        setIsLoading(false); // Set loading to false after validation is complete
+        setIsLoading(false); 
       };
 
       validateImages();
@@ -119,7 +119,6 @@ export default function HotelDetailsPage() {
           <span className="arrow-symbol">›</span>
         </button>
         
-        {/* Image counter - shows current valid image / total valid images */}
         <div className="image-counter">
           {currentValidIndex + 1}/{validImages.length}
         </div>
@@ -134,8 +133,8 @@ export default function HotelDetailsPage() {
   const checkout = query.get("checkout") || "2025-10-17";
   const guests = query.get("guests") || "2";
 
-  console.log("hotel data: ",hotel);  // for debugging purposes
-  console.log("rooms data: ", rooms);  // for debugging purposes
+  console.log("hotel data: ",hotel);  
+  console.log("rooms data: ", rooms); 
 
   useEffect(() => {
     async function loadDetails() {
@@ -173,55 +172,53 @@ export default function HotelDetailsPage() {
       headline: "In Singapore"
     };
 
-    // Split description into sentences/paragraphs
-    const text = description.replace(/\n/g, ' ').trim();  // g is global flag, without it only the first match would be replaced
+    // Split description
+    const text = description.replace(/\n/g, ' ').trim(); 
     
-    // Find all pattern matches with their positions
-    const matches: { type: string; start: number; pattern: string }[] = [];  // Array to hold matches with type, start index, and pattern
+    const matches: { type: string; start: number; pattern: string }[] = [];  
     
     Object.entries(patterns).forEach(([type, pattern]) => {
-      const index = text.indexOf(pattern);  // indexOf() returns the position of the pattern in the text. If not found, it returns -1
-      if (index !== -1) {  // If the pattern is found
-        matches.push({ type, start: index, pattern });  // This start is index of where the pattern starts in the text e.g.100
+      const index = text.indexOf(pattern);  
+      if (index !== -1) {  
+        matches.push({ type, start: index, pattern });  
       }
     });
 
-    // Sort matches by position
-    matches.sort((a, b) => a.start - b.start); // Sort matches by their start index, follow the pattern order in the text
+    // Sort matches
+    matches.sort((a, b) => a.start - b.start); 
 
     // Extract sections
     for (let i = 0; i < matches.length; i++) {
-      const current = matches[i]; // current match
-      const next = matches[i + 1];  // next match, if exists
+      const current = matches[i]; 
+      const next = matches[i + 1];  
       
       const startIndex = current.start;
-      const endIndex = next ? next.start : text.length;  // If next exists, use its start index, otherwise use the end of the text
+      const endIndex = next ? next.start : text.length; 
       
-      sections[current.type] = text.substring(startIndex, endIndex).trim();  // Extract the substring from startIndex to endIndex and trim whitespace
+      sections[current.type] = text.substring(startIndex, endIndex).trim();  
     }
 
-    // Amenities section is everything before the first pattern match
     if (matches.length > 0) {
       const firstMatch = matches[0];
-      const amenitiesText = text.substring(0, firstMatch.start).trim(); // amenitiesText is everything before the first pattern match
+      const amenitiesText = text.substring(0, firstMatch.start).trim(); 
       if (amenitiesText) {
         sections.amenities = amenitiesText;
       }
     } else {
-      // If no patterns found, treat entire description as amenities
+      // no patterns found
       sections.amenities = text;
     }
 
     return sections;
   };
 
-  // Function to clean and format attractions HTML
+  // clean and format attractions HTML
   const formatAttractionsContent = (content: string) => {
-    // Remove HTML tags but preserve line breaks
+    // Remove HTML tags
     const cleanContent = content
-      .replace(/<br\s*\/?>/gi, '\n')  // Replace <br> tags with newlines
-      .replace(/<[^>]*>/g, '')  // Remove all other HTML tags
-      .replace(/&nbsp;/g, ' ')  // Replace non-breaking spaces with regular spaces
+      .replace(/<br\s*\/?>/gi, '\n') 
+      .replace(/<[^>]*>/g, '') 
+      .replace(/&nbsp;/g, ' ') 
       .trim();
 
     // Split into lines and filter out empty ones
@@ -357,7 +354,7 @@ return (
           </section>
           
 
-          {/* **HIGHLIGHT: UPDATED ROOM OPTIONS - ONE IMAGE PER ROOM TYPE** */}
+          {/* ROOM OPTIONS */}
           <section id="room-options" className="room-options">
             <h2>Room Options</h2>
             {rooms.length === 0 ? (
@@ -365,7 +362,6 @@ return (
             ) : (
               <div className="rooms-container">
                 {(() => {
-                  // **HIGHLIGHT: GROUP BY ROOM TYPE WITH TYPE ANNOTATIONS**
                   const grouped: { [key: string]: any[] } = {};
                   rooms.forEach((room: any) => {
                     const roomType = room.type || 'default';
@@ -378,19 +374,15 @@ return (
                   return Object.entries(grouped).map(([roomType, roomList]: [string, any[]]) => {
                     const roomTitle = roomList[0]?.roomDescription || roomList[0]?.roomNormalizedDescription || 'Room';
                     
-                    // **HIGHLIGHT: SORT BY PRICE**
                     const sortedRooms = roomList.sort((a: any, b: any) => 
                       (a.converted_price || a.price || 0) - (b.converted_price || b.price || 0)
                     );
                     
                     return (
                       <div key={roomType} className="room-type-section">
-                        {/* **HIGHLIGHT: ROOM TYPE HEADER** */}
                         <div className="room-type-header">{roomTitle}</div>
                         
-                        {/* **HIGHLIGHT: ROOM TYPE CONTENT - IMAGE + OPTIONS** */}
                         <div className="room-type-content">
-                          {/* **HIGHLIGHT: LEFT - SINGLE ROOM IMAGE** */}
                           <div className="room-type-image">
                             {sortedRooms[0]?.images && sortedRooms[0].images.length > 0 ? (
                               <img src={sortedRooms[0].images[0].url} alt="Room" className="room-type-thumbnail" />
@@ -399,7 +391,6 @@ return (
                             )}
                           </div>
                           
-                          {/* **HIGHLIGHT: RIGHT - ALL ROOM OPTIONS** */}
                           <div className="room-options-list">
                             {sortedRooms.map((room: any) => {
                               const isBreakfast = room.roomAdditionalInfo?.breakfastInfo === 'hotel_detail_breakfast_included';
@@ -408,7 +399,6 @@ return (
                               
                               return (
                                 <div key={room.key} className="room-option-item">
-                                  {/* **HIGHLIGHT: LEFT - SERVICE INFO** */}
                                   <div className="room-option-details">
                                     <div className="service-row">
                                       <span className="service-label">{serviceType}</span>
@@ -425,7 +415,6 @@ return (
                                     </div>
                                   </div>
                                   
-                                  {/* **HIGHLIGHT: RIGHT - PRICE AND SELECT** */}
                                   <div className="room-option-price">
                                     <div className="price-info">
                                       <div className="room-price">SGD {room.converted_price || room.price || 0}</div>
