@@ -893,6 +893,7 @@ body {
 .search-field {
   display: flex;
   flex-direction: column;
+
 }
 
 .search-field label {
@@ -971,13 +972,26 @@ body {
 }
 
 
-/* make the entire search area a flex container */
-.search-section {
+.navbar {
+  background: white;
+  border-bottom: 1px solid #eee;
+}
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 40px;
   display: flex;
   align-items: center;
-  justify-content: space-between;  /* search‑box on left, button on right */
-  max-width: 1200px;
-  margin: 40px auto;               /* center horizontally, add vertical spacing */
+  justify-content: space-between;
+}
+
+/* make the entire search area a flex container */
+.search-section {
+display: flex; 
+  align-items: center; 
+  justify-content: space-between;  /* search‑box on left, button on right */ 
+  max-width: 1200px; 
+  margin: 40px auto;               /* center horizontally, add vertical spacing */ 
   padding: 0 20px;
 }
 
@@ -1110,6 +1124,12 @@ body {
   white-space: nowrap;
 }
 
+button.sign-in-btn{
+  padding: 0.5rem 1.5rem;    /* 8px top/bottom, 24px left/right */
+  font-size: 1rem;           /* ensure your font isn’t too small */
+  line-height: 1.2;          /* tighten up the text vertically */
+}
+
 /* the menu itself */
 .sort-menu {
   position: absolute;
@@ -1134,4 +1154,207 @@ body {
 }
 .sort-menu-item:hover {
   background-color: #f5f5f5;
+}
+
+
+/* ---- Footer ---- */
+.searchpage .footer {
+  background-color: #0f172a;        /* dark navy */
+  color: #f1f5f9;                   /* off‑white text */
+  display: flex;
+  justify-content: space-between;  
+  padding: 40px 60px;               /* vertical + horizontal padding */
+}
+
+.searchpage .footer-col {
+  flex: 1;
+}
+
+/* Headings */
+.searchpage .footer-col h3,
+.searchpage .footer-col h4 {
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  color: #fff;                      /* pure white for headings */
+}
+
+/* Brand tagline */
+.searchpage .footer-col p {
+  color: #cbd5e1;                   /* light grey for body text */
+  line-height: 1.6;
+}
+
+/* Links list */
+.searchpage .footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.searchpage .footer-col li + li {
+  margin-top: 8px;
+}
+.searchpage .footer-col a {
+  display: block;
+  margin-bottom: 12px;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.searchpage .footer-col a:last-child {
+  margin-bottom: 0;        
+}
+.searchpage .footer-col a:hover {
+  color: #fff;
+}
+
+
+/* ---- Footer on Home page ---- */
+.home .footer {
+  background-color: #0f172a;
+  color: #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 60px;
+}
+.home .footer-col {
+  flex: 1;
+}
+.home .footer-col h3,
+.home .footer-col h4 {
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  color: #fff;
+}
+.home .footer-col p {
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+.home .footer-col a {
+  display: block;
+  margin-bottom: 12px;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.home .footer-col a:last-child {
+  margin-bottom: 0;
+}
+.home .footer-col a:hover {
+  color: #fff;
+}
+
+
+/* ─── Add to the bottom of App.css ─── */
+
+/* SignIn page container */
+.signin-page {
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  padding: 0 1rem;
+}
+
+/* Inner wrapper */
+.signin-wrapper {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Logo */
+.signin-logo {
+  height: 40px;
+  margin: 0 auto 1.5rem;
+}
+
+/* Title */
+.signin-title {
+  font-size: 1.875rem;    /* 30px */
+  font-weight: 700;
+  color: #111827;         /* gray-900 */
+  margin-bottom: 2rem;
+}
+
+/* Form */
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;            /* 24px */
+  text-align: left;
+}
+
+.signin-form label {
+  display: block;
+  font-size: 0.875rem;    /* 14px */
+  font-weight: 500;
+  color: #1F2937;         /* gray-800 */
+  margin-bottom: 0.5rem;
+}
+
+.signin-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;  /* 12px 16px */
+  border: 1px solid #D1D5DB; /* gray-300 */
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #111827;
+}
+
+.signin-form input:focus {
+  outline: none;
+  border-color: #6366F1;    /* indigo-500 */
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.5);
+}
+
+/* Password row */
+.signin-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-link {
+  font-size: 0.875rem;
+  color: #6366F1;            /* indigo-500 */
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  color: #4F46E5;            /* indigo-600 */
+}
+
+/* Sign-in button */
+.signin-button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #6366F1; /* indigo-500 */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.signin-button:hover {
+  background-color: #4F46E5; /* indigo-600 */
+}
+
+/* Trial text */
+.trial-text {
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  color: #6B7280;            /* gray-500 */
+}
+
+.trial-text a {
+  color: #6366F1;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.trial-text a:hover {
+  color: #4F46E5;
 }

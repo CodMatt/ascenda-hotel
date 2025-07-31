@@ -1,3 +1,4 @@
+// Home.tsx
 import React, { useState } from "react";
 import "./../styles/App.css";
 import Calendar from "./Calendar";
@@ -67,8 +68,18 @@ const Home: React.FC<HomeProps> = ({
           <a href="#">About Us</a>
         </nav>
         <div className="auth-buttons">
-          <button className="signin-btn">Sign In</button>
-          <button className="register-btn">Register</button>
+          <button 
+            className="signin-btn"
+            onClick={() => setCurrentPage("signin")}
+            >
+          Sign In
+          </button>
+          +        <button
+          className="register-btn"
+          onClick={() => setCurrentPage("register")}
+        >
+          Register
+        </button>
         </div>
       </header>
 
@@ -98,7 +109,7 @@ const Home: React.FC<HomeProps> = ({
                 onClick={() => openCalendar("checkIn")}
               >
                 <span>{dates.checkIn || "mm/dd/yyyy"}</span>
-                <i className="calendar-icon"> </i>
+                <i className="calendar-icon" />
               </div>
             </div>
 
@@ -109,7 +120,7 @@ const Home: React.FC<HomeProps> = ({
                 onClick={() => openCalendar("checkOut")}
               >
                 <span>{dates.checkOut || "mm/dd/yyyy"}</span>
-                <i className="calendar-icon"></i>
+                <i className="calendar-icon" />
               </div>
             </div>
 
@@ -119,23 +130,21 @@ const Home: React.FC<HomeProps> = ({
                 <div className="guest-counter">
                   <span>Adults</span>
                   <div className="counter-controls">
-                    <button onClick={() => setAdults((a) => Math.max(1, a - 1))}>
+                    <button onClick={() => setAdults(a => Math.max(1, a - 1))}>
                       −
                     </button>
                     <span>{adults}</span>
-                    <button onClick={() => setAdults((a) => a + 1)}>+</button>
+                    <button onClick={() => setAdults(a => a + 1)}>+</button>
                   </div>
                 </div>
                 <div className="guest-counter">
                   <span>Children</span>
                   <div className="counter-controls">
-                    <button
-                      onClick={() => setChildren((c) => Math.max(0, c - 1))}
-                    >
+                    <button onClick={() => setChildren(c => Math.max(0, c - 1))}>
                       −
                     </button>
                     <span>{children}</span>
-                    <button onClick={() => setChildren((c) => c + 1)}>+</button>
+                    <button onClick={() => setChildren(c => c + 1)}>+</button>
                   </div>
                 </div>
               </div>
@@ -166,6 +175,22 @@ const Home: React.FC<HomeProps> = ({
           )}
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-col">
+          <h3>Ascenda</h3>
+          <p>
+            Your trusted partner for finding the perfect accommodation worldwide.
+          </p>
+        </div>
+        <div className="footer-col">
+          <h4>Quick Links</h4>
+          <a href="#">About Us</a>
+          <a href="#">Contact</a>
+          <a href="#">Help Center</a>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -4,6 +4,9 @@ import SearchPage  from './components/SearchPage';
 // import Payment     from './components/Payment';
 // import Success     from './components/Success';
 import "./styles/App.css";
+import SignIn from "./components/SignIn";
+import Register   from "./components/Register";
+
 
 function App() {
   // ——— Page routing ———
@@ -57,6 +60,10 @@ function App() {
         return <Home {...appData} />;
       case 'search':
         return <SearchPage {...appData} />;
+      case 'signin':
+        return <SignIn />;
+      case 'register':
+        return <Register />;
       // case 'payment':
       //   return <Payment {...appData} />;
       // case 'success':
