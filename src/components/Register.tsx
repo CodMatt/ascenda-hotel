@@ -1,14 +1,74 @@
+// src/components/Register.tsx
 import React from "react";
 import logo from "../assets/logo.png";
 
-export default function SignIn() {
+interface RegisterProps {
+  setCurrentPage: (page: string) => void;
+}
+
+export default function Register({ setCurrentPage }: RegisterProps) {
   return (
     <div className="signin-page">
       <div className="signin-wrapper">
-        <img src={logo} alt="Ascenda logo" className="signin-logo" />
+      <img src={logo} alt="Ascenda logo" className="signin-logo" />
         <h2 className="signin-title">Create an Account</h2>
 
         <form className="signin-form">
+          <div>
+            <label htmlFor="salutation">Salutation</label>
+            <select id="salutation" name="salutation" required>
+              <option value="">— Select —</option>
+              <option value="mr">Mr.</option>
+              <option value="ms">Ms.</option>
+              <option value="mrs">Mrs.</option>
+              <option value="dr">Dr.</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="firstName">First Name</label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              required
+              autoComplete="given-name"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              required
+              autoComplete="family-name"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              required
+              autoComplete="username"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="phoneNumber">Phone Number</label>
+            <input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="tel"
+              required
+              autoComplete="tel"
+            />
+          </div>
+
           <div>
             <label htmlFor="email">Email address</label>
             <input
@@ -21,31 +81,21 @@ export default function SignIn() {
           </div>
 
           <div>
-            <div className="signin-form-header">
-              <label htmlFor="password">Password</label>
-              <a href="#" className="forgot-link">
-                Forgot password?
-              </a>
-            </div>
+            <label htmlFor="password">Password</label>
             <input
               id="password"
               name="password"
               type="password"
               required
-              autoComplete="current-password"
+              autoComplete="new-password"
             />
           </div>
 
           <button type="submit" className="signin-button">
-            Sign in
+            Create Account
           </button>
         </form>
-
-        <p className="trial-text">
-          Not a member?{" "}
-          <a href="#">Start a 14 day free trial</a>
-        </p>
       </div>
     </div>
-);
+  );
 }

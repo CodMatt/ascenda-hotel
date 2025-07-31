@@ -14,7 +14,7 @@ export default function SignIn() {
             <input
               id="email"
               name="email"
-              type="email"
+              type="email"  
               required
               autoComplete="email"
             />
@@ -41,10 +41,10 @@ export default function SignIn() {
           </button>
         </form>
 
-        <p className="trial-text">
+        {/* <p className="trial-text">
           Not a member?{" "}
           <a href="#">Start a 14 day free trial</a>
-        </p>
+        </p> */}
       </div>
     </div>
 );

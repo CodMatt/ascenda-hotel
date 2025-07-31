@@ -63,7 +63,8 @@ function App() {
       case 'signin':
         return <SignIn />;
       case 'register':
-        return <Register />;
+        return <Register setCurrentPage={setCurrentPage} />;
+
       // case 'payment':
       //   return <Payment {...appData} />;
       // case 'success':

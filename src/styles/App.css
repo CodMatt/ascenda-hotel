@@ -1249,11 +1249,12 @@ button.sign-in-btn{
 /* SignIn page container */
 .signin-page {
   display: flex;
-  min-height: 100vh;
+  min-height: auto;
   justify-content: center;
   align-items: center;
   background: #ffffff;
-  padding: 0 1rem;
+  padding: 4rem 1rem;
+  box-sizing: border-box;
 }
 
 /* Inner wrapper */
