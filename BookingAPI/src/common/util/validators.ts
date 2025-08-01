@@ -150,10 +150,19 @@ export const validateIdParam = [
     handleValidationErrors
 ];
 
+export const validateSearchParams =[
+    param('destination_id').notEmpty().withMessage('destination_id required'),
+    param('check_in').notEmpty().withMessage('check in date required'),
+    param('check_out').notEmpty().withMessage('check out date required'),
+    param('guests').notEmpty().withMessage('Number of guests required'),
+    handleValidationErrors
+];
+
 export default {
   handleValidationErrors,
   validateBookingCreation,
   validateUserCreation,
   validateUserLogin,
-  validateIdParam
+  validateIdParam,
+  validateSearchParams
 } as const;

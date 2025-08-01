@@ -15,3 +15,33 @@ This is a responsive hotel booking web app built using **React**, **Vite**, and 
 cd frontend
 npm install
 npm run dev
+```
+
+## Using Booking API
+1. Create a local database on mysql
+2. Change the following parameters [DB_HOST, DB_USE, DB_PASSWORD, DB_NAME] in .env.development folder to a locally created database
+3. Set the PORT to an available port on your device
+4. run the following commands from BookingAPI folder
+```BASH
+npm i
+npm run dev
+```
+
+### Testing Booking API
+- All unit and system tests are contained in BookingAPI\Tests
+- To perform a unit test, type the following command in the command terminal 
+```BASH
+npm run test [test_folder]
+```
+- test_folder is a placeholder for all tests available in the tests folder.
+
+
+
+
+
+
+
+
+
+
+

@@ -24,11 +24,6 @@ router.post('/',validateUserCreation ,async (req :any, res:any) => {
             phone_num
         } = req.body;
 
-        // Validate required fields
-        if (!username || !password || !email ||!phone_num) {
-            return res.status(400).json({ error: 'Username, password, email and phone number are required' });
-        }
-
         const now = new Date();
         const user: IUser = {
             id: id || `user-${Date.now()}`,

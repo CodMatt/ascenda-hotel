@@ -12,5 +12,8 @@ export default {
   },
   noAcct:{
     Base:'/Details'
+  },
+  Hotels:{
+    Base:'/Hotels'
   }
 } as const;
