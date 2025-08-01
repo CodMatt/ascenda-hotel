@@ -4,6 +4,9 @@ import { validateSearchParams } from '@src/common/util/validators';
 const router = express.Router();
 const BASE_URL = 'https://hotelapi.loyalty.dev/api';
 
+/**
+ * Get Hotel prices
+ */
 router.get('/prices',validateSearchParams,async (req:any, res:any) => {
   const { destination_id, checkin, checkout, guests } = req.body;// taking from body instead of params
   
@@ -17,8 +20,12 @@ router.get('/prices',validateSearchParams,async (req:any, res:any) => {
   }
 });
 
+// get destination
+/**
+ * Get hotels based on destination id
+ */
 router.get('/', async (req, res) => {
-  const { destination_id } = req.query;
+  const { destination_id } = req.body;
   if (!destination_id) {
     return res.status(400).json({ error: 'Missing destination_id' });
   }
@@ -32,6 +39,10 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+/**
+ * get static detail for hotel
+ */ 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const url = `${BASE_URL}/hotels/${id}`;
@@ -45,6 +56,9 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+/**
+ * Get prices for specific hotel
+ */
 router.get('/:id/price',validateSearchParams ,async (req:any, res:any) => {
   const { id } = req.params;
   const { destination_id, checkin, checkout, guests } = req.body;
