@@ -56,6 +56,7 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
     <div className="destination-dropdown" ref={dropdownRef}>      
       { /* Input field for searching destinations */}
       <input
+        id="destination"       
         type="text"
         value={selectedDestination?.term || inputValue}
         onChange={handleInputChange}
