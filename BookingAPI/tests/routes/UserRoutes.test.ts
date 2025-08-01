@@ -16,11 +16,10 @@ describe('User Routes', () => {
         .post('/users')
         .send({
           username: 'testuser',
-          password: 'testpass',
+          password: 'testPass_123',
           email: 'test@example.com',
           phone_num: '1234567890'
         });
-
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('token');
       expect(response.body.user).toMatchObject({

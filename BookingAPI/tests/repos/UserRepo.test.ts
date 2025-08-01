@@ -29,13 +29,6 @@ describe('User Repository', () => {
 
   describe('getOne', () => {
     it('should return a user by id', async () => {
-      // const testUser = await User.new({
-      //   id: 'test-user-2',
-      //   username: 'testuser2',
-      //   password: 'testpass',
-      //   email: 'test2@example.com',
-      //   phone_num: '1234567890'
-      // });
       const testUser = await HelperFunctions.generateUser();
       const result = await userRepo.getOne(testUser);
       expect(result?.id).toBe(testUser);

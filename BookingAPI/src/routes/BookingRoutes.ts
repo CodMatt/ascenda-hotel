@@ -2,16 +2,16 @@ import express from 'express';
 import * as bookingRepo from '../repos/bookingRepo';
 import * as nonAccountRepo from '../repos/nonAccountRepo';
 import db from '../models/db';
-
-import { IBooking } from '../models/booking'; // Add this import if IBooking is defined in models/IBooking.ts
+import booking, { IBooking } from '../models/booking'; 
 import { INonAcct } from '../models/nonAcct';
+import { validateBookingCreation, validateIdParam } from '@src/common/util/validators';
 
 import { authenticateJWT } from '@src/common/util/auth';
 
 const router = express.Router();
 
 // CREATE booking
-router.post('/', async (req, res) => {
+router.post('/',validateBookingCreation,async (req:any, res:any) => {
     const connection = await db.getPool().getConnection();
     try {
         await connection.beginTransaction();
@@ -101,7 +101,7 @@ router.get('/', async (_req, res) => {
 });
 
 // READ booking by ID
-router.get('/:id', async (req, res) => {
+router.get('/details/:id', async (req, res) => {
     try {
         const booking = await bookingRepo.getBookingById(req.params.id);
         if (!booking) {
@@ -114,9 +114,8 @@ router.get('/:id', async (req, res) => {
 });
 
 
-
-// UPDATE booking
-router.put('/:id', async (req, res) => {
+// UPDATE booking - no modification without authentication
+router.put('/update/:id', async (req, res) => {
     try {
         // Only allow valid IBooking fields to be updated
         const allowedFields = [
@@ -141,12 +140,17 @@ router.put('/:id', async (req, res) => {
 });
 
 
-router.use(authenticateJWT);
-// All routes below this line will require authentication
+router.use(authenticateJWT);// All routes below this line will require authentication
+
 // get booking by user
-router.get('/:id', async (req, res) => {
+router.get('/my-booking', async (req, res) => {
     try {
-        const booking = await bookingRepo.getBookingByUser(req.params.id);
+        const userId = req.user?.userId
+        console.log("User: "+userId)
+        if(!userId){
+            return res.status(401).json({error: 'User ID not found in token'});
+        }
+        const booking = await bookingRepo.getBookingByUser(userId);
         if (!booking) {
             return res.status(404).json({ error: 'Booking not found' });
         }
@@ -156,9 +160,49 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// DELETE booking
+// FIXED: Get specific booking for authenticated user
+router.get('/my-booking/:id', async(req, res)=>{
+    try{
+        const userId = req.user?.userId;
+        if(!userId){
+            return res.status(401).json({error: 'User ID not found in token'});
+        }
+        
+        const booking = await bookingRepo.getBookingById(req.params.id);
+        if(!booking){
+            return res.status(404).json({error: 'Booking not found or not owned by user'});
+        }
+        
+        // Check if booking belongs to the authenticated user
+        if(booking.user_reference !== userId){
+            return res.status(404).json({error: 'Booking not found or not owned by user'});
+        }
+        
+        res.json(booking);
+    }catch(error){
+        res.status(500).json({error: 'Failed to fetch booking', details: error});
+    }
+});
+
+// FIXED: DELETE booking with user ownership check
 router.delete('/:id', async (req, res) => {
     try {
+        const userId = req.user?.userId;
+        if(!userId){
+            return res.status(401).json({error: 'User ID not found in token'});
+        }
+        
+        // First check if booking exists and belongs to user
+        const booking = await bookingRepo.getBookingById(req.params.id);
+        if(!booking){
+            return res.status(404).json({error: 'Booking not found or not owned by user'});
+        }
+        
+        // Check if booking belongs to the authenticated user
+        if(booking.user_reference !== userId){
+            return res.status(404).json({error: 'Booking not found or not owned by user'});
+        }
+        
         const result = await bookingRepo.deleteBooking(req.params.id);
         res.json({ message: 'Booking deleted', result });
     } catch (error) {

@@ -1,15 +1,11 @@
 
 export default {
   Base: '/api',
-  // Users: {
-  //   Base: '/users',
-  //   Get: '/all',
-  //   Add: '/add',
-  //   Update: '/update',
-  //   Delete: '/delete/:id',
-  // },
   Booking: {
-    Base: '/booking'
+    Base: '/booking',
+    Details: '/booking/details',
+    Update:'/booking/update',
+    MyBookings:'/booking/my-booking'
   },
   Users:{
     Base:'/users'

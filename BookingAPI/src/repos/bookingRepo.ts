@@ -55,8 +55,16 @@ export async function createBooking(booking: IBooking, connection?: any) {
     }
 
     const conn = connection || db.getPool();
+    try {
     const [result] = await conn.query(sql, params);
+    console.log('✅ Query successful');
     return result;
+  } catch (error) {
+    console.error('❌ SQL Error:', error.message);
+    console.error('Failed SQL:', sql.trim());
+    console.error('Failed Params:', params);
+    throw error;
+}
 }
 
 
@@ -69,9 +77,9 @@ export async function getBookingById(booking_id: string) {
 
 // READ (by ID)
 export async function getBookingByUser(user_ref: string) {
-    const sql = `SELECT * FROM ${tableName} WHERE booking_id = ?`;
+    const sql = `SELECT * FROM ${tableName} WHERE user_reference = ?`;
     const [rows]: [any[], any] = await db.getPool().query(sql, [user_ref]);
-    return rows[0];
+    return rows;
 }
 
 
@@ -99,7 +107,7 @@ export async function deleteBooking(booking_id: string) {
 }
 
 export async function deleteAllUserBooking(user_ref: string) {
-    const sql = `DELETE FROM ${tableName} WHERE user_ref = ?`;
+    const sql = `DELETE FROM ${tableName} WHERE user_reference = ?`;
     const [result] = await db.getPool().query(sql, [user_ref]);
     return result;
 }

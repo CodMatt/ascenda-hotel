@@ -1,14 +1,17 @@
-import express from 'express';
+import express, { response } from 'express';
 import * as userRepo from '../repos/UserRepo';
 import { IUser } from '../models/User'; 
 import { hashPassword } from '@src/common/util/auth';
 
 import { generateToken, authenticateJWT, comparePasswords } from '@src/common/util/auth';
+import { validateUserCreation, validateUserLogin ,validateIdParam } from '@src/common/util/validators';
+
 
 const router = express.Router();
 
 // CREATE user
-router.post('/', async (req, res) => {
+router.post('/',validateUserCreation ,async (req :any, res:any) => {
+
     try {
         const {
             id,
@@ -67,7 +70,7 @@ router.post('/', async (req, res) => {
 });
 
 // User login route (additional authentication endpoint)
-router.post('/login', async (req, res) => {
+router.post('/login', validateUserLogin,async (req:any, res:any) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -151,7 +154,7 @@ router.get('/:id', async (req, res) => {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
-            phone_num: user.email,
+            phone_num: user.phone_num,
             created: user.created
         });
     } catch (error) {
