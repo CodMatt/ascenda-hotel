@@ -84,7 +84,7 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
 
             {/* Destination Dropdown */}
             <div className="form-group">
-                <label>Destination</label>
+                <label htmlFor="destination">Destination</label>
                 <DestinationDropdown 
                     onSelect={setSelectedDestination}
                     selectedDestination={selectedDestination}
