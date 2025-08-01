@@ -168,3 +168,76 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
 };
 
 export default HotelSearchForm;
+
+/* TODO: ADD CSS CLASSES TO STYLE THE COMPONENT
+CSS CLASSES TO STYLE:
+
+MAIN STRUCTURE:
+1. .hotel-search-form
+   - Main form container
+   - Controls overall form layout, spacing, background
+
+2. .error-message
+   - Error display styling
+   - Usually red/warning colors, borders
+
+FORM LAYOUT:
+3. .form-group
+   - Individual form field containers
+   - Controls field spacing and layout
+
+4. .form-row
+   - Horizontal layout for date pickers
+   - Usually displays items side by side
+
+5. label
+   - Form field labels
+   - Text styling, positioning above inputs
+
+DATE PICKERS:
+6. .date-picker
+   - Date picker input styling
+   - Border, padding, focus states
+   - Note: react-datepicker has its own CSS file imported
+
+ROOMS & GUESTS:
+7. .room-guests
+   - Individual room configuration container
+   - Background, borders, spacing for each room
+
+8. .room-header
+   - Room title and remove button container
+   - Usually flex layout for space-between
+
+9. .guest-select
+   - Dropdown for selecting number of guests
+   - Standard select styling
+
+BUTTONS:
+10. .remove-room
+    - Remove room button (red/destructive styling)
+    - Small button, usually secondary style
+
+11. .add-room
+    - Add room button (positive/additive styling)
+    - Usually dashed border or secondary style
+
+12. .search-button
+    - Main call-to-action button
+    - Primary button styling, prominent colors
+
+KEY UI BEHAVIORS:
+- Form validates destination and dates before submission
+- Check-out date automatically adjusts if before check-in
+- Rooms can be added (max 8) and removed (min 1)
+- Each room can have 1-4 guests
+- Error messages appear above form when validation fails
+- Date pickers prevent selecting past dates
+
+DESIGN CONSIDERATIONS:
+- .form-row should handle responsive layout for date pickers
+- .room-guests might need visual separation between rooms
+- Buttons should have hover/focus states
+- Error messages need attention-grabbing but not overwhelming styling
+- The form should be mobile-friendly
+*/
