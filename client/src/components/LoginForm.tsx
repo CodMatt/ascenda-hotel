@@ -1,0 +1,76 @@
+import React, {useState} from 'react';
+import type {FormEvent} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useAuth} from '../context/AuthContext';
+import type { LoginCredentials } from '../types/auth';
+
+const LoginForm: React.FC = () =>{
+    const {login} = useAuth();
+    const [formData, setFormData] = useState<LoginCredentials>({
+        email: '',
+        password:''
+    });
+    const [error, setError] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    const handleSubmit = async(e: FormEvent<HTMLFormElement>): Promise<void> => {
+        e.preventDefault();
+        setError('');
+        setIsLoading(true);
+
+        try{
+            const response = await login(formData.email, formData.password);
+
+            if (response.ok){
+                navigate('/dashboard');
+            } else{
+                const errorData = await response.json();
+                setError(errorData.message || 'Login failed');
+            }
+        } catch (err){
+            setError('Network error occurred');
+        } finally{ 
+            setIsLoading(false);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void =>{
+        const {name, value} = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    return(
+        <form onSubmit={handleSubmit}>
+            {error && <div className='error'>{error}</div>}
+
+            <input
+               type='email'
+               name='email'
+               placeholder='email'
+               value={formData.email}
+               onChange={handleInputChange}
+               required
+               disabled={isLoading} 
+            />
+            <input
+                type='password'
+                name='password'
+                placeholder='Password'
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+                disabled={isLoading}
+            />
+            <button type="submit" disabled={isLoading}>
+                {isLoading? 'Logging in...': 'Login'}
+            </button>
+        </form>
+    );
+};
+
+export default LoginForm;
+
+
