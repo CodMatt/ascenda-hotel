@@ -21,3 +21,6 @@ export default function App() {
     </AuthProvider>
   )
 }
+//for now its localhost:5173/login for login page
+//localhost:5173/signup for signup page
+//TODO: navigate to login and or signup once the register/ login button is clicked
