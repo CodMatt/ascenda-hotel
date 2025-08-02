@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Home        from './components/Home';
 import SearchPage  from './components/SearchPage';
-// import Payment     from './components/Payment';
-// import Success     from './components/Success';
 import "./styles/App.css";
 import SignIn from "./components/SignIn";
 import Register   from "./components/Register";
