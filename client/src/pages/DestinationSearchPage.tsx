@@ -45,3 +45,5 @@ const DestinationSearchPage: React.FC = () => {
 };
 
 export default DestinationSearchPage;
+
+//TODO: register and login buttons to navigate to /singup and /login pages/forms

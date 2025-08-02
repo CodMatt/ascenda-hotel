@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {useDestinations} from '../hooks/useDestinations';
 import {Destination} from '../types/destination';
+import '../styles/destinationDropdown.css';
 
 
 let debounceTimer: ReturnType<typeof setTimeout>;
