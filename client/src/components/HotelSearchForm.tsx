@@ -4,6 +4,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, addDays } from 'date-fns';
 import { Destination } from '../types/destination';
+import '../styles/hotelSearchForm.css';
+
 
 interface HotelSearchFormProps {
     onSearch: (searchParams: {
@@ -78,7 +80,7 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
 
     return (
         <form onSubmit={handleSubmit} className="hotel-search-form">
-            <h2>Find Your Hotel</h2>
+            {/* <h2>Find Your Hotel</h2> */}
             
             {error && <div className="error-message">{error}</div>}
 
