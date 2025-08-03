@@ -1,47 +1,98 @@
 //TODO
 import React, { useState } from 'react';
-import HotelSearchForm from '../components/HotelSearchForm';
 import { useNavigate } from 'react-router-dom';
-
+import HotelSearchForm from '../components/HotelSearchForm';
+import '../styles/destinationSearchPage.css';
+import logo from '../assets/logo.png';
 
 const DestinationSearchPage: React.FC = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-    const handleSearch = async (searchParams: {
-        destinationId: string; //uid from the destination
-        checkin: string;
-        checkout: string;
-        guests: string;   
-    }) => {
-        console.log('Search params:', searchParams);
-        //setIsLoading(true);
-        //setError('');
+  const handleSearch = async (searchParams: {
+    destinationId: string;
+    checkin: string;
+    checkout: string;
+    guests: string;
+    lang?: string;
+    currency?: string;
+    country_code?: string;
+  }) => {
+    setIsLoading(true);
+    setError('');
 
-        try{
-            //redirect to results page with combined data
-            navigate('/HotelSearchPage', {
-                state: {
-                    searchParams
-                    
-                }
-            });
-        } catch(err){
-            setError('Failed to search for hotels. Please try again.');
-            console.error('Search error:', err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    return (
-        <div className="hotel-search-page">
-            <h1>Find Your Perfect Hotel</h1>
-            <HotelSearchForm onSearch={handleSearch} />
-            {isLoading && <p>Loading...</p>}
-            {error && <p className="error">{error}</p>}
+    try {
+      navigate('/HotelSearchPage', {
+        state: {
+          searchParams,
+        },
+      });
+    } catch (err) {
+      setError('Failed to search for hotels. Please try again.');
+      console.error('Search error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="destination-page-wrapper">
+      <header className="dsp-header">
+        <div className="dsp-logo">
+            <img src={logo} alt="Ascenda logo" className="logo-img" />
         </div>
-    );
+        {/* <nav className="dsp-nav">
+          <a href="#" className="nav-link">
+            Destinations
+          </a>
+          <a href="#" className="nav-link">
+            Deals
+          </a>
+          <a href="#" className="nav-link">
+            Help
+          </a>
+        </nav> */}
+        <div className="dsp-actions">
+          <button className="btn-outline">Sign In</button>
+          <button className="btn-primary">Register</button>
+        </div>
+      </header>
+
+      <main className="dsp-main">
+        <section className="hero">
+          <div className="hero-text">
+            <h1>Discover Your Perfect Stay</h1>
+            <p className="subtitle">
+              Search availability, pick dates, and customise guests & rooms.
+            </p>
+          </div>
+          <div className="form-wrapper">
+            <HotelSearchForm onSearch={handleSearch} />
+            {isLoading && <div className="status-message loading">Loading...</div>}
+            {error && <div className="status-message error">{error}</div>}
+          </div>
+        </section>
+      </main>
+
+      <footer className="dsp-footer">
+        <div className="footer-block">
+          <div className="footer-title">Ascenda</div>
+          <div className="footer-text">
+            Trusted accommodations worldwide. Simple search. Transparent pricing.
+          </div>
+        </div>
+        <div className="footer-block">
+          <div className="footer-title">Quick Links</div>
+          <div className="footer-links">
+            <a href="#">About</a>
+            <a href="#">Support</a>
+            <a href="#">Terms</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
 };
 
 export default DestinationSearchPage;
