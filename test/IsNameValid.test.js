@@ -1,28 +1,28 @@
-import isNameValid from '../src/lib/IsNameValid'
+import isNameValid from '../src/components/lib/IsNameValid'
 
 describe ("IsNameValid isNameValid test-suite", () => {
 
-    test ("Name containing uppercase and lowercase letters with no spaces", () => {
+    test ("Name containing mix of valid letters only", () => {
         const result = isNameValid("TestName");
         expect(result).toBe(true);
     });
 
-    test ("Name containing letters and space in middle", () => {
-        const result = isNameValid("Test Name");
+    test ("Name containing Mix of valid letters with at most 1 space in a row", () => {
+        const result = isNameValid("Test nAmE");
         expect(result).toBe(true);
     });
 
-    test ("Name containing letters and a double space in the middle", () => {
+    test ("Name containing multiple spaces in a row in the middle", () => {
         const result = isNameValid("Test  Name");
         expect(result).toBe(false);
     });
 
-    test ("Name ending with a space", () => {
+    test ("Name containing trailing Space", () => {
         const result = isNameValid("TestName ");
         expect(result).toBe(false);
     });
 
-    test ("Name containing letters and space at the start", () => {
+    test ("Name containing leading Space", () => {
         const result = isNameValid("  TestName");
         expect(result).toBe(false);
     });
@@ -32,24 +32,25 @@ describe ("IsNameValid isNameValid test-suite", () => {
         expect(result).toBe(false);
     });
 
+    test ("Name containing symbol", () => {
+        const result = isNameValid("T$st name");
+        expect(result).toBe(false);
+    });
 
-    test ("No entry", () => {
+    test ("Name containing numbers", () => {
+        const result = isNameValid("Te3t Name");
+        expect(result).toBe(false);
+    });
+
+    test ("Name containing accented Character", () => {
+        const result = isNameValid("Test Nâme");
+        expect(result).toBe(false);
+    });
+
+    test ("Name containing empty String", () => {
         const result = isNameValid("");
         expect(result).toBe(false);
     });
 
-    test ("Name containing only numbers", () => {
-        const result = isNameValid("1234");
-        expect(result).toBe(false);
-    });
 
-    test ("Name containing only special characters", () => {
-        const result = isNameValid("!");
-        expect(result).toBe(false);
-    });
-
-    test ("Name containing mix of letters, numbers, and special characters", () => {
-        const result = isNameValid("!@ ab 12");
-        expect(result).toBe(false);
-    });
 })

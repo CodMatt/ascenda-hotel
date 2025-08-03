@@ -1,7 +1,7 @@
 
 const isNameValid = (name: string) => {
 
-    const regex = /^[a-zA-Z\s]*$/;
+    const regex = /^[a-zA-Z]+(?: [a-zA-Z]+)*$/;
         
     if (name && regex.test(name)) {
         return true;
