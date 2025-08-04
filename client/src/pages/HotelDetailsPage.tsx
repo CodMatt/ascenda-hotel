@@ -150,11 +150,12 @@ export default function HotelDetailsPage() {
         setHotel(hotelRes);
         setRooms(priceRes.rooms || []);
         //If got no avaiable rooms, redirect to previous page
+        setTimeout(() => {
         if (!priceRes.rooms || priceRes.rooms.length === 0) {
           alert("No rooms available for the selected dates. Redirecting you back.");
-          navigate(-1); // navigates to previous page
-          return;
-}
+          navigate(-1);
+        }
+      }, 30000);
       } catch (err: any) {
         setError("Failed to load hotel details, try refreshing the page.");
       } finally {
