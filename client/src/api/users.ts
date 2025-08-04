@@ -2,8 +2,11 @@ interface ApiOptions extends RequestInit{
     headers?: Record<string, string>;
 }
 
+//use StorageUtils abstraction for consistency
+const getToken = (): string | null => sessionStorage.getItem('token');
+
 export const apiCall = async (endpoint: string, options: ApiOptions = {}): Promise<Response> =>{
-    const token = localStorage.getItem('token');
+    const token = getToken();
 
     return fetch(endpoint,{
         ...options,
