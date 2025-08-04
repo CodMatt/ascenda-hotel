@@ -17,10 +17,12 @@ describe('Booking Repository', () => {
   beforeEach(async () => {
     // Create test users
     testUserId = await HelperFunctions.generateUser();
+    console.log("generated user"+ testUserId);
   });
 
   describe('createBooking', () => {
     it('should create a new booking', async () => {
+
       const testBooking = {
         id: 'test-booking-1',
         dest_id: 'dest-1',
@@ -31,7 +33,7 @@ describe('Booking Repository', () => {
         adults: 2,
         children: 0,
         price: 300.12,
-        user_ref: await testUserId, // Use the test user ID
+        user_ref: testUserId, 
         msg_to_hotel:"",
         created: start_date,
         updated_at: end_date

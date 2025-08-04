@@ -5,114 +5,119 @@ import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
 
 import BaseRouter from '@src/routes';
-
 import Paths from '@src/common/constants/Paths';
 import ENV from '@src/common/constants/ENV';
 import HttpStatusCodes from '@src/common/constants/HttpStatusCodes';
 import { RouteError } from '@src/common/util/route-errors';
 import { NodeEnvs } from '@src/common/constants';
-
 import cors from 'cors';
 
-//models
+// Database and Repositories
 import Database from './models/db';
+import UserRoutes from './repos/UserRepo';
+import bookingRoutes from './repos/bookingRepo';
+import nonAcctRoute from './repos/nonAccountRepo';
 
 /******************************************************************************
                                 Setup
 ******************************************************************************/
-/* 
- * settings up a basic express server to get information from the database
-*/
-const nonAcctRoute = require('./repos/nonAccountRepo');
-const bookingRoutes = require('./repos/bookingRepo');
-const UserRoutes = require('./repos/UserRepo');
-
-
 const app = express();
 
 // **** Database Setup **** //
 Database.initialize();
-Database.testConnection().then(isConnected =>{
-    if(!isConnected){
-      process.exit(1);
-    }
+
+// Test database connection
+Database.testConnection().then(isConnected => {
+  if (!isConnected) {
+    logger.err('Failed to connect to PostgreSQL database');
+    process.exit(1);
+  }
+  
+  // Sync all database tables
+  Promise.all([
+    UserRoutes.sync(),
+    bookingRoutes.sync(),
+    nonAcctRoute.sync()
+  ]).then(() => {
+    logger.info('All database tables synchronized');
+  }).catch(err => {
+    logger.err('Failed to sync database tables: ' + err);
   });
-
-// Sync booking routes
-// This will create the table if it does not exist
-// and will not delete existing data
-UserRoutes.sync();
-bookingRoutes.sync();
-nonAcctRoute.sync();
-
+});
 
 // **** Middleware **** //
-
-// Basic middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
-// Show routes called in console during development
+// Development logging
 if (ENV.NodeEnv === NodeEnvs.Dev) {
   app.use(morgan('dev'));
 }
 
-// Add to middleware section
+// CORS configuration
 app.use(cors({
-  origin: ENV.NodeEnv === NodeEnvs.Production ? 'https://your-production-domain.com' : '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: ENV.NodeEnv === NodeEnvs.Production 
+    ? ['https://your-production-domain.com'] 
+    : '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true
 }));
 
-// Security
+// Security headers
 if (ENV.NodeEnv === NodeEnvs.Production) {
-  // eslint-disable-next-line n/no-process-env
-  if (!process.env.DISABLE_HELMET) {
-    app.use(helmet());
-  }
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"]
+      }
+    },
+    hsts: {
+      maxAge: 63072000, // 2 years in seconds
+      includeSubDomains: true,
+      preload: true
+    }
+  }));
 }
 
-// Add APIs, must be after middleware
+// API Routes
 app.use(Paths.Base, BaseRouter);
 
-// Add error handler
+// Error handling
 app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
-  if (ENV.NodeEnv !== NodeEnvs.Test.valueOf()) {
+  if (ENV.NodeEnv !== NodeEnvs.Test) {
     logger.err(err, true);
   }
-  let status = HttpStatusCodes.BAD_REQUEST;
+
   if (err instanceof RouteError) {
-    status = err.status;
-    res.status(status).json({ error: err.message });
+    return res.status(err.status).json({ error: err.message });
   }
-  return next(err);
+
+  // Handle PostgreSQL errors specifically
+  if (err.name === 'QueryFailedError') {
+    return res.status(HttpStatusCodes.BAD_REQUEST).json({ 
+      error: 'Database error',
+      details: err.message
+    });
+  }
+
+  return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({
+    error: 'Internal server error'
+  });
 });
 
-// end database setup
+// Health check endpoint
+app.get('/health', (_: Request, res: Response) => {
+  res.status(HttpStatusCodes.OK).json({ 
+    status: 'healthy',
+    database: 'PostgreSQL',
+    environment: ENV.NodeEnv
+  });
+});
 
-// **** FrontEnd Content **** //
-
-// Set views directory (html)
-// const viewsDir = path.join(__dirname, 'views');
-// app.set('views', viewsDir);
-
-// // Set static directory (js and css).
-// const staticDir = path.join(__dirname, 'public');
-// app.use(express.static(staticDir));
-
-// // Nav to users pg by default
-// app.get('/', (_: Request, res: Response) => {
-//   return res.redirect('/forms');
-// });
-
-// // Redirect to login if not logged in.
-// app.get('/forms', (_: Request, res: Response) => {
-//   return res.sendFile('booking.html', { root: viewsDir });
-// });
-
-
-/******************************************************************************
-                                Export default
-******************************************************************************/
+// **** Frontend Content (commented out as in original) **** //
 
 export default app;

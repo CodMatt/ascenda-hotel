@@ -12,9 +12,9 @@ const router = express.Router();
 
 // CREATE booking
 router.post('/',validateBookingCreation,async (req:any, res:any) => {
-    const connection = await db.getPool().getConnection();
+    const connection = await db.getPool().connect();
     try {
-        await connection.beginTransaction();
+        await connection.query('BEGIN');
 
         const {
             id,
@@ -78,10 +78,10 @@ router.post('/',validateBookingCreation,async (req:any, res:any) => {
         }
 
 
-        await connection.commit();
+        await connection.query('COMMIT');
         res.status(201).json({ message: 'Booking created', booking_id: bookingId });
     } catch (error) {
-        await connection.rollback();
+        await connection.query('ROLLBACK');
         console.error('Transaction failed:', error);
         res.status(500).json({ error: 'Failed to create booking', details: error });
     } finally {

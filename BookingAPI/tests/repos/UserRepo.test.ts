@@ -66,11 +66,20 @@ describe('User Repository', () => {
   describe('getAll', () => {
     it('should return all users', async () => {
       const initialCount = (await userRepo.getAll()).length;
-    
-      await userRepo.add(await User.new({ id: 'user-1' }));
-      await userRepo.add(await User.new({ id: 'user-2' }));
+      console.log("initial count "+initialCount)
+      await userRepo.add(await User.new({ 
+        id: 'user-1' ,
+        password: "password1",
+        email: 'unique1@example.com'
+      }));
+      await userRepo.add(await User.new({ 
+        id: 'user-2',
+        password: "password2",
+        email: 'unique2@example.com' 
+      }));
 
       const result = await userRepo.getAll();
+      
       expect(result.length).toBe(initialCount + 2);
       expect(result.some(u => u.id === 'user-1')).toBe(true);
       expect(result.some(u => u.id === 'user-2')).toBe(true);

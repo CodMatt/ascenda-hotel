@@ -22,9 +22,9 @@ afterEach(async () => {
   const pool = db.getPool();
   // Clear data in reverse order of foreign key dependencies
   try{
-    await pool.query('DELETE FROM nonAccount');
+    await pool.query('DELETE FROM nonaccount');
     await pool.query('DELETE FROM booking');
-    await pool.query('DELETE FROM User');
+    await pool.query('DELETE FROM customer');
   }catch(error){
     console.log("error deleting data: " + error)
     throw error;

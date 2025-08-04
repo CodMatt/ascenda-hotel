@@ -1,9 +1,12 @@
 import request from 'supertest';
 import express from 'express';
 import bookingRoutes from '../../src/routes/BookingRoutes';
+import userRepo from '../../src/repos/UserRepo';
 import * as bookingRepo from '../../src/repos/bookingRepo';
 import * as nonAccountRepo from '../../src/repos/nonAccountRepo';
 import HelperFunctions from 'tests/support/HelperFunctions';
+import { hashPassword } from '@src/common/util/auth';
+import { hash } from 'crypto';
 
 const app = express();
 app.use(express.json());
@@ -18,6 +21,7 @@ describe('Booking Routes', () => {
   let testUserId: string;
   let authToken: string;
   let anotherUser: string;
+  let anotherAuth: string;
 
   beforeEach(async () => {
     try {
@@ -38,6 +42,24 @@ describe('Booking Routes', () => {
       if (!testUserId) {
         throw new Error('No userId found in auth token');
       }
+
+      //create another user
+      anotherUser = "anotherUser";
+      const hashedPassword = await hashPassword('correctpass');
+          await userRepo.add({ // for booking with account
+              id: "anotherUser",
+              username: 'testuser',
+              password: hashedPassword,
+              first_name:'nabei',
+              last_name:'asomth8',
+              salutation:'somein',
+              email: 'another@example.com',
+              phone_num: '1234567890',
+              created: new Date()
+          })
+
+      anotherAuth = await HelperFunctions.getAuthToken("another@example.com", "correctpass")
+
       
     } catch (error) {
       console.log("beforeEach error: " + error);
@@ -351,7 +373,6 @@ describe('Booking Routes', () => {
     const endDate = new Date(futureDate);
     endDate.setDate(endDate.getDate() + 1);
 
-    let anotherUser = await HelperFunctions.generateUser();
     await bookingRepo.createBooking({
       id: 'other-user-booking',
       dest_id: 'dest-1',
@@ -364,13 +385,13 @@ describe('Booking Routes', () => {
       adults: 1,
       children: 0,
       price: 100,
-      user_ref: anotherUser,
+      user_ref: testUserId,
       msg_to_hotel: ''
     } as any);
 
     const response = await request(app)
       .get('/booking/my-booking/other-user-booking')
-      .set('Authorization', `Bearer ${authToken}`);
+      .set('Authorization', `Bearer ${anotherAuth}`);
 
     expect(response.status).toBe(404);
     expect(response.body.error).toBe('Booking not found or not owned by user');
@@ -419,9 +440,7 @@ describe('DELETE /booking/:id (authenticated)', () => {
   const endDate = new Date(futureDate);
   endDate.setDate(endDate.getDate() + 1);
 
-  // Use a hardcoded different user ID that's guaranteed to be different
-  const differentUserId = await HelperFunctions.generateUser();
-  
+
   await bookingRepo.createBooking({
     id: 'other-user-delete-booking',
     dest_id: 'dest-1',
@@ -434,7 +453,7 @@ describe('DELETE /booking/:id (authenticated)', () => {
     adults: 1,
     children: 0,
     price: 100,
-    user_ref: differentUserId,  // Hardcoded different user
+    user_ref: testUserId,  // Hardcoded different user
     msg_to_hotel: ''
   } as any);
 
@@ -444,7 +463,7 @@ describe('DELETE /booking/:id (authenticated)', () => {
   
   const response = await request(app)
     .delete('/booking/other-user-delete-booking')
-    .set('Authorization', `Bearer ${authToken}`);
+    .set('Authorization', `Bearer ${anotherAuth}`);
 
   console.log('Response status:', response.status);
   console.log('Response body:', response.body);

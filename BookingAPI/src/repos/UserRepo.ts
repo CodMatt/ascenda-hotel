@@ -2,7 +2,7 @@ import { IUser } from '@src/models/User';
 import { getRandomInt } from '@src/common/util/misc';
 import db from '../models/db';
 
-const tableName = "User";
+const tableName = "customer";
 
 /******************************************************************************
                                 Syncing
@@ -10,7 +10,7 @@ const tableName = "User";
 
 export async function sync() {
     try {
-        const [result] = await db.getPool().query(`
+        await db.getPool().query(`
             CREATE TABLE IF NOT EXISTS ${tableName} ( 
                 id VARCHAR(255) PRIMARY KEY,
                 username VARCHAR(255),
@@ -19,7 +19,7 @@ export async function sync() {
                 first_name VARCHAR(255),
                 salutation VARCHAR(255),
                 email VARCHAR(255) UNIQUE,
-                phone_num VARCHAR (15),
+                phone_num VARCHAR(15),
                 created TIMESTAMP
             )
         `);
@@ -37,26 +37,27 @@ export async function sync() {
  * Get one user.
  */
 export async function getOne(id: string): Promise<IUser | null> {
-    const [rows] : [any[], any] = await db.getPool().query(
-        `SELECT * FROM ${tableName} WHERE id = ?`,
+    const { rows } = await db.getPool().query(
+        `SELECT * FROM ${tableName} WHERE id = $1`,
         [id]
     );
     return rows[0] || null;
 }
+
 export async function getEmailOne(email: string): Promise<IUser | null> {
-    const [rows] : [any[], any] = await db.getPool().query(
-        `SELECT * FROM ${tableName} WHERE email = ?`,
+    const { rows } = await db.getPool().query(
+        `SELECT * FROM ${tableName} WHERE email = $1`,
         [email]
     );
-    return rows[0];
+    return rows[0] || null;
 }
 
 /**
  * See if a user with the given id exists.
  */
 export async function exists(id: string): Promise<boolean> {
-    const [rows]: [any[], any] = await db.getPool().query(
-        `SELECT id FROM ${tableName} WHERE id = ?`,
+    const { rows } = await db.getPool().query(
+        `SELECT id FROM ${tableName} WHERE id = $1`,
         [id]
     );
     return rows.length > 0;
@@ -66,7 +67,7 @@ export async function exists(id: string): Promise<boolean> {
  * Get all users.
  */
 export async function getAll(): Promise<IUser[]> {
-    const [rows]: [any[], any] = await db.getPool().query(
+    const { rows } = await db.getPool().query(
         `SELECT * FROM ${tableName}`
     );
     return rows;
@@ -78,23 +79,25 @@ export async function getAll(): Promise<IUser[]> {
 export async function add(user: IUser): Promise<void> {
     await db.getPool().query(
         `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, phone_num, created)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?,? )`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [user.id, user.username, user.password, user.first_name, user.last_name, 
-         user.salutation, user.email,user.phone_num, user.created]
+         user.salutation, user.email, user.phone_num, user.created]
     );
+
 }
 
 /**
  * Update a user.
  */
-export async function update(p0: string, user: Partial<IUser>): Promise<void> {
-    const fields = Object.keys(user).map(key => `${key} = ?`).join(', ');
+export async function update(id: string, user: Partial<IUser>): Promise<void> {
+    const fields = Object.keys(user).map((key, index) => `${key} = $${index + 1}`).join(', ');
     const values = Object.values(user);
     const sql = 
         `UPDATE ${tableName} 
          SET ${fields}
-         WHERE id = ?`;
-    const [result] = await db.getPool().query(sql, [...values, p0]);
+         WHERE id = $${values.length + 1}`;
+    
+    await db.getPool().query(sql, [...values, id]);
 }
 
 /**
@@ -102,7 +105,7 @@ export async function update(p0: string, user: Partial<IUser>): Promise<void> {
  */
 export async function deleteOne(id: string): Promise<void> {
     await db.getPool().query(
-        `DELETE FROM ${tableName} WHERE id = ?`,
+        `DELETE FROM ${tableName} WHERE id = $1`,
         [id]
     );
 }
