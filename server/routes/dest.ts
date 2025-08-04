@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
   const { search = "" } = req.query;
 
   if (!search || typeof search !== 'string' || search.trim().length === 0) {
-    return res.status(400).json({ error: "Search query cannot be empty" });
+    const results = await Destination.find().limit(10);
+    return res.json(results);
   }
 
   try {
