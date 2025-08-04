@@ -8,9 +8,27 @@ interface AuthProviderProps{
     children: ReactNode;
 }
 
+//TODO: TEST DATA PERSISTENCE!!
+
+// Storage utility functions for easy switching between storage types
+const StorageUtils = {
+    getItem: (key: string): string | null => {
+        return sessionStorage.getItem(key);
+    },
+    setItem: (key: string, value: string): void => {
+        sessionStorage.setItem(key, value);
+    },
+    removeItem: (key: string): void => {
+        sessionStorage.removeItem(key);
+    },
+    clear: (): void => {
+        sessionStorage.clear();
+    }
+};
+
 export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const [user,setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+    const [token, setToken] = useState<string | null>(StorageUtils.getItem('token'));
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() =>{
@@ -23,7 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
 
     const verifyToken = async (): Promise<void> => {
         try{
-            const userId = localStorage.getItem('userId'); //get stored user id
+            const userId = StorageUtils.getItem('userId'); //get stored user id
             if (!userId){
                 logout();
                 return;
@@ -41,6 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
                 logout();
             }
         } catch (error){
+            console.error('Token verification failed:', error);
             logout();
         } finally{
             setLoading(false);
@@ -57,8 +76,8 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             const data: AuthResponse = await response.json();
             setToken(data.token);
             setUser(data.user);
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.user.id); // store user id
+            StorageUtils.setItem('token', data.token);
+            StorageUtils.setItem('userId', data.user.id); // store user id
         }
         return response;
     };
@@ -72,8 +91,8 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             const data: AuthResponse = await response.json();
             setToken(data.token);
             setUser(data.user);
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userId', data.user.id);
+            StorageUtils.setItem('token', data.token);
+            StorageUtils.setItem('userId', data.user.id);
         }
         return response;
     };
@@ -81,8 +100,8 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const logout = (): void =>{
         setToken(null);
         setUser(null);
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');  //clear user ID
+        StorageUtils.removeItem('token');
+        StorageUtils.removeItem('userId');  //clear user ID
     };
 
     const value: AuthContextType = {
