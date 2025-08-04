@@ -27,7 +27,7 @@ describe('NonAcct Routes', () => {
   });
 
   describe('GET /non-account/:HotelId', () => {
-    it('should return bookings for a hotel', async () => {
+    it('should return bookings for a hotel',async() => {
       // Create test data
       const booking1 = {
         id: 'hotel-booking-route-1',

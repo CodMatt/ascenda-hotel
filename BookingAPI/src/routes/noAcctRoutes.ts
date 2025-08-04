@@ -4,10 +4,6 @@ import * as nonAccountRepo from '../repos/nonAccountRepo';
 
 const router = express.Router();
 
-// create new booking field
-
-// created in BookingRoutes.ts when userId is null
-
 // get by hotel id
 router.get('/:HotelId', async (req, res) => {
     try {
