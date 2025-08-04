@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 const router = express.Router();
 import { fetchWithRetry } from '../utils/fetchWithRetry'; // Utility function to fetch hotel data with retry logic
+const BASE_URL = 'https://hotelapi.loyalty.dev/api';
+
 
 /**
  * Fetches data from a given URL with automatic retry logic.
@@ -41,9 +43,11 @@ router.get("/search", async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
+
     // Build URLs for price and hotel info endpoints
     const priceUrl = `https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&country_code=${country_code}&guests=${guests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
     const detailsUrl = `https://hotelapi.loyalty.dev/api/hotels?destination_id=${destination_id}`;
+
 
     // Fetch hotel price and availability data with retries
     const priceData = await fetchWithRetry(priceUrl); 
@@ -102,6 +106,39 @@ router.get("/search", async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error("Unhandled server error during hotel search:", error);
     res.status(500).json({ error: "Internal server error during hotel search." });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  const url = `${BASE_URL}/hotels/${id}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch hotel details', details: err });
+  }
+});
+
+router.get('/:id/price', async (req, res) => {
+  const { id } = req.params;
+  const { destination_id, checkin, checkout, guests } = req.query;
+
+  if (!destination_id || !checkin || !checkout || !guests) {
+     return res.status(400).json({ error: 'Missing query params' });
+  }
+
+  const url = `${BASE_URL}/hotels/${id}/price?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&guests=${guests}&lang=en_US&currency=SGD&country_code=SG&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
+
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch hotel room prices', details: err });
   }
 });
 

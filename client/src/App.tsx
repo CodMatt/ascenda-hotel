@@ -1,7 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
 import HotelSearchPage from './pages/HotelSearchPage'
+import DummyPage from './pages/DummyPage'
 import DestinationSearchPage from './pages/DestinationSearchPage'
-import HotelDetailPage from './pages/HotelDetailPage'
+import HotelDetailsPage from './pages/HotelDetailsPage'
 import './styles/hotelSearch.css'
 export default function App() {
   return (
@@ -11,8 +12,8 @@ export default function App() {
             path="/HotelSearchPage"
             element={<HotelSearchPage />}
             />
-      <Route path="/hotel/:id" element={<HotelDetailPage />} /> // Placeholder 
-
+      <Route path="/hotels/:id" element={<HotelDetailsPage />} /> // Placeholder 
+      <Route path="/dummypage" element={<DummyPage />} />
     </Routes>
   )
 }

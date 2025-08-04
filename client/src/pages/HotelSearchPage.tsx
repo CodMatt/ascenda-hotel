@@ -141,8 +141,9 @@ export default function HotelSearchPage() {
         <> // Place holder for HotelDetails Page 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedHotels.slice(0, visibleCount).map((hotel) => (
-              <Link to={`/hotel/${hotel.id}`} key={hotel.id} className="block">
-                <div className="bg-white shadow p-4 rounded hover:shadow-lg transition">
+              <Link to={`/hotels/${hotel.id}?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`} key={hotel.id} className="block"
+              >
+                  <div className="bg-white shadow p-4 rounded hover:shadow-lg transition">
                   {hotel.image ? (
                     <img src={hotel.image} alt={hotel.name} className="w-full h-40 object-cover rounded mb-3" />
                   ) : (
