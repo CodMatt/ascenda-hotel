@@ -19,20 +19,16 @@ const DestinationSearchPage: React.FC = () => {
         //setIsLoading(true);
         //setError('');
 
-        try{
-            //redirect to results page with combined data
-            navigate('/HotelSearchPage', {
-                state: {
-                    searchParams
-                    
-                }
-            });
-        } catch(err){
+        try {
+            const { destinationId, checkin, checkout, guests } = searchParams;
+            const queryString = `destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
+            navigate(`/HotelSearchPage?${queryString}`);
+          } catch (err) { 
             setError('Failed to search for hotels. Please try again.');
             console.error('Search error:', err);
-        } finally {
+          } finally {
             setIsLoading(false);
-        }
+          }
     };
     return (
         <div className="hotel-search-page">

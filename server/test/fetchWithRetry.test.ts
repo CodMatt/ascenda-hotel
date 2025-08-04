@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fetchWithRetry } from '../utils/fetchWithRetry'; // Adjust path if needed
+import { fetchWithRetry } from '../utils/fetchWithRetry'; 
 
 describe("fetchWithRetry", () => {
   it("retries multiple times if hotels list is empty", async () => {
@@ -11,8 +11,8 @@ describe("fetchWithRetry", () => {
     global.fetch = mockFetch;
 
     const result = await fetchWithRetry("fake-url", 5, 0);
-    expect(result.hotels.length).toBe(1);
-    expect(mockFetch).toHaveBeenCalledTimes(3);
+    expect(result.hotels.length).toBe(1); // After retries, final result has 1 hotel
+    expect(mockFetch).toHaveBeenCalledTimes(3); // Retried 3 times, stop if non-empty
   });
 });
 

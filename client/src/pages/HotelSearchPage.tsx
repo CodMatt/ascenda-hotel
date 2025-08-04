@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
-import { useLocation } from "react-router-dom"; 
+import { useLocation, Link } from "react-router-dom"; 
 import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
 
 
@@ -22,10 +22,10 @@ export default function HotelSearchPage() {
   const searchParams = new URLSearchParams(location.search);
   
   // Use URL values if present, otherwise use fixed ones as shown RsBU (SG)
-  const destinationId = searchParams.get("destination_id") ?? "RsBU";
-  const checkin = searchParams.get("checkin") ?? "2025-12-01";
-  const checkout = searchParams.get("checkout") ?? "2025-12-07";
-  const guests = searchParams.get("guests") ?? "2";  
+  const destinationId = searchParams.get("destination_id") ?? "RsBU"; // Fallback to RsBU 
+  const checkin = searchParams.get("checkin") ?? "";
+  const checkout = searchParams.get("checkout") ?? "";
+  const guests = searchParams.get("guests") ?? "";  
 
   useEffect(() => {
     if (!destinationId || !checkin || !checkout || !guests) {
@@ -42,6 +42,8 @@ export default function HotelSearchPage() {
       setError(null);
       try {
         const result = await fetchHotels(destinationId, checkin, checkout, guests);
+        console.log("Destination ID:", destinationId);
+
         console.log("Total hotels received:", result.hotels.length);
         setHotelData(result.hotels);
       } catch (err: any) {
@@ -136,24 +138,28 @@ export default function HotelSearchPage() {
       {!loading && !error && hotelData.length === 0 && <p>No hotels found for the selected destination.</p>}
 
       {!loading && !error && sortedHotels.length > 0 && (
-        <>
+        <> // Place holder for HotelDetails Page 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedHotels.slice(0, visibleCount).map((hotel) => (
-              <div key={hotel.id} className="bg-white shadow p-4 rounded">
-                {hotel.image ? (
-                  <img src={hotel.image} alt={hotel.name} className="w-full h-40 object-cover rounded mb-3" />
-                ) : (
-                  <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded mb-3 text-gray-500 italic">
-                    No image available
-                  </div>
-                )}
+              <Link to={`/hotel/${hotel.id}`} key={hotel.id} className="block">
+                <div className="bg-white shadow p-4 rounded hover:shadow-lg transition">
+                  {hotel.image ? (
+                    <img src={hotel.image} alt={hotel.name} className="w-full h-40 object-cover rounded mb-3" />
+                  ) : (
+                    <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded mb-3 text-gray-500 italic">
+                      No image available
+                    </div>
+                  )}
 
-                <h2 className="text-xl font-semibold">{hotel.name}</h2>
-                <p className="text-gray-500">⭐ {hotel.rating ?? "N/A"}</p>
-                <p className="text-[#FF6B6B] font-bold">
-                  {hotel.price !== null ? `$${hotel.price.toFixed(2)}` : <span className="text-gray-400 italic">Price not available</span>}
-                </p>
-              </div>
+                  <h2 className="text-xl font-semibold">{hotel.name}</h2>
+                  <p className="text-gray-500">⭐ {hotel.rating ?? "N/A"}</p>
+                  <p className="text-[#FF6B6B] font-bold">
+                    {hotel.price !== null ? `$${hotel.price.toFixed(2)}` : (
+                      <span className="text-gray-400 italic">Price not available</span>
+                    )}
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
 
@@ -167,3 +173,4 @@ export default function HotelSearchPage() {
     </div>
   );
 }
+  
