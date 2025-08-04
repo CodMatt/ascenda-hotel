@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchHotelDetails, fetchHotelRoomPrices } from "../api/hotels";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useNavigate } from "react-router-dom";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/HotelDetailsPage.css";
@@ -21,6 +22,7 @@ export default function HotelDetailsPage() {
   const [rooms, setRooms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // ImageCarousel component with error handling and image counter
   function ImageCarousel({
@@ -147,8 +149,14 @@ export default function HotelDetailsPage() {
         ]);
         setHotel(hotelRes);
         setRooms(priceRes.rooms || []);
+        //If got no avaiable rooms, redirect to previous page
+        if (!priceRes.rooms || priceRes.rooms.length === 0) {
+          alert("No rooms available for the selected dates. Redirecting you back.");
+          navigate(-1); // navigates to previous page
+          return;
+}
       } catch (err: any) {
-        setError("Failed to load hotel details");
+        setError("Failed to load hotel details, try refreshing the page.");
       } finally {
         setLoading(false);
       }
@@ -240,6 +248,23 @@ export default function HotelDetailsPage() {
   };
 
   const parsedSections = parseHotelDescription(hotel?.description || "");
+
+  const handleSelect = (room: any) => {
+    const checkinDate = new Date(checkin);
+    const checkoutDate = new Date(checkout);
+    navigate("/dummypage", {
+      state: {
+        hotelId: hotelId,
+        destId: destinationId,
+        key: room.key,
+        rates: room.converted_price || room.price || 0,
+        checkin: checkinDate,
+        checkout: checkoutDate,
+        noAdults: parseInt(guests.split(",")[0]) || 1,
+        noChildren: parseInt(guests.split(",")[1]) || 0
+      }
+    });
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -420,7 +445,9 @@ return (
                                       <div className="room-price">SGD {room.converted_price || room.price || 0}</div>
                                       <div className="room-duration">1 room • 1 night</div>
                                     </div>
-                                    <button className="select-button">Select</button>
+                                    <button className="select-button" onClick={() => handleSelect(room)}>
+                                      Select
+                                    </button>
                                   </div>
                                 </div>
                               );
