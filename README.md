@@ -27,6 +27,30 @@ npm i
 npm run dev
 ```
 
+## Setting up PostGreSQL
+
+```bash
+sudo -u postgres psql
+```
+```sql
+CREATE USER [username] WITH PASSWORD '[password]';
+
+-- Grant schema privileges
+GRANT ALL PRIVILEGES ON SCHEMA public TO [username];
+
+-- Set default privileges for future objects
+ALTER DEFAULT PRIVILEGES IN SCHEMA public 
+GRANT ALL ON TABLES TO [username];
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public 
+GRANT ALL ON SEQUENCES TO [username];
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public 
+GRANT ALL ON FUNCTIONS TO [username];
+```
+
+
+
 ### Testing Booking API
 - All unit and system tests are contained in BookingAPI\Tests
 - To perform a unit test, type the following command in the command terminal 
