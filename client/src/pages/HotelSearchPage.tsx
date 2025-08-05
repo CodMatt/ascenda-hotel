@@ -106,88 +106,181 @@ export default function HotelSearchPage() {
       }));
 
   
-  return (
-    // changed from p-6 min-h-screen
-    <div className="hotel-search-page">  
-
-      {/* ----- Header ----- */}
-      <div className="page-header">
-        <div className="dsp-logo">
-            <img src={logo} alt="Ascenda logo" className="logo-img" />
-        </div>
-        <div className="dsp-actions">
-          <button className="btn-outline">Sign In</button>
-          <button className="btn-primary">Register</button>
-        </div>
-      </div>
-
-
-      {/* <h1 className="text-3xl font-bold mb-4">Hotel Search Results</h1> */}
-      <div className="content-wrapper">
-        <div className="map-and-results">
-          <div className="map-container">
-            <div className="map-wrapper">
-              <MapboxMap
-                hotels={hotelsWithCoords}
-                onHotelSelect={(hotelName) => {
-                  console.log("Hotel selected from map:", hotelName);
-                  // TODO: redirect to hotel details upon clicking 
-                }}
-              />
+      return (
+        <div className="hotel-search-page">
+          {/* -------- Header -------- */}
+          <header className="page-header">
+            <div className="dsp-logo">
+              <img src={logo} alt="Ascenda logo" className="logo-img" />
             </div>
-          </div>
-
-      <div className="mb-4 flex flex-wrap gap-4">
-        <button onClick={() => setSortBy("priceAsc")} className={`px-4 py-2 rounded ${sortBy === "priceAsc" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>Price: Low to High</button>
-        <button onClick={() => setSortBy("priceDesc")} className={`px-4 py-2 rounded ${sortBy === "priceDesc" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>Price: High to Low</button>
-        <button onClick={() => setSortBy("starAsc")} className={`px-4 py-2 rounded ${sortBy === "starAsc" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>Star: Low to High</button>
-        <button onClick={() => setSortBy("starDesc")} className={`px-4 py-2 rounded ${sortBy === "starDesc" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>Star: High to Low</button>
-        <button onClick={() => setSortBy("none")} className={`px-4 py-2 rounded ${sortBy === "none" ? "bg-gray-300 text-black" : "bg-gray-200 text-gray-800"}`}>Clear All Sorts</button>
-
-        <div className="flex flex-wrap gap-4 mt-2">
-          {[5, 4, 3].map((star) => (
-            <button key={star} onClick={() => setFilterStar((prev) => (prev === star ? null : star))} className={`px-4 py-2 rounded ${filterStar === star ? "bg-yellow-500 text-white" : "bg-gray-200 text-gray-800"}`}>Only {star}-Star Hotels</button>
-          ))}
-        </div>
-
-        <button onClick={() => setFilterStar(null)} className="px-4 py-2 rounded bg-gray-300 text-black">Clear Star Filter</button>
-      </div>
-
-      {loading && <p>Loading hotels...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {!loading && !error && hotelData.length === 0 && <p>No hotels found for the selected destination.</p>}
-
-      {!loading && !error && sortedHotels.length > 0 && (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedHotels.slice(0, visibleCount).map((hotel) => (
-              <div key={hotel.id} className="bg-white shadow p-4 rounded">
-                {hotel.image ? (
-                  <img src={hotel.image} alt={hotel.name} className="w-full h-40 object-cover rounded mb-3" />
-                ) : (
-                  <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded mb-3 text-gray-500 italic">
-                    No image available
-                  </div>
-                )}
-
-                <h2 className="text-xl font-semibold">{hotel.name}</h2>
-                <p className="text-gray-500">⭐ {hotel.rating ?? "N/A"}</p>
-                <p className="text-[#FF6B6B] font-bold">
-                  {hotel.price !== null ? `$${hotel.price.toFixed(2)}` : <span className="text-gray-400 italic">Price not available</span>}
-                </p>
+            <div className="dsp-actions">
+              <button className="btn-outline">Sign In</button>
+              <button className="btn-primary">Register</button>
+            </div>
+          </header>
+      
+          {/* -------- Main scrollable content -------- */}
+          <div className="content-wrapper">
+            {/* -------- (Optional) Search summary card -------- */}
+            {/* Uncomment if you’ve wired up `search-summary-card` */}
+            {/* <div className="search-summary-card">
+              <div className="summary-fields">
+                <div className="field">
+                  <div className="label">Destination</div>
+                  <div className="value">{destination}</div>
+                </div>
+                <div className="field">
+                  <div className="label">Check-in</div>
+                  <div className="value">{checkin}</div>
+                </div>
+                <div className="field">
+                  <div className="label">Check-out</div>
+                  <div className="value">{checkout}</div>
+                </div>
+                <div className="field">
+                  <div className="label">Guests</div>
+                  <div className="value">{guests}</div>
+                </div>
               </div>
-            ))}
-          </div>
-
-          {visibleCount < sortedHotels.length && (
-            <div ref={observerRef} className="h-20 mt-8 flex items-center justify-center bg-gray-100">
-              <p className="text-gray-400 text-sm">Loading more hotels...</p>
+              <div className="summary-actions">
+                <button className="modify-btn" onClick={() => navigate(-1)}>
+                  Modify Search
+                </button>
+              </div>
+            </div> */}
+      
+            {/* -------- Results container -------- */}
+            <div className="results-section">
+              {/* (Optional) if you want sort controls in header */}
+              {/* <div className="results-header">
+                <button className="sort-button">Sort By ↓</button>
+              </div> */}
+      
+              <div className="map-and-results">
+                {/* -- Map panel -- */}
+                <div className="map-container">
+                  <div className="map-wrapper">
+                    <MapboxMap
+                      hotels={hotelsWithCoords}
+                      onHotelSelect={(name) => console.log("Selected:", name)}
+                    />
+                  </div>
+                </div>
+      
+                {/* -- List + sort/filter panel -- */}
+                <div className="list-container">
+                  <div className="sort-filter-bar">
+                    <button
+                      onClick={() => setSortBy("priceAsc")}
+                      className={sortBy === "priceAsc" ? "active" : ""}
+                    >
+                      Price: Low to High
+                    </button>
+                    <button
+                      onClick={() => setSortBy("priceDesc")}
+                      className={sortBy === "priceDesc" ? "active" : ""}
+                    >
+                      Price: High to Low
+                    </button>
+                    <button
+                      onClick={() => setSortBy("starAsc")}
+                      className={sortBy === "starAsc" ? "active" : ""}
+                    >
+                      Star: Low to High
+                    </button>
+                    <button
+                      onClick={() => setSortBy("starDesc")}
+                      className={sortBy === "starDesc" ? "active" : ""}
+                    >
+                      Star: High to Low
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortBy("none");
+                        setFilterStar(null);
+                      }}
+                      className="clear-btn"
+                    >
+                      Clear All
+                    </button>
+                    {[5, 4, 3].map((s) => (
+                      <button
+                        key={s}
+                        onClick={() =>
+                          setFilterStar((prev) => (prev === s ? null : s))
+                        }
+                        className={filterStar === s ? "active" : ""}
+                      >
+                        Only {s}-Star
+                      </button>
+                    ))}
+                    <button onClick={() => setFilterStar(null)} className="clear-btn">
+                      Clear Star
+                    </button>
+                  </div>
+      
+                  {/* -- Error / Loading states -- */}
+                  {loading && <p className="message">Loading hotels…</p>}
+                  {error && <p className="error">{error}</p>}
+      
+                  {/* -- Hotels grid -- */}
+                  {!loading && !error && (
+                    <div className="results-grid">
+                      {sortedHotels.slice(0, visibleCount).map((hotel) => (
+                        <div key={hotel.id} className="hotel-card">
+                          {hotel.image ? (
+                            <img src={hotel.image} alt={hotel.name} />
+                          ) : (
+                            <div className="hotel-card__noimg">No image</div>
+                          )}
+                          <div className="hotel-info">
+                            <h3>{hotel.name}</h3>
+                            <p className="hotel-location">{hotel.address}</p>
+                            <div className="hotel-rating">
+                              {[1,2,3,4,5].map((i) => (
+                                <span
+                                  key={i}
+                                  className={`star ${
+                                    Math.floor(hotel.rating ?? 0) >= i ? "filled" : ""
+                                  }`}
+                                >
+                                  ★
+                                </span>
+                              ))}
+                              <span className="rating-number">
+                                {hotel.rating ?? "N/A"}
+                              </span>
+                            </div>
+                            <div className="hotel-price">
+                              {hotel.price != null
+                                ? `$${hotel.price.toFixed(2)}`
+                                : "Price N/A"}
+                              <span className="per-night"> / night</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+      
+                  {/* -- Lazy-load sentinel -- */}
+                  {visibleCount < sortedHotels.length && (
+                    <div ref={observerRef} className="load-more">
+                      <p className="message">Loading more hotels…</p>
+                    </div>
+                  )}
+      
+                  {/* -- No results fallback -- */}
+                  {!loading &&
+                    !error &&
+                    sortedHotels.length === 0 && (
+                      <p className="message">No hotels found.</p>
+                    )}
+                </div>
+              </div>
             </div>
-          )}
-        </>
-      )}
-      </div>
-      </div>
-    </div>
-  );
+          </div>
+        </div>
+      );
+      
 }
