@@ -3,6 +3,7 @@ import HotelSearchPage from './pages/HotelSearchPage'
 import CheckHotelDetailsPage from './pages/CheckHotelDetailsPage'
 import DestinationSearchPage from './pages/DestinationSearchPage'
 import HotelDetailsPage from './pages/HotelDetailsPage'
+import GuestInfoPage from './pages/GuestInfoPage'
 import './styles/hotelSearch.css'
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
             />
       <Route path="/hotels/:id" element={<HotelDetailsPage />} /> // Placeholder 
       <Route path="/checkhoteldetailspage" element={<CheckHotelDetailsPage />} />
+      <Route path="/guestinfo" element={<GuestInfoPage />} />
     </Routes>
   )
 }
