@@ -177,6 +177,7 @@ body,
   font-size: 0.875rem;
   transition: background 0.2s, box-shadow 0.2s;
   white-space: nowrap;
+  color: black;
 }
 
 .sort-filter-bar button:hover {
