@@ -8,7 +8,14 @@ import {AuthProvider} from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage'
 
+import PaymentPage from './pages/PaymentPage'
+import SuccessForm from './pages/SuccessForm'
+
+
 import './styles/hotelSearch.css'
+
+
+
 export default function App() {
   return (
     <AuthProvider>
@@ -23,6 +30,8 @@ export default function App() {
       <Route path="/hotels/:id" element={<HotelDetailsPage />} /> // Placeholder 
       <Route path="/checkhoteldetailspage" element={<CheckHotelDetailsPage />} />
       <Route path="/guestinfo" element={<GuestInfoPage />} />
+      <Route path='/payment' element={<PaymentPage/>}/>
+      <Route path='/success' element={<SuccessForm/>}/>
     </Routes>
     </AuthProvider>
   )
