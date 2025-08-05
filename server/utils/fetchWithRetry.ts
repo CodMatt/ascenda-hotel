@@ -19,7 +19,7 @@ export async function fetchWithRetry(
 
       console.log(`Attempt ${attempt} - completed: ${isCompleted}, hotels: ${hotelCount}`);
 
-      // ✅ Only return when API explicitly says it's completed
+      // Only return when API explicitly says it's completed
       if (isCompleted) {
         return data; // Can be empty or filled — both are valid if completed = true
       }
