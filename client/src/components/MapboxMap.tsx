@@ -7,6 +7,7 @@ type Coordinates = {
 };
 
 type Hotel = {
+  id: string; 
   name: string;
   address: string;
   coordinates: Coordinates;
@@ -80,7 +81,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ hotels, onHotelSelect }) => {
       button.style.border = "none";
       button.style.borderRadius = "4px";
 
-      button.onclick = () => onHotelSelect(hotel.name);
+      button.onclick = () => onHotelSelect(hotel.id);
       div.appendChild(button);
 
       return div;

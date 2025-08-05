@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
-import { useLocation, Link } from "react-router-dom"; 
+import { useLocation, Link, useNavigate } from "react-router-dom"; 
 import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
+
 
 
 
@@ -26,6 +27,10 @@ export default function HotelSearchPage() {
   const checkin = searchParams.get("checkin") ?? "";
   const checkout = searchParams.get("checkout") ?? "";
   const guests = searchParams.get("guests") ?? "";  
+
+  // Use navigate from react-router-dom to handle navigation
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (!destinationId || !checkin || !checkout || !guests) {
@@ -95,15 +100,16 @@ export default function HotelSearchPage() {
 
     // Extract only hotels that have valid coordinates and format them for the MapboxMap 
     const hotelsWithCoords = hotelData
-      .filter((hotel) => hotel.latitude && hotel.longitude) // Filter no lat/lng hotels
-      .map((hotel) => ({ // map filtered hotels by mapboxmap
-        name: hotel.name, 
-        address: hotel.address,
-        coordinates: {
-          lat: hotel.latitude,
-          lng: hotel.longitude,
-        },
-      }));
+    .filter(hotel => hotel.latitude && hotel.longitude)
+    .map(hotel => ({
+      id: hotel.id, // for routing
+      name: hotel.name, // for display
+      address: hotel.address,
+      coordinates: {
+        lat: hotel.latitude,
+        lng: hotel.longitude,
+      },
+    }));
 
   
   return (
@@ -111,10 +117,8 @@ export default function HotelSearchPage() {
       <h1 className="text-3xl font-bold mb-4">Hotel Search Results</h1>
       <MapboxMap
         hotels={hotelsWithCoords}
-        onHotelSelect={(hotelName) => {
-          console.log("Hotel selected from map:", hotelName);
-          <Link to={`/hotels/${hotelName}?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`} />
-          // TODO: redirect to hotel details upon clicking 
+        onHotelSelect={(hotelId) => {
+          navigate(`/hotels/${hotelId}?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`);
         }}
       />
 
