@@ -40,6 +40,7 @@
     background: #f9f9fb;
     outline: none;
     min-width: 100px;
+    color: black;
   }
   
   .hotel-search-form input:focus,
@@ -60,10 +61,6 @@
     min-width: 160px;
   }
   
-  /* If you want adults/children counters to appear side by side when multiple rooms exist */
-  .hotel-search-form .room-guests + .room-guests {
-    margin-left: 8px;
-  }
   
   /* Room header with remove button */
   .room-header {

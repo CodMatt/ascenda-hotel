@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import HotelSearchPage from './pages/HotelSearchPage'
 import DestinationSearchPage from './pages/DestinationSearchPage'
-import './styles/hotelSearch.css'
+import './styles/HotelSearchPage.css'
 export default function App() {
   return (
     <Routes>
