@@ -264,12 +264,16 @@ export default function HotelDetailsPage() {
       state: {
         id: id,
         destId: destinationId,
+        hotelName: hotel?.name || "Unknown Hotel",
+        hotelAddress: hotel?.address || "Unknown Address",
         key: room.key,
         rates: room.converted_price || room.price || 0,
         checkin: checkinDate,
         checkout: checkoutDate,
         noAdults: parseInt(guests.split(",")[0]) || 1,
-        noChildren: parseInt(guests.split(",")[1]) || 0
+        noChildren: parseInt(guests.split(",")[1]) || 0,
+        roomType: room?.roomDescription || room?.roomNormalizedDescription || "Standard Room",
+        userRef: "dummyUserRef" 
       }
     });
   };
