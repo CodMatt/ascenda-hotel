@@ -272,8 +272,7 @@ export default function HotelDetailsPage() {
         checkout: checkoutDate,
         noAdults: parseInt(guests.split(",")[0]) || 1,
         noChildren: parseInt(guests.split(",")[1]) || 0,
-        roomType: room?.roomDescription || room?.roomNormalizedDescription || "Standard Room",
-        userRef: "dummyUserRef" 
+        roomType: room?.roomDescription || room?.roomNormalizedDescription || "Standard Room",   
       }
     });
   };
