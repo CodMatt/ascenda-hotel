@@ -155,7 +155,7 @@ export default function HotelDetailsPage() {
           alert("No rooms available for the selected dates. Redirecting you back.");
           navigate(-1);
         }
-      }, 30000);
+      }, 5000);
       } catch (err: any) {
         setError("Failed to load hotel details, try refreshing the page.");
       } finally {
