@@ -71,13 +71,13 @@ export default function HotelDetailsPage() {
       validateImages();
     }, [prefix, suffix, count]);
 
-    const goPrev = () => {  // Navigate to the previous image
+    const goPrev = () => {
       setCurrentValidIndex(prev => 
         prev === 0 ? validImages.length - 1 : prev - 1  // if at the first image, wrap around to the last valid image
       );
     };
 
-    const goNext = () => {  // Navigate to the next image
+    const goNext = () => { 
       setCurrentValidIndex(prev => 
         prev === validImages.length - 1 ? 0 : prev + 1  // if at the last image, wrap around to the first valid image
       );
@@ -247,6 +247,12 @@ export default function HotelDetailsPage() {
     }
   };
 
+  const scrollToLocation = () => {
+    const locationSection = document.getElementById("location-section");
+    if (locationSection) {
+      locationSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   const parsedSections = parseHotelDescription(hotel?.description || "");
 
   const handleSelect = (room: any) => {
@@ -292,16 +298,19 @@ return (
     <div className="hotel-header">
       <h1>
         {hotel.name} 
-        <span className="star-rating">{"★".repeat(Math.floor(hotel.rating || 4))}</span>
       </h1>
-      <p className="hotel-address">{hotel.address}</p>
+      <div className="hotel-address-container">
+        <p className="hotel-address">{hotel.address}</p>
+        <button className="location-btn" onClick={scrollToLocation}>
+          View on Map
+        </button>
+      </div>
+      <span className="star-rating">Rating:  {hotel.rating} / 5</span>
     </div>
 
     {/* Main Content Layout */}
     <div className="main-content-layout">
-      {/* Left Content */}
       <div className="left-content">
-        {/* Hotel Gallery */}
         {hotel?.image_details && (
           <ImageCarousel
             prefix={hotel.image_details.prefix}
@@ -312,7 +321,6 @@ return (
 
         {/* Hotel Details */}
         <div className="hotel-details">
-          {/* Hotel Overview */}
           <section className="hotel-overview">
             <h2>Hotel overview</h2>
             
@@ -463,7 +471,7 @@ return (
           </section>
 
           {/* Location Section */}
-          <section className="location-section">
+          <section id="location-section" className="location-section">
             <h2>Location</h2>
             <div className="map-container">
               <MapContainer
