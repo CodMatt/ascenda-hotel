@@ -1,11 +1,4 @@
-/* Base styles and resets */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Page-specific overrides */
+/* Global overrides for hotel info page */
 .hotel-info-page {
   background-color: white !important;
   color: #333 !important;
@@ -16,7 +9,7 @@
   color: inherit;
 }
 
-/* Override body flexbox from index.css */
+/* Override body and html styles */
 body:has(.hotel-info-page) {
   display: block !important;
   place-items: unset !important;
@@ -29,6 +22,116 @@ body:has(.hotel-info-page) {
 
 html:has(.hotel-info-page) {
   background-color: #f9fafb !important;
+}
+
+/* Reset and apply custom button styles */
+.hotel-info-page button {
+  background-color: initial !important;
+  border: initial !important;
+  color: initial !important;
+  font-size: initial !important;
+  padding: initial !important;
+  border-radius: initial !important;
+}
+
+/* Navigation buttons */
+.hotel-info-page .sign-in-btn {
+  background: transparent !important;
+  color: #333 !important;
+  border: 1px solid #ddd !important;
+  padding: 8px 16px !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.hotel-info-page .sign-in-btn:hover {
+  background: #f5f5f5 !important;
+}
+
+.hotel-info-page .register-btn {
+  background: #ff5323 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.hotel-info-page .register-btn:hover {
+  background: #e64a1f !important;
+}
+
+/* Room and booking buttons */
+.hotel-info-page .see-rooms-btn {
+  width: 100%;
+  background: #ff5323 !important;
+  color: white !important;
+  border: none !important;
+  padding: 14px !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.hotel-info-page .see-rooms-btn:hover {
+  background: #e64a1f !important;
+  transform: translateY(-1px);
+}
+
+.hotel-info-page .select-button {
+  background: transparent !important;
+  border: 2px solid #1E90FF !important;
+  color: #1E90FF !important;
+  padding: 8px 20px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hotel-info-page .select-button:hover {
+  background: #1E90FF !important;
+  color: white !important;
+}
+
+/* Checking here - Location button styles */
+.hotel-info-page .location-btn {
+  background: #ff5323 !important;
+  color: white !important;
+  border: none !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hotel-info-page .location-btn:hover {
+  background: #1c7ed6 !important;
+  transform: translateY(-1px);
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
 }
 
 /* Navigation Bar */
@@ -78,83 +181,6 @@ html:has(.hotel-info-page) {
   gap: 10px;
 }
 
-/* Button styles */
-.hotel-info-page button {
-  background-color: initial !important;
-  border: initial !important;
-  color: initial !important;
-  font-size: initial !important;
-  padding: initial !important;
-  border-radius: initial !important;
-}
-
-.hotel-info-page .sign-in-btn {
-  background: transparent !important;
-  color: #333 !important;
-  padding: 8px 16px !important;
-  border: 1px solid #ddd !important;
-  border-radius: 4px !important;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.hotel-info-page .sign-in-btn:hover {
-  background: #f5f5f5 !important;
-}
-
-.hotel-info-page .register-btn {
-  background: #ff5323 !important;
-  color: white !important;
-  border: none !important;
-  padding: 8px 16px !important;
-  border-radius: 4px !important;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.hotel-info-page .register-btn:hover {
-  background: #e64a1f !important;
-}
-
-.hotel-info-page .see-rooms-btn {
-  width: 100%;
-  background: #ff5323 !important;
-  color: white !important;
-  border: none !important;
-  padding: 14px !important;
-  border-radius: 8px !important;
-  cursor: pointer;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  margin-bottom: 30px;
-  transition: all 0.3s ease;
-}
-
-.hotel-info-page .see-rooms-btn:hover {
-  background: #e64a1f !important;
-  transform: translateY(-1px);
-}
-
-.hotel-info-page .select-button {
-  background: transparent !important;
-  border: 2px solid #1E90FF !important;
-  color: #1E90FF !important;
-  padding: 8px 20px !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  border-radius: 6px !important;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 80px;
-}
-
-.hotel-info-page .select-button:hover {
-  background: #1E90FF !important;
-  color: white !important;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(30, 144, 255, 0.3);
-}
-
 /* Hotel Header */
 .hotel-header {
   max-width: 1200px;
@@ -165,20 +191,29 @@ html:has(.hotel-info-page) {
 .hotel-header h1 {
   font-size: 32px;
   margin-bottom: 10px;
-  color: #333;
+  color: #333333;
   font-weight: 700;
 }
 
 .star-rating {
-  color: #fbbf24;
-  font-size: 24px;
-  margin-left: 8px;
+  color: #333333;
+  font-size: 14px;
+  font-weight: 500;
+  font-style: italic;
 }
 
 .hotel-address {
   color: #666;
   font-size: 16px;
   margin: 0;
+}
+
+/* Checking here - Address container styles */
+.hotel-address-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 /* Main Content Layout */
@@ -198,7 +233,7 @@ html:has(.hotel-info-page) {
   gap: 40px;
 }
 
-/* Hotel Gallery Carousel */
+/* Hotel Gallery */
 .hotel-gallery-carousel {
   position: relative;
   width: 100%;
@@ -213,25 +248,6 @@ html:has(.hotel-info-page) {
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.carousel-image-placeholder {
-  width: 100%;
-  max-height: 400px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
-  border-radius: 12px;
-  color: #999;
-  border: 2px dashed #ddd;
-}
-
-.carousel-image-placeholder p {
-  font-size: 16px;
-  font-weight: 500;
 }
 
 .carousel-btn {
@@ -253,6 +269,14 @@ html:has(.hotel-info-page) {
   outline: none;
 }
 
+.arrow-symbol {
+  font-size: 60px;
+  font-weight: bold;
+  line-height: 1;
+  display: block;
+  opacity: 0.8; 
+}
+
 .carousel-btn.left {
   left: 20px;
 }
@@ -271,14 +295,7 @@ html:has(.hotel-info-page) {
   opacity: 1;
 }
 
-.arrow-symbol {
-  font-size: 60px;
-  font-weight: bold;
-  line-height: 1;
-  display: block;
-  opacity: 0.8; 
-}
-
+/* Image counter */
 .image-counter {
   position: absolute;
   bottom: 15px;
@@ -291,6 +308,31 @@ html:has(.hotel-info-page) {
   font-weight: 500;
   z-index: 2;
   backdrop-filter: blur(4px);
+}
+
+/* Placeholder for broken images */
+.carousel-image-placeholder {
+  width: 100%;
+  max-height: 400px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 12px;
+  color: #999;
+  border: 2px dashed #ddd;
+}
+
+.carousel-image-placeholder span {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.carousel-image-placeholder p {
+  font-size: 16px;
+  font-weight: 500;
 }
 
 /* Hotel Details */
@@ -477,6 +519,26 @@ html:has(.hotel-info-page) {
   color: #666;
 }
 
+.select-button {
+  background: transparent;
+  border: 2px solid #1E90FF;
+  color: #1E90FF;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.select-button:hover {
+  background: #1E90FF;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(30, 144, 255, 0.3);
+}
+
 .no-rooms-text {
   text-align: center;
   color: #888;
@@ -510,10 +572,6 @@ html:has(.hotel-info-page) {
 .leaflet-container {
   height: 100% !important;
   width: 100% !important;
-}
-
-.bottom-spacer {
-  height: 40px;
 }
 
 /* Booking Sidebar */
@@ -590,6 +648,10 @@ html:has(.hotel-info-page) {
   font-size: 16px;
 }
 
+.bottom-spacer {
+  height: 40px;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .main-content-layout {
@@ -618,6 +680,17 @@ html:has(.hotel-info-page) {
   
   .hotel-header h1 {
     font-size: 24px;
+  }
+  
+  /* Checking here - Mobile responsive styles for address container */
+  .hotel-address-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .hotel-info-page .location-btn {
+    align-self: flex-start;
   }
   
   .main-content-layout {
@@ -674,6 +747,11 @@ html:has(.hotel-info-page) {
     text-align: left;
   }
   
+  .select-button {
+    min-width: 70px;
+    padding: 8px 16px;
+  }
+  
   .carousel-btn {
     width: 50px;
     height: 50px;
@@ -697,52 +775,5 @@ html:has(.hotel-info-page) {
     right: 10px;
     font-size: 12px;
     padding: 4px 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hotel-header h1 {
-    font-size: 20px;
-  }
-  
-  .star-rating {
-    font-size: 18px;
-  }
-  
-  .hotel-overview h2,
-  .room-options h2,
-  .location-section h2 {
-    font-size: 22px;
-  }
-  
-  .price-large {
-    font-size: 24px;
-  }
-
-  .room-type-header {
-    font-size: 15px;
-    padding: 12px 14px;
-  }
-  
-  .room-type-content {
-    padding: 14px;
-  }
-  
-  .room-type-image {
-    height: 120px;
-  }
-  
-  .service-label {
-    font-size: 15px;
-  }
-  
-  .room-price {
-    font-size: 20px;
-  }
-  
-  .hotel-info-page .select-button {
-    padding: 8px 14px !important;
-    font-size: 13px !important;
-    min-width: 65px !important;
   }
 }
