@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
-import { useLocation } from "react-router-dom"; 
+import { useLocation,useNavigate } from "react-router-dom"; 
 import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
 import '../styles/HotelSearchPage.css';
 import logo from '../assets/logo.png';
@@ -15,6 +15,7 @@ export default function HotelSearchPage() {
   const [loading, setLoading] = useState(true); // Loading and Error State 
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
   // Sorting + Filtering 
   const [sortBy, setSortBy] = useState<"none" | "priceAsc" | "priceDesc" | "starAsc" | "starDesc">("none");
   const [filterStar, setFilterStar] = useState<number | null>(null);
@@ -114,8 +115,8 @@ export default function HotelSearchPage() {
               <img src={logo} alt="Ascenda logo" className="logo-img" />
             </div>
             <div className="dsp-actions">
-              <button className="btn-outline">Sign In</button>
-              <button className="btn-primary">Register</button>
+              <button className="btn-outline" onClick={() => navigate('/login')}>Sign In</button>
+              <button className="btn-primary" onClick={() => navigate('/signup')}>Register</button>
             </div>
           </header>
       

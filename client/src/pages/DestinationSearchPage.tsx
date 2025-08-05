@@ -56,8 +56,8 @@ const DestinationSearchPage: React.FC = () => {
           </a>
         </nav> */}
         <div className="dsp-actions">
-          <button className="btn-outline">Sign In</button>
-          <button className="btn-primary">Register</button>
+          <button className="btn-outline" onClick={() => navigate('/login')}>Sign In</button>
+          <button className="btn-primary"  onClick={() => navigate('/signup')}>Register</button>
         </div>
       </header>
 
