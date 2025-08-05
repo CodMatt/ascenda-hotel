@@ -11,24 +11,28 @@ interface DestinationDropdownProps {
   selectedDestination: Destination | null;
 }
 
-export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({ 
-  onSelect, 
-  selectedDestination 
+export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
+  onSelect,
+  selectedDestination,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { destinations, loading, searchDestinations } = useDestinations();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   //handle input changes with debounce search
@@ -38,12 +42,22 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
     searchDestinations(value);
     setIsOpen(true);
 
+    if (!hasSearched) {
+      setHasSearched(true); // First interaction
+    }
+
+    //debounce search
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      searchDestinations(value);
+    }, 300);
     //debounce search (avoids too many API calls)
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() =>{
     searchDestinations(value); 
   }, 300);
   };
+
 
   // handle destination selection
   const handleSelect = (destination: Destination) => {
@@ -52,7 +66,7 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
     setIsOpen(false);
   };
 
-  return (
+   return (
     <div className="destination-dropdown" ref={dropdownRef}>      
       { /* Input field for searching destinations */}
       <input
@@ -70,7 +84,7 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
           {loading ? (
             <div className="dropdown-item">Loading...</div>
             /* NO RESULTS STATE - Shows when no destinations found */
-          ) : destinations.length === 0 ? (
+          ) : destinations.length === 0 && hasSearched? (
             <div className="dropdown-item no-results">No destinations found</div>
           ) : (
             /* RESULTS LIST - Individual destination items */

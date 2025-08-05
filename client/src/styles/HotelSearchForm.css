@@ -1,0 +1,194 @@
+/* Container: horizontal form bar */
+.hotel-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    background: white;
+    padding: 24px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    width: auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  
+  /* Groups (Destination, Dates, etc) */
+  .hotel-search-form .form-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    flex: 1 1 auto;
+    gap: 6px;
+  }
+  
+  /* Date row: keep check-in and check-out side by side */
+  .hotel-search-form .form-row {
+    display: flex;
+    gap: 16px;
+    flex: 1 1 auto;
+    min-width: 220px;
+  }
+  
+  /* Inputs and selects consistent appearance */
+  .hotel-search-form input,
+  .hotel-search-form .date-picker,
+  .hotel-search-form select {
+    padding: 12px 14px;
+    border: 1px solid #dde2ea;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #f9f9fb;
+    outline: none;
+    min-width: 100px;
+    color: black;
+  }
+  
+  .hotel-search-form input:focus,
+  .hotel-search-form .date-picker:focus,
+  .hotel-search-form select:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0,102,204,0.15);
+  }
+  
+  /* Rooms & Guests section: make each room stacked but its content aligned */
+  .hotel-search-form .room-guests {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #f5f7fa;
+    padding: 10px 14px;
+    border-radius: 8px;
+    min-width: 160px;
+  }
+  
+  
+  /* Room header with remove button */
+  .room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .remove-room {
+    background: none;
+    border: none;
+    color: #d0383b;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background .2s;
+  }
+  .remove-room:hover {
+    background: rgba(208,56,59,0.1);
+  }
+  
+  /* Add room button */
+  .add-room {
+    background: none;
+    border: 1px dashed #b0b8c1;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #1f2d3a;
+    margin-top: 4px;
+  }
+  .add-room:hover {
+    background: rgba(0,0,0,0.02);
+  }
+  
+  /* Search button */
+  .search-button {
+    background: #ff5a5f;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 0 0 auto;
+    align-self: center;
+    transition: filter .2s;
+  }
+  .search-button:hover {
+    filter: brightness(1.05);
+  }
+  
+  /* Error message (inline) */
+  .error-message {
+    background: #fdecea;
+    color: #b52834;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    width: 100%;
+  }
+  
+  /* Responsive fallback: stack vertically on narrow viewports */
+  @media (max-width: 900px) {
+    .hotel-search-form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .hotel-search-form .form-row {
+      flex-direction: column;
+    }
+  
+    .search-button {
+      width: 100%;
+    }
+  }
+
+
+  /*HALLLP*/
+
+  .guest-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Individual group: adults or children */
+.guest-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #dde2ea;
+  font-size: 0.85rem;
+  flex: 1 1 100px;
+}
+
+/* Counter buttons */
+.guest-group button {
+  border: none;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.guest-group button:hover {
+  background-color: #e2e6ea;
+}
+
+.guest-group span {
+  min-width: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+ 
+
+  
