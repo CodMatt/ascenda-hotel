@@ -15,5 +15,8 @@ export default {
   },
   Hotels:{
     Base:'/Hotels'
+  },
+  Stripe:{
+    Base:'/stripe'
   }
 } as const;

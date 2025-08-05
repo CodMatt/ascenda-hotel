@@ -3,8 +3,9 @@ import { Router } from 'express';
 import Paths from '@src/common/constants/Paths';
 import BookingRoutes from './BookingRoutes';
 import UserRoutes from './UserRoutes';
-import noAcctRoutes from './noAcctRoutes'
-import hotelRoutes from './hotelRoutes'
+import noAcctRoutes from './noAcctRoutes';
+import hotelRoutes from './hotelRoutes';
+import stripeRoutes from './stripeRoutes';
 
 
 /******************************************************************************
@@ -17,7 +18,7 @@ apiRouter.use(Paths.noAcct.Base, noAcctRoutes)
 apiRouter.use(Paths.Booking.Base, BookingRoutes)
 apiRouter.use(Paths.Users.Base, UserRoutes)
 apiRouter.use(Paths.Hotels.Base, hotelRoutes)
-
+apiRouter.use(Paths.Stripe.Base, stripeRoutes)
 
 // ** Add other routers here ** //
 // Add more routers as needed

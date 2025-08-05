@@ -18,6 +18,9 @@ import UserRoutes from './repos/UserRepo';
 import bookingRoutes from './repos/bookingRepo';
 import nonAcctRoute from './repos/nonAccountRepo';
 
+//stripe
+import fastify from 'fastify';
+
 /******************************************************************************
                                 Setup
 ******************************************************************************/
@@ -53,7 +56,6 @@ app.use(express.urlencoded({ extended: true }));
 if (ENV.NodeEnv === NodeEnvs.Dev) {
   app.use(morgan('dev'));
 }
-
 // CORS configuration
 app.use(cors({
   origin: ENV.NodeEnv === NodeEnvs.Production 
@@ -81,6 +83,21 @@ if (ENV.NodeEnv === NodeEnvs.Production) {
       preload: true
     }
   }));
+}
+
+if (ENV.NodeEnv === NodeEnvs.Dev){
+  app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://js.stripe.com", "'unsafe-inline'"], // Allow Stripe.js
+      frameSrc: ["'self'", "https://js.stripe.com"], // For Stripe Elements/Checkout
+      connectSrc: ["'self'", "https://api.stripe.com"], // For Stripe API calls
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https://*.stripe.com"],
+    }
+  }
+}));
 }
 
 // API Routes
