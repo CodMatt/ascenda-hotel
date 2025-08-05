@@ -148,4 +148,50 @@
       width: 100%;
     }
   }
+
+
+  /*HALLLP*/
+
+  .guest-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Individual group: adults or children */
+.guest-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #dde2ea;
+  font-size: 0.85rem;
+  flex: 1 1 100px;
+}
+
+/* Counter buttons */
+.guest-group button {
+  border: none;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.guest-group button:hover {
+  background-color: #e2e6ea;
+}
+
+.guest-group span {
+  min-width: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+ 
+
   
