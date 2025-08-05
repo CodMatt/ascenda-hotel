@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import HotelSearchPage from './pages/HotelSearchPage'
-import DummyPage from './pages/DummyPage'
+import CheckHotelDetailsPage from './pages/CheckHotelDetailsPage'
 import DestinationSearchPage from './pages/DestinationSearchPage'
 import HotelDetailsPage from './pages/HotelDetailsPage'
 import './styles/hotelSearch.css'
@@ -13,7 +13,7 @@ export default function App() {
             element={<HotelSearchPage />}
             />
       <Route path="/hotels/:id" element={<HotelDetailsPage />} /> // Placeholder 
-      <Route path="/dummypage" element={<DummyPage />} />
+      <Route path="/checkhoteldetailspage" element={<CheckHotelDetailsPage />} />
     </Routes>
   )
 }
