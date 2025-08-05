@@ -34,7 +34,7 @@ router.get("/search", async (req: Request, res: Response): Promise<void> => {
     currency = "SGD",
     country_code = "SG",
     guests,
-    partner_id = "1",
+    partner_id = "1089",
   } = req.query;
 
   if (!destination_id || !checkin || !checkout || !guests) {
