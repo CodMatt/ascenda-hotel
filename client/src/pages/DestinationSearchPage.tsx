@@ -14,6 +14,8 @@ const DestinationSearchPage: React.FC = () => {
     destinationId: string;
     checkin: string;
     checkout: string;
+    adults: number;
+    children: number;
     guests: string;
     lang?: string;
     currency?: string;

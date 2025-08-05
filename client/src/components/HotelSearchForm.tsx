@@ -12,6 +12,8 @@ interface HotelSearchFormProps {
     checkin: string;
     checkout: string;
     guests: string;
+    adults: number;
+    children: number;
     lang?: string;
     currency?: string;
     country_code?: string;
@@ -52,11 +54,22 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
       .map((room) => room.adults + room.children) // total guests in the room
       .join("|"); // e.g. "2|3|4"
 
+    const totalAdults = guestsPerRoom.reduce(
+      (sum, room) => sum + room.adults,
+      0
+    );
+    const totalChildren = guestsPerRoom.reduce(
+      (sum, room) => sum + room.children,
+      0
+    );
+
     onSearch({
       destinationId: selectedDestination.uid,
       checkin: format(checkinDate, "yyyy-MM-dd"),
       checkout: format(checkoutDate, "yyyy-MM-dd"),
       guests: guestsParam,
+      adults: totalAdults,
+      children: totalChildren,
       lang: "en_US",
       currency: "SGD",
       country_code: "SG",
