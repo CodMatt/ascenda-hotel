@@ -113,6 +113,7 @@ export default function HotelSearchPage() {
         hotels={hotelsWithCoords}
         onHotelSelect={(hotelName) => {
           console.log("Hotel selected from map:", hotelName);
+          <Link to={`/hotels/${hotelName}?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`} />
           // TODO: redirect to hotel details upon clicking 
         }}
       />
