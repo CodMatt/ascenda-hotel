@@ -156,16 +156,7 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
             </div>
             <div key={index} className="room-guests">
               <div className="room-header">
-                <span>Room {index + 1}</span>
-                {index > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => removeRoom(index)}
-                    className="remove-room"
-                  >
-                    Remove
-                  </button>
-                )}
+                {/*<span>Room {index + 1}</span>*/}
               </div>
 
               <div className="guest-controls">
