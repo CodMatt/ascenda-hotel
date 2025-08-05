@@ -7,6 +7,7 @@ import isEmailValid from "../lib/IsEmailValid";
 import isNameValid from "../lib/IsNameValid";
 import isPhoneNumberValid from "../lib/IsPhoneNumberValid";
 import CountryCodes from "../lib/CountryCodes";
+import "../styles/RegisterPage.css";
 
 const SignupForm: React.FC = () => {
   const { signup } = useAuth();
@@ -79,99 +80,120 @@ const SignupForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit}>
       {error && <div className="error">{error}</div>}
-
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        value={formData.username}
-        onChange={handleInputChange}
-        required
-        disabled={isLoading}
-      />
-
-      <input
-        type="text"
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleInputChange}
-        onBlur={() => {
-          if (!isEmailValid(formData.email)) {
-            setError("Invalid email format");
-          }
-        }}
-        required
-        disabled={isLoading}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleInputChange}
-        required
-        disabled={isLoading}
-      />
-      <select
-        name="country"
-        value={country}
-        onChange={(e) => {
-          const selectedCountry = e.target.value;
-          setCountry(selectedCountry);
-          setCountryCode(CountryCodes[selectedCountry][1]);
-        }}
-        disabled={isLoading}
-        required
-      >
-        {Object.entries(CountryCodes).map(([countryName, [, code]]) => (
-          <option key={countryName} value={countryName}>
-            {countryName} (+{code})
-          </option>
-        ))}
-      </select>
-
-      <input
-        type="tel"
-        name="phone_num"
-        placeholder={`Phone Number (e.g., ${countryCode}12345678)`}
-        value={formData.phone_num}
-        onChange={handleInputChange}
-        required
-        disabled={isLoading}
-      />
-
-      <input
-        type="text"
-        name="first_name"
-        placeholder="First Name"
-        value={formData.first_name}
-        onChange={handleInputChange}
-        required
-        disabled={isLoading}
-      />
-      <input
-        type="text"
-        name="last_name"
-        placeholder="Last Name"
-        value={formData.last_name}
-        onChange={handleInputChange}
-        required
-        disabled={isLoading}
-      />
-
-      <input
-        type="text"
-        name="salutation"
-        placeholder="Salutation"
-        value={formData.salutation}
-        onChange={handleInputChange}
-        required
-        disabled={isLoading}
-      />
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? "Creating Account..." : "Sign Up"}
-      </button>
+  
+      <div>
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={handleInputChange}
+          required
+          disabled={isLoading}
+        />
+      </div>
+  
+      <div>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleInputChange}
+          required
+          disabled={isLoading}
+          onBlur={() => {
+            if (!isEmailValid(formData.email)) {
+              setError("Invalid email format");
+            }
+          }}
+        />
+      </div>
+  
+      <div>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleInputChange}
+          required
+          disabled={isLoading}
+        />
+      </div>
+  
+      <div>
+        <select
+          name="country"
+          value={country}
+          onChange={(e) => {
+            const selected = e.target.value;
+            setCountry(selected);
+            setCountryCode(CountryCodes[selected][1]);
+          }}
+          required
+          disabled={isLoading}
+        >
+          {Object.entries(CountryCodes).map(([name, [, code]]) => (
+            <option key={name} value={name}>
+              {name} (+{code})
+            </option>
+          ))}
+        </select>
+      </div>
+  
+      <div>
+        <input
+          type="tel"
+          name="phone_num"
+          placeholder={`Phone Number (e.g., ${countryCode}12345678)`}
+          value={formData.phone_num}
+          onChange={handleInputChange}
+          required
+          disabled={isLoading}
+        />
+      </div>
+  
+      <div>
+        <input
+          type="text"
+          name="first_name"
+          placeholder="First Name"
+          value={formData.first_name}
+          onChange={handleInputChange}
+          required
+          disabled={isLoading}
+        />
+      </div>
+  
+      <div>
+        <input
+          type="text"
+          name="last_name"
+          placeholder="Last Name"
+          value={formData.last_name}
+          onChange={handleInputChange}
+          required
+          disabled={isLoading}
+        />
+      </div>
+  
+      <div>
+        <input
+          type="text"
+          name="salutation"
+          placeholder="Salutation"
+          value={formData.salutation}
+          onChange={handleInputChange}
+          disabled={isLoading}
+        />
+      </div>
+  
+      <div>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Creating Account..." : "Create Account"}
+        </button>
+      </div>
     </form>
   );
 };
