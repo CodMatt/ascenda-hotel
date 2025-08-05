@@ -3,6 +3,7 @@ import type {FormEvent} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import type { LoginCredentials } from '../types/auth';
+import "../styles/LoginPage.css";
 
 const LoginForm: React.FC = () =>{
     const {login} = useAuth();
@@ -42,14 +43,14 @@ const LoginForm: React.FC = () =>{
             [name]: value
         }));
     };
-    return(
-        <form onSubmit={handleSubmit}>
+    return (
+        <form className="signin-form" onSubmit={handleSubmit}>
             {error && <div className='error'>{error}</div>}
 
             <input
                type='email'
                name='email'
-               placeholder='email'
+               placeholder='Email'
                value={formData.email}
                onChange={handleInputChange}
                required
