@@ -62,7 +62,7 @@ function CheckHotelDetailsPage() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    navigate("/bookingdetails", {
+    navigate("/guestinfo", {
       state: {
         hotelId: state.id,
         destId: state.destId, 
