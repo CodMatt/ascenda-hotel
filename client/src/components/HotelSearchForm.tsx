@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, addDays } from "date-fns";
 import { Destination } from "../types/destination";
+import "../styles/hotelSearchForm.css";
 
 interface HotelSearchFormProps {
   onSearch: (searchParams: {
@@ -11,11 +12,15 @@ interface HotelSearchFormProps {
     checkin: string;
     checkout: string;
     guests: string;
+    adults: number;
+    children: number;
     lang?: string;
     currency?: string;
     country_code?: string;
   }) => void;
 }
+
+type RoomGuests = { adults: number; children: number };
 
 const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
   // Form state
@@ -26,9 +31,10 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
     addDays(new Date(), 3)
   );
   const [rooms, setRooms] = useState(1);
-  const [guestsPerRoom, setGuestsPerRoom] = useState<number[]>([2]);
+  const [guestsPerRoom, setGuestsPerRoom] = useState<RoomGuests[]>([
+    { adults: 2, children: 0 },
+  ]);
   const [error, setError] = useState("");
-
   const minCheckinDate = addDays(new Date(), 3);
 
   // Handle form submission
@@ -50,16 +56,26 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
       return;
     }
 
-    //clear previous errors
-    setError("");
+    const guestsParam = guestsPerRoom
+      .map((room) => room.adults + room.children) // total guests in the room
+      .join("|"); // e.g. "2|3|4"
 
-    const guestsParam = guestsPerRoom.join("|");
+    const totalAdults = guestsPerRoom.reduce(
+      (sum, room) => sum + room.adults,
+      0
+    );
+    const totalChildren = guestsPerRoom.reduce(
+      (sum, room) => sum + room.children,
+      0
+    );
 
     onSearch({
       destinationId: selectedDestination.uid,
       checkin: format(checkinDate, "yyyy-MM-dd"),
       checkout: format(checkoutDate, "yyyy-MM-dd"),
       guests: guestsParam,
+      adults: totalAdults,
+      children: totalChildren,
       lang: "en_US",
       currency: "SGD",
       country_code: "SG",
@@ -67,16 +83,22 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
   };
 
   // Room/guest management
-  const handleGuestsChange = (index: number, value: number) => {
-    const newGuests = [...guestsPerRoom];
-    newGuests[index] = value;
-    setGuestsPerRoom(newGuests);
+  const handleGuestsChange = (
+    index: number,
+    type: "adults" | "children",
+    delta: number
+  ) => {
+    const updatedGuests = [...guestsPerRoom];
+    const current = updatedGuests[index][type];
+    const newValue = Math.max(0, current + delta); //no negative vals
+    updatedGuests[index] = { ...updatedGuests[index], [type]: newValue };
+    setGuestsPerRoom(updatedGuests);
   };
 
   const addRoom = () => {
     if (rooms < 8) {
       setRooms(rooms + 1);
-      setGuestsPerRoom([...guestsPerRoom, 2]);
+      setGuestsPerRoom([...guestsPerRoom, { adults: 2, children: 0 }]);
     }
   };
 
@@ -91,13 +113,13 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
 
   return (
     <form onSubmit={handleSubmit} className="hotel-search-form">
-      <h2>Find Your Hotel</h2>
+      {/* <h2>Find Your Hotel</h2> */}
 
       {error && <div className="error-message">{error}</div>}
 
       {/* Destination Dropdown */}
       <div className="form-group">
-        <label>Destination</label>
+        <label htmlFor="destination">Destination</label>
         <DestinationDropdown
           onSelect={setSelectedDestination}
           selectedDestination={selectedDestination}
@@ -154,19 +176,47 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
                 </button>
               )}
             </div>
-            <select
-              value={guestsPerRoom[index]}
-              onChange={(e) =>
-                handleGuestsChange(index, parseInt(e.target.value))
-              }
-              className="guest-select"
-            >
-              {[1, 2, 3, 4].map((num) => (
-                <option key={num} value={num}>
-                  {num} {num === 1 ? "guest" : "guests"}
-                </option>
-              ))}
-            </select>
+            <div key={index} className="room-guests">
+              <div className="room-header">
+                {/*<span>Room {index + 1}</span>*/}
+              </div>
+
+              <div className="guest-controls">
+                <div className="guest-group">
+                  <label>Adults</label>
+                  <button
+                    type="button"
+                    onClick={() => handleGuestsChange(index, "adults", -1)}
+                  >
+                    -
+                  </button>
+                  <span>{guestsPerRoom[index].adults}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleGuestsChange(index, "adults", 1)}
+                  >
+                    +
+                  </button>
+                </div>
+
+                <div className="guest-group">
+                  <label>Children</label>
+                  <button
+                    type="button"
+                    onClick={() => handleGuestsChange(index, "children", -1)}
+                  >
+                    -
+                  </button>
+                  <span>{guestsPerRoom[index].children}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleGuestsChange(index, "children", 1)}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         ))}
         {rooms < 8 && (

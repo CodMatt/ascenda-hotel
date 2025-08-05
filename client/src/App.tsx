@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import HotelSearchPage from './pages/HotelSearchPage'
 import DestinationSearchPage from './pages/DestinationSearchPage'
 import {AuthProvider} from './context/AuthContext';
