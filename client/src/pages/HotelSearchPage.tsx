@@ -3,6 +3,8 @@ import { fetchHotels } from "../api/hotels";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
 import { useLocation } from "react-router-dom"; 
 import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
+import '../styles/HotelSearchPage.css';
+import logo from '../assets/logo.png';
 
 
 
@@ -105,15 +107,35 @@ export default function HotelSearchPage() {
 
   
   return (
-    <div className="p-6 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4">Hotel Search Results</h1>
-      <MapboxMap
-        hotels={hotelsWithCoords}
-        onHotelSelect={(hotelName) => {
-          console.log("Hotel selected from map:", hotelName);
-          // TODO: redirect to hotel details upon clicking 
-        }}
-      />
+    // changed from p-6 min-h-screen
+    <div className="hotel-search-page">  
+
+      {/* ----- Header ----- */}
+      <div className="page-header">
+        <div className="dsp-logo">
+            <img src={logo} alt="Ascenda logo" className="logo-img" />
+        </div>
+        <div className="dsp-actions">
+          <button className="btn-outline">Sign In</button>
+          <button className="btn-primary">Register</button>
+        </div>
+      </div>
+
+
+      {/* <h1 className="text-3xl font-bold mb-4">Hotel Search Results</h1> */}
+      <div className="content-wrapper">
+        <div className="map-and-results">
+          <div className="map-container">
+            <div className="map-wrapper">
+              <MapboxMap
+                hotels={hotelsWithCoords}
+                onHotelSelect={(hotelName) => {
+                  console.log("Hotel selected from map:", hotelName);
+                  // TODO: redirect to hotel details upon clicking 
+                }}
+              />
+            </div>
+          </div>
 
       <div className="mb-4 flex flex-wrap gap-4">
         <button onClick={() => setSortBy("priceAsc")} className={`px-4 py-2 rounded ${sortBy === "priceAsc" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}>Price: Low to High</button>
@@ -164,6 +186,8 @@ export default function HotelSearchPage() {
           )}
         </>
       )}
+      </div>
+      </div>
     </div>
   );
 }
