@@ -260,7 +260,7 @@ export default function HotelDetailsPage() {
   const handleSelect = (room: any) => {
     const checkinDate = new Date(checkin);
     const checkoutDate = new Date(checkout);
-    navigate("/dummypage", {
+    navigate("/checkhoteldetailspage", {
       state: {
         id: id,
         destId: destinationId,
