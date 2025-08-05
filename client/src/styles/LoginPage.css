@@ -1,0 +1,93 @@
+/* src/styles/LoginPage.css */
+
+/* 1. Full‐screen centering with extra top/bottom padding */
+.signin-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;    /* always fill the viewport */
+  padding: 3rem 0;      /* extra breathing room above & below */
+  background-color: #f5f5f5;
+}
+
+/* 2. Card container with generous margins & padding */
+.signin-wrapper {
+  width: 360px;
+  margin: 2rem 0;       /* space above/below the card */
+  padding: 4rem 2rem;   /* inside padding top/bottom */
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* 3. Logo & title styling */
+.signin-logo {
+  width: 80px;
+  margin: 0 auto 1.5rem;
+}
+.signin-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/* 4. Form full width, vertical stack with larger gaps */
+.signin-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;       /* match your register spacing */
+  text-align: left;
+}
+
+/* 5. Inputs */
+.signin-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #333;
+}
+
+/* 6. Error message */
+.error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: -1.75rem;  /* pull it into the gap above */
+}
+
+/* 7. Button */
+.signin-form button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.signin-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
+/* ← Back button */
+.back-button {
+  display: block;
+  margin: 1.75rem auto 0;
+  background: transparent;
+  border: none;
+  color: #6366f1;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.back-button:hover {
+  text-decoration: underline;
+}

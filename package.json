@@ -1,9 +1,32 @@
 {
+  "name": "ascenda-hotel",
+  "version": "1.0.0",
+  "description": "This is a responsive hotel booking web app built using **React**, **Vite**, and **Tailwind CSS**.",
+  "main": "eslint.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javierchanj/ascenda-hotel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/javierchanj/ascenda-hotel/issues"
+  },
+  "homepage": "https://github.com/javierchanj/ascenda-hotel#readme",
   "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/supertest": "^6.0.3",
+    "nodemon": "^3.1.10",
     "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
   },
