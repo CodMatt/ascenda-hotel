@@ -1,4 +1,3 @@
-import React from "react";
 import logo from "../assets/logo.png";
 import LoginForm from "../components/LoginForm";
 import { useNavigate } from "react-router-dom";
