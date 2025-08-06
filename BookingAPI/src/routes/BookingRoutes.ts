@@ -34,7 +34,6 @@ router.post('/',validateBookingCreation,async (req:any, res:any) => {
             phone_num,
             email
         } = req.body;
-        console.log(req.body)
 
         const bookingId = id || `booking-${Date.now()}`;
         const now = new Date();

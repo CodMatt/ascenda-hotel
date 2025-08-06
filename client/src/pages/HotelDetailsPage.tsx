@@ -273,8 +273,10 @@ export default function HotelDetailsPage() {
         noAdults: parseInt(guests.split(",")[0]) || 1,
         noChildren: parseInt(guests.split(",")[1]) || 0,
         roomType: room?.roomDescription || room?.roomNormalizedDescription || "Standard Room",   
+        userRef:"dummyUserRef"
       }
     });
+    
   };
 
   if (loading) return <div>Loading...</div>;

@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, addDays } from "date-fns";
 import { Destination } from "../types/destination";
-import "../styles/hotelSearchForm.css";
+import "../styles/HotelSearchForm.css";
 
 interface HotelSearchFormProps {
   onSearch: (searchParams: {
