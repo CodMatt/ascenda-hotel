@@ -12,8 +12,6 @@ import PaymentPage from './pages/PaymentPage'
 import SuccessForm from './pages/SuccessForm'
 
 
-
-
 export default function App() {
   return (
     <AuthProvider>
