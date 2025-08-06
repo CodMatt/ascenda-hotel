@@ -39,7 +39,7 @@ body {
 }
 
 .progress-step.active {
-  background-color: #2196F3;
+  background-color: #0066CC;
   color: white;
 }
 
@@ -60,7 +60,7 @@ body {
 }
 
 .progress-step.completed:not(:last-child)::after {
-  background-color: #4CAF50;
+  background-color: #0066CC;
 }
 
 /* Payment Page Layout */
@@ -289,13 +289,13 @@ body {
 }
 
 .pay-btn {
-  background: #4CAF50;
+  background: #0066CC;
   color: white;
   flex: 1;
 }
 
 .pay-btn:hover {
-  background: #45a049;
+  background: #0066CC;
 }
 
 .back-btn {
@@ -336,8 +336,8 @@ body {
 
 .summary-item.total {
   font-size: 18px;
-  color: #1976D2;
-  border-top: 2px solid #1976D2;
+  color: #0066CC;
+  border-top: 2px solid #0066CC;
   padding-top: 15px;
   margin-top: 15px;
 }

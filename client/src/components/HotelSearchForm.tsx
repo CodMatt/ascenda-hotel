@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, addDays } from "date-fns";
 import { Destination } from "../types/destination";
-import "../styles/hotelSearchForm.css";
+import "../styles/HotelSearchForm.css";
 
 interface HotelSearchFormProps {
   onSearch: (searchParams: {
@@ -164,9 +164,6 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
       <div className="form-row">
         <div className="form-group">
           <label>Check-in</label>
-          <small className="date-requirement">
-            (Must be at least 3 days in advance)
-          </small>
           <DatePicker
             selected={checkinDate}
             onChange={(date) => {
@@ -176,6 +173,9 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
             minDate={minCheckinDate}
             className="date-picker"
           />
+          <small className="date-requirement">
+            (Must be at least 3 days in advance)
+          </small>      
         </div>
 
         <div className="form-group">

@@ -43,7 +43,7 @@ body {
 }
 
 .progress-step.completed {
-  background-color: #4CAF50;
+  background-color: #0066CC;
   color: white;
 }
 
@@ -69,7 +69,7 @@ body {
 }
 
 .progress-step.completed:not(:last-child)::after {
-  background-color: #4CAF50;
+  background-color: #0066CC;
 }
 
 /* Page Title */
@@ -185,7 +185,7 @@ body {
   font-weight: 600;
   color: #333;
   margin-bottom: 8px;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .date-display {
@@ -194,7 +194,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
   color: #333;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   text-align: center;
 }
@@ -221,13 +221,13 @@ body {
 .guest-field label {
   font-weight: 600;
   color: #333;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .guest-field span {
   color: #333;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 /* Pricing Summary */
@@ -251,7 +251,7 @@ body {
 }
 
 .pricing-display strong {
-  color: #4CAF50;
+  color: #0066CC;
   font-size: 20px;
   font-weight: 700;
 }
@@ -356,13 +356,10 @@ body {
 }
 
 .book-btn {
-  background: #4CAF50;
+  background: #0066CC;
   color: white;
 }
 
-.book-btn:hover {
-  background: #45a049;
-}
 
 .cancel-btn {
   background: #6c757d;
