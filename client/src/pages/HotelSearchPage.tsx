@@ -190,31 +190,21 @@ export default function HotelSearchPage() {
                 {/* -- List + sort/filter panel -- */}
                 <div className="list-container">
                   <div className="sort-filter-bar">
-                    <button
-                      onClick={() => setSortBy("priceAsc")}
-                      className={sortBy === "priceAsc" ? "active" : ""}
-                    >
-                      Price: Low to High
-                    </button>
-                    <button
-                      onClick={() => setSortBy("priceDesc")}
-                      className={sortBy === "priceDesc" ? "active" : ""}
-                    >
-                      Price: High to Low
-                    </button>
-                    <button
-                      onClick={() => setSortBy("starAsc")}
-                      className={sortBy === "starAsc" ? "active" : ""}
-                    >
-                      Star: Low to High
-                    </button>
-                    <button
-                      onClick={() => setSortBy("starDesc")}
-                      className={sortBy === "starDesc" ? "active" : ""}
-                    >
-                      Star: High to Low
-                    </button>
-                    <button
+                    <div className="sort-dropdown">
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as any)}
+                        className="sort-select"
+                      >
+                        <option value="none">Sort By</option>
+                        <option value="priceAsc">Price (low to high)</option>
+                        <option value="priceDesc">Price (high to low)</option>
+                        <option value="starAsc">Star Rating (low to high)</option>
+                        <option value="starDesc">Star Rating (high to low)</option>
+                      </select>
+                    </div>
+
+                    {/* <button
                       onClick={() => {
                         setSortBy("none");
                         setFilterStar(null);
@@ -222,7 +212,9 @@ export default function HotelSearchPage() {
                       className="clear-btn"
                     >
                       Clear All
-                    </button>
+                    </button> */}
+
+                    
                     {[5, 4, 3].map((s) => (
                       <button
                         key={s}
@@ -231,7 +223,7 @@ export default function HotelSearchPage() {
                         }
                         className={filterStar === s ? "active" : ""}
                       >
-                        Only {s}-Star
+                        {s}-Star
                       </button>
                     ))}
                     <button onClick={() => setFilterStar(null)} className="clear-btn">
