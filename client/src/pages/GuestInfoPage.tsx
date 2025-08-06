@@ -84,6 +84,10 @@ function GuestInfoPage(){
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
       if (authToken || (isNameValid(firstName) && isNameValid(lastName) && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode))){
+        let fullNumber = phoneNumber;
+        if(!authToken){
+          fullNumber = countryCode + " " + phoneNumber;
+        }
         navigate("/payment", {
         state: {
         userRef: userRef,
@@ -92,7 +96,7 @@ function GuestInfoPage(){
         firstName: firstName,
         lastName: lastName,
         salutation: salutation,
-        phoneNumber: countryCode + " " + phoneNumber, // split by country code & phone number
+        phoneNumber: fullNumber, // split by country code & phone number
         emailAddress: emailAddress,
         hotelId: hotelId, 
         destId: destId, 

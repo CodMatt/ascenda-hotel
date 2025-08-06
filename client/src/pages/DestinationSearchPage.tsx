@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HotelSearchForm from '../components/HotelSearchForm';
-import '../styles/destinationSearchPage.css';
+import '../styles/DestinationSearchPage.css';
 import logo from '../assets/logo.png';
 
 const DestinationSearchPage: React.FC = () => {
