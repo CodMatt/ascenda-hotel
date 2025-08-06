@@ -22,7 +22,7 @@ import InvalidCountryNotification from '../components/notifications/InvalidCount
 import calculateNights from '../lib/CalculateNights';
 import calculateTotalPrice from '../lib/CalculateTotalPrice';
 
-
+import NavBar from '../components/NavBar';
 import '../styles/GuestInfoPage.css';
 
 function GuestInfoPage(){
@@ -127,6 +127,8 @@ function GuestInfoPage(){
 
   return(
     <div className="payment-page">
+      <NavBar />
+
       <div className="progress-bar">
         {/* <div className="progress-step completed">✓</div> */}
         <div className="progress-step completed">✓</div>

@@ -1,4 +1,5 @@
 /* Global overrides for hotel info page */
+
 .hotel-info-page {
   background-color: white !important;
   color: #333 !important;
@@ -24,49 +25,95 @@ html:has(.hotel-info-page) {
   background-color: #f9fafb !important;
 }
 
-/* Reset and apply custom button styles */
-.hotel-info-page button {
-  background-color: initial !important;
-  border: initial !important;
-  color: initial !important;
-  font-size: initial !important;
-  padding: initial !important;
-  border-radius: initial !important;
+
+/* HEADER */
+
+.page-header {
+  background: #fff;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  z-index: 10;
 }
 
-/* Navigation buttons */
-.hotel-info-page .sign-in-btn {
-  background: transparent !important;
-  color: #333 !important;
-  border: 1px solid #ddd !important;
-  padding: 8px 16px !important;
-  border-radius: 4px !important;
+.dsp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 30px;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.logo-img {
+  height: 24px;
+  object-fit: contain;
+}
+
+.dsp-nav {
+  display: flex;
+  gap: 18px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 0.9rem;
+  color: var(--text);
+  position: relative;
+  padding: 6px 4px;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.dsp-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-outline {
+  background: none;
+  border: 1px solid var(--primary);
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s;
+  font-size: 0.85rem;
+  transition: var(--transition);
 }
 
-.hotel-info-page .sign-in-btn:hover {
-  background: #f5f5f5 !important;
+.btn-outline:hover {
+  background: rgba(0, 102, 204, 0.05);
 }
 
-.hotel-info-page .register-btn {
-  background: #ff5323 !important;
-  color: white !important;
-  border: none !important;
-  padding: 8px 16px !important;
-  border-radius: 4px !important;
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
+  font-size: 0.85rem;
+  transition: var(--transition);
 }
 
-.hotel-info-page .register-btn:hover {
-  background: #e64a1f !important;
+.btn-primary:hover {
+  filter: brightness(1.05);
 }
+
 
 /* Room and booking buttons */
 .hotel-info-page .see-rooms-btn {
   width: 100%;
-  background: #ff5323 !important;
+  background: #0066CC !important;
   color: white !important;
   border: none !important;
   padding: 14px !important;
@@ -79,7 +126,7 @@ html:has(.hotel-info-page) {
 }
 
 .hotel-info-page .see-rooms-btn:hover {
-  background: #e64a1f !important;
+  background: #0066CC !important;
   transform: translateY(-1px);
 }
 
@@ -102,7 +149,7 @@ html:has(.hotel-info-page) {
 
 /* Checking here - Location button styles */
 .hotel-info-page .location-btn {
-  background: #ff5323 !important;
+  background: #0066CC !important;
   color: white !important;
   border: none !important;
   padding: 6px 12px !important;
@@ -197,18 +244,19 @@ body {
 
 .star-rating {
   color: #333333;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 400;
   font-style: italic;
 }
 
 .hotel-address {
   color: #666;
-  font-size: 16px;
+  font-size: 17px;
   margin: 0;
+  padding: 5px 0;
 }
 
-/* Checking here - Address container styles */
+/* Address container styles */
 .hotel-address-container {
   display: flex;
   align-items: center;
@@ -254,7 +302,7 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0,0,0,0);
   color: rgba(255, 255, 255, 0.8);
   border: none;
   padding: 16px 20px;
@@ -286,7 +334,7 @@ body {
 }
 
 .carousel-btn:hover {
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0);
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -367,7 +415,7 @@ body {
 .overview-section p {
   line-height: 1.7;
   color: #666;
-  font-size: 15px;
+  font-size: 17px;
   margin-bottom: 15px;
 }
 
@@ -510,7 +558,7 @@ body {
 .room-price {
   font-size: 24px;
   font-weight: bold;
-  color: #ff5323;
+  color: #0066CC;
   margin-bottom: 4px;
 }
 
@@ -608,12 +656,12 @@ body {
   display: block;
   font-size: 32px;
   font-weight: bold;
-  color: #ff5323;
+  color: #0066CC;
   margin-bottom: 6px;
 }
 
 .duration-text {
-  font-size: 14px;
+  font-size: 17px;
   color: #666;
 }
 
@@ -637,7 +685,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: 17px;
   color: #666;
   padding: 2px 0;
 }

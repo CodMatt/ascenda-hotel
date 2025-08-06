@@ -76,7 +76,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ hotels, onHotelSelect }) => {
       button.style.marginTop = "8px";
       button.style.padding = "6px 10px";
       button.style.cursor = "pointer";
-      button.style.background = "#FF5323";
+      button.style.background = "#0066CC";
       button.style.color = "white";
       button.style.border = "none";
       button.style.borderRadius = "4px";
@@ -105,7 +105,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ hotels, onHotelSelect }) => {
       hotels.forEach((hotel) => {
         const { lng, lat } = hotel.coordinates;
 
-        new mapboxgl.Marker({ color: "#FF5323" })
+        new mapboxgl.Marker({ color: "#0066CC" })
           .setLngLat([lng, lat])
           .setPopup(
             new mapboxgl.Popup({ offset: 25 }).setDOMContent(createPopup(hotel))

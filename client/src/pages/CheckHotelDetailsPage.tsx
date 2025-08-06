@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import React, {use, useState} from 'react';
 import '../styles/BookingConfirmation.css'; // to move
+import NavBar from "../components/NavBar";
 
 function CheckHotelDetailsPage() {
   const navigate = useNavigate();
@@ -91,6 +92,7 @@ function CheckHotelDetailsPage() {
 
 return (
         <div className="booking-info-page">
+            <NavBar />
             {/* Progress Bar */}
             <div className="progress-bar">
                 <div className="progress-step active">1</div>
@@ -118,11 +120,11 @@ return (
                             </div>
                             
                             <div className="hotel-room-image">
-                                {/* <img 
-                                    src={xx} 
+                                <img 
+                                    src={state.roomImage} 
                                     alt={state.roomType}
                                     className="room-image"
-                                /> */}
+                                />
                             </div>
                         </div>
                     </div>
