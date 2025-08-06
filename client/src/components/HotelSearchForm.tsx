@@ -130,9 +130,6 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
       <div className="form-row">
         <div className="form-group">
           <label>Check-in</label>
-          <small className="date-requirement">
-            (Must be at least 3 days in advance)
-          </small>
           <DatePicker
             selected={checkinDate}
             onChange={(date) => {
@@ -144,6 +141,9 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
             minDate={minCheckinDate}
             className="date-picker"
           />
+          <small className="date-requirement">
+            (Must be at least 3 days in advance)
+          </small>      
         </div>
 
         <div className="form-group">
