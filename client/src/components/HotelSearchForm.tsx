@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DestinationDropdown } from "./DestinationDropdown";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,9 +26,11 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
   // Form state
   const [selectedDestination, setSelectedDestination] =
     useState<Destination | null>(null);
-  const [checkinDate, setCheckinDate] = useState<Date | null>(new Date());
-  const [checkoutDate, setCheckoutDate] = useState<Date | null>(
+  const [checkinDate, setCheckinDate] = useState<Date | null>(
     addDays(new Date(), 3)
+  );
+  const [checkoutDate, setCheckoutDate] = useState<Date | null>(
+    addDays(new Date(), 4)
   );
   const [rooms, setRooms] = useState(1);
   const [guestsPerRoom, setGuestsPerRoom] = useState<RoomGuests[]>([
@@ -36,6 +38,24 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
   ]);
   const [error, setError] = useState("");
   const minCheckinDate = addDays(new Date(), 3);
+  const minCheckoutDate = checkinDate
+    ? addDays(checkinDate, 1)
+    : addDays(minCheckinDate, 1);
+  console.log("Current state:", {
+    checkinDate,
+    checkoutDate,
+    minCheckoutDate,
+    "checkout >= minCheckout": checkoutDate && checkoutDate >= minCheckoutDate,
+  });
+
+  useEffect(() => {
+    if (!checkinDate) return;
+
+    const newMinCheckout = addDays(checkinDate, 1);
+    if (!checkoutDate || checkoutDate <= checkinDate) {
+      setCheckoutDate(newMinCheckout);
+    }
+  }, [checkinDate]);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -51,8 +71,22 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
       return;
     }
 
-    if (checkinDate < minCheckinDate) {
+    //normalized dates to midnight for proper comparison
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); //set to midnight
+
+    const checkinNormalized = new Date(checkinDate);
+    checkinNormalized.setHours(0, 0, 0, 0); //set to midnight
+
+    const minDateNormalized = addDays(today, 3);
+
+    if (checkinNormalized < minDateNormalized) {
       setError("Check-in date must be at least 3 days in advance");
+      return;
+    }
+
+    if (checkoutDate <= checkinDate) {
+      setError("Check-out date must be after check-in date");
       return;
     }
 
@@ -136,10 +170,8 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
           <DatePicker
             selected={checkinDate}
             onChange={(date) => {
+              console.log("Check-in changed to:", date);
               setCheckinDate(date);
-              if (checkoutDate && date && checkoutDate < date) {
-                setCheckoutDate(addDays(date, 1));
-              }
             }}
             minDate={minCheckinDate}
             className="date-picker"
@@ -149,8 +181,12 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
         <div className="form-group">
           <label>Check-out</label>
           <DatePicker
+            key={checkinDate?.getTime()}
             selected={checkoutDate}
-            onChange={setCheckoutDate}
+            onChange={(date) => {
+              console.log("Checkout selected:", date);
+              setCheckoutDate(date);
+            }}
             minDate={
               checkinDate ? addDays(checkinDate, 1) : addDays(minCheckinDate, 1)
             }
@@ -176,45 +212,40 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
                 </button>
               )}
             </div>
-            <div key={index} className="room-guests">
-              <div className="room-header">
-                {/*<span>Room {index + 1}</span>*/}
+
+            <div className="guest-controls">
+              <div className="guest-group">
+                <label>Adults</label>
+                <button
+                  type="button"
+                  onClick={() => handleGuestsChange(index, "adults", -1)}
+                >
+                  -
+                </button>
+                <span>{guestsPerRoom[index].adults}</span>
+                <button
+                  type="button"
+                  onClick={() => handleGuestsChange(index, "adults", 1)}
+                >
+                  +
+                </button>
               </div>
 
-              <div className="guest-controls">
-                <div className="guest-group">
-                  <label>Adults</label>
-                  <button
-                    type="button"
-                    onClick={() => handleGuestsChange(index, "adults", -1)}
-                  >
-                    -
-                  </button>
-                  <span>{guestsPerRoom[index].adults}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleGuestsChange(index, "adults", 1)}
-                  >
-                    +
-                  </button>
-                </div>
-
-                <div className="guest-group">
-                  <label>Children</label>
-                  <button
-                    type="button"
-                    onClick={() => handleGuestsChange(index, "children", -1)}
-                  >
-                    -
-                  </button>
-                  <span>{guestsPerRoom[index].children}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleGuestsChange(index, "children", 1)}
-                  >
-                    +
-                  </button>
-                </div>
+              <div className="guest-group">
+                <label>Children</label>
+                <button
+                  type="button"
+                  onClick={() => handleGuestsChange(index, "children", -1)}
+                >
+                  -
+                </button>
+                <span>{guestsPerRoom[index].children}</span>
+                <button
+                  type="button"
+                  onClick={() => handleGuestsChange(index, "children", 1)}
+                >
+                  +
+                </button>
               </div>
             </div>
           </div>
