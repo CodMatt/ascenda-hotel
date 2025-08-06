@@ -22,7 +22,7 @@ import InvalidCountryNotification from '../components/notifications/InvalidCount
 import calculateNights from '../lib/CalculateNights';
 import calculateTotalPrice from '../lib/CalculateTotalPrice';
 
-
+import NavBar from '../components/NavBar';
 import '../styles/GuestInfoPage.css';
 
 function GuestInfoPage(){
@@ -84,6 +84,10 @@ function GuestInfoPage(){
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
       if (authToken || (isNameValid(firstName) && isNameValid(lastName) && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode))){
+        let fullNumber = phoneNumber;
+        if(!authToken){
+          fullNumber = countryCode + " " + phoneNumber;
+        }
         navigate("/payment", {
         state: {
         userRef: userRef,
@@ -92,7 +96,7 @@ function GuestInfoPage(){
         firstName: firstName,
         lastName: lastName,
         salutation: salutation,
-        phoneNumber: countryCode + " " + phoneNumber, // split by country code & phone number
+        phoneNumber: fullNumber, // split by country code & phone number
         emailAddress: emailAddress,
         hotelId: hotelId, 
         destId: destId, 
@@ -123,6 +127,8 @@ function GuestInfoPage(){
 
   return(
     <div className="payment-page">
+      <NavBar />
+
       <div className="progress-bar">
         {/* <div className="progress-step completed">✓</div> */}
         <div className="progress-step completed">✓</div>

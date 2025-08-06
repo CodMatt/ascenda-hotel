@@ -57,6 +57,7 @@ body,
   flex-direction: column;
   padding: 24px 32px;
   overflow: auto;
+  background-color: white;
 }
 
 /* -------- Search summary card -------- */
@@ -113,8 +114,8 @@ body,
 
 /* -------- Results section & header -------- */
 .results-section {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: auto;
+  /* margin: 0 auto; */
   padding: 0 20px 40px;
   background-color: #f7f7f7;
   border-radius: 12px 12px 0 0;
@@ -157,7 +158,9 @@ body,
   overflow: hidden;
   background: #eef2f7;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  margin-bottom: 16px;
+  border: 1px solid #d0d7e2;
+  padding: 5px;
+  margin: 16px;
 }
 
 /* -------- Sort / filter bar (if used) -------- */
@@ -166,6 +169,7 @@ body,
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 16px;
+  padding: 15px;
 }
 
 .sort-filter-bar button {
@@ -193,6 +197,18 @@ body,
 .sort-filter-bar .clear-btn {
   background: #f0f0f0;
   border-color: #c7c7c7;
+}
+
+.sort-dropdown {
+  position: relative;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  cursor: pointer;
 }
 
 /* -------- Results grid -------- */

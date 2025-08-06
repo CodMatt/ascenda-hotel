@@ -12,10 +12,6 @@ import PaymentPage from './pages/PaymentPage'
 import SuccessForm from './pages/SuccessForm'
 
 
-import './styles/hotelSearch.css'
-
-
-
 export default function App() {
   return (
     <AuthProvider>
