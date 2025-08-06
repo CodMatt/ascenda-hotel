@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
-import { useLocation, Link, useNavigate } from "react-router-dom"; 
+import { useLocation,Link, useNavigate } from "react-router-dom"; 
 import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
 import '../styles/HotelSearchPage.css';
 import logo from '../assets/logo.png';
@@ -22,13 +22,20 @@ export default function HotelSearchPage() {
 
   // Parse URL Query Destination parameters
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  //const searchParams = new URLSearchParams(location.search);
+  const searchParams = (location.state as any)?.searchParams;
+  const {
+    destinationId,
+    checkin,
+    checkout,
+    guests
+  } = searchParams ?? {};
   
   // Use URL values if present, otherwise use fixed ones as shown RsBU (SG)
-  const destinationId = searchParams.get("destination_id") ?? "RsBU"; // Fallback to RsBU 
+  /*const destinationId = searchParams.get("destination_id") ?? "RsBU"; // Fallback to RsBU 
   const checkin = searchParams.get("checkin") ?? "";
   const checkout = searchParams.get("checkout") ?? "";
-  const guests = searchParams.get("guests") ?? "";  
+  const guests = searchParams.get("guests") ?? "";  */
 
   // Use navigate from react-router-dom to handle navigation
   const navigate = useNavigate();
@@ -174,7 +181,7 @@ export default function HotelSearchPage() {
                     <MapboxMap
                       hotels={hotelsWithCoords}
                       onHotelSelect={(hotelId) => {
-                        navigate(`/hotels/${hotelId}?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`);
+                        navigate(`/hotels/${hotelId}`,{ state: {hotelId, searchParams}});
                       }}
                     />
                   </div>
