@@ -171,6 +171,8 @@ export default function HotelSearchPage() {
                 <button className="sort-button">Sort By ↓</button>
               </div> */}
       
+
+      
               <div className="map-and-results">
                 {/* -- Map panel -- */}
                 <div className="map-container">
@@ -244,40 +246,39 @@ export default function HotelSearchPage() {
                   {/* -- Hotels grid -- */}
                   {!loading && !error && (
                     <div className="results-grid">
-                      {sortedHotels.slice(0, visibleCount).map((hotel) => (
-                        <div key={hotel.id} className="hotel-card">
-                          {hotel.image ? (
-                            <img src={hotel.image} alt={hotel.name} />
-                          ) : (
-                            <div className="hotel-card__noimg">No image</div>
-                          )}
-                          <div className="hotel-info">
-                            <h3>{hotel.name}</h3>
-                            <p className="hotel-location">{hotel.address}</p>
-                            <div className="hotel-rating">
-                              {[1,2,3,4,5].map((i) => (
-                                <span
-                                  key={i}
-                                  className={`star ${
-                                    Math.floor(hotel.rating ?? 0) >= i ? "filled" : ""
-                                  }`}
-                                >
-                                  ★
-                                </span>
-                              ))}
-                              <span className="rating-number">
-                                {hotel.rating ?? "N/A"}
+                    {sortedHotels.slice(0, visibleCount).map((hotel) => (
+                      <Link
+                        to={`/hotels/${hotel.id}?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`}
+                        key={hotel.id}
+                        className="hotel-card"
+                      >
+                        {hotel.image ? (
+                          <img src={hotel.image} alt={hotel.name} />
+                        ) : (
+                          <div className="hotel-card__noimg">No image</div>
+                        )}
+                        <div className="hotel-info">
+                          <h3>{hotel.name}</h3>
+                          <p className="hotel-location">{hotel.address}</p>
+                          <div className="hotel-rating">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                              <span
+                                key={i}
+                                className={`star ${Math.floor(hotel.rating ?? 0) >= i ? "filled" : ""}`}
+                              >
+                                ★
                               </span>
-                            </div>
-                            <div className="hotel-price">
-                              {hotel.price != null
-                                ? `$${hotel.price.toFixed(2)}`
-                                : "Price N/A"}
-                              <span className="per-night"> / night</span>
-                            </div>
+                            ))}
+                            <span className="rating-number">{hotel.rating ?? "N/A"}</span>
+                          </div>
+                          <div className="hotel-price">
+                            {hotel.price != null ? `$${hotel.price.toFixed(2)}` : "Price N/A"}
+                            <span className="per-night"> / night</span>
                           </div>
                         </div>
-                      ))}
+                      </Link>
+                    ))}
+
                     </div>
                   )}
       

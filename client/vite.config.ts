@@ -8,5 +8,16 @@ export default defineConfig({
     environment: 'jsdom', // 👈 This line is crucial
     globals: true,
     setupFiles: './src/test/setup.ts', // optional but good for global mocks
-  }
+  },
+  server: {
+    port: 4242,
+    proxy: {
+      // string shorthand
+      // with options
+      "/api": {
+        target: "http://localhost:6039",
+        changeOrigin: true,
+      },
+    },
+  },
 })
