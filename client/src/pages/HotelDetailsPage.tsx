@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/HotelDetailsPage.css";
+import NavBar from "../components/NavBar";
 
 //Replace icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -287,6 +288,7 @@ export default function HotelDetailsPage() {
           room?.roomNormalizedDescription ||
           "Standard Room",
         userRef: "dummyUserRef",
+        roomImage: room?.images?.[0]?.url || ""
       },
     });
     
@@ -299,20 +301,7 @@ export default function HotelDetailsPage() {
   return (
     <div className="hotel-info-page">
       {/* Navigation Bar */}
-      <nav className="navbar">
-        <div className="nav-container">
-          <div className="nav-brand">Ascenda</div>
-          <div className="nav-links">
-            <a href="#destinations">Destinations</a>
-            <a href="#deals">Deals</a>
-            <a href="#about">About Us</a>
-          </div>
-          <div className="nav-auth">
-            <button className="sign-in-btn">Sign In</button>
-            <button className="register-btn">Register</button>
-          </div>
-        </div>
-      </nav>
+      <NavBar />
 
       {/* Hotel Header */}
       <div className="hotel-header">
