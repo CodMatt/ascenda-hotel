@@ -1,13 +1,13 @@
 //TODO
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import HotelSearchForm from '../components/HotelSearchForm';
-import '../styles/destinationSearchPage.css';
-import logo from '../assets/logo.png';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import HotelSearchForm from "../components/HotelSearchForm";
+import "../styles/DestinationSearchPage.css";
+import logo from "../assets/logo.png";
 
 const DestinationSearchPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = async (searchParams: {
@@ -21,22 +21,21 @@ const DestinationSearchPage: React.FC = () => {
     currency?: string;
     country_code?: string;
   }) => {
-    //setIsLoading(true);
-    //setError('');
+    setIsLoading(true);
+    setError("");
 
     try {
-      const { destinationId, checkin, checkout, guests } = searchParams;
-      const queryString = `destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
-      /*navigate('/HotelSearchPage', {
+      //const { destinationId, checkin, checkout, guests } = searchParams;
+      //const queryString = `destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
+      navigate("/HotelSearchPage", {
         state: {
           searchParams,
         },
-      });*/
-      navigate(`/HotelSearchPage?${queryString}`);
-      
+      });
+      //navigate(`/HotelSearchPage?${queryString}`);
     } catch (err) {
-      setError('Failed to search for hotels. Please try again.');
-      console.error('Search error:', err);
+      setError("Failed to search for hotels. Please try again.");
+      console.error("Search error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +45,7 @@ const DestinationSearchPage: React.FC = () => {
     <div className="destination-page-wrapper">
       <header className="dsp-header">
         <div className="dsp-logo">
-            <img src={logo} alt="Ascenda logo" className="logo-img" />
+          <img src={logo} alt="Ascenda logo" className="logo-img" />
         </div>
         {/* <nav className="dsp-nav">
           <a href="#" className="nav-link">
@@ -60,8 +59,12 @@ const DestinationSearchPage: React.FC = () => {
           </a>
         </nav> */}
         <div className="dsp-actions">
-          <button className="btn-outline" onClick={() => navigate('/login')}>Sign In</button>
-          <button className="btn-primary"  onClick={() => navigate('/signup')}>Register</button>
+          <button className="btn-outline" onClick={() => navigate("/login")}>
+            Sign In
+          </button>
+          <button className="btn-primary" onClick={() => navigate("/signup")}>
+            Register
+          </button>
         </div>
       </header>
 
@@ -75,7 +78,9 @@ const DestinationSearchPage: React.FC = () => {
           </div>
           <div className="form-wrapper">
             <HotelSearchForm onSearch={handleSearch} />
-            {isLoading && <div className="status-message loading">Loading...</div>}
+            {isLoading && (
+              <div className="status-message loading">Loading...</div>
+            )}
             {error && <div className="status-message error">{error}</div>}
           </div>
         </section>
@@ -85,7 +90,8 @@ const DestinationSearchPage: React.FC = () => {
         <div className="footer-block">
           <div className="footer-title">Ascenda</div>
           <div className="footer-text">
-            Trusted accommodations worldwide. Simple search. Transparent pricing.
+            Trusted accommodations worldwide. Simple search. Transparent
+            pricing.
           </div>
         </div>
         <div className="footer-block">
