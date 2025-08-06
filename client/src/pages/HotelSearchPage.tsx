@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchHotels } from "../api/hotels";
 import MapboxMap from '../components/MapboxMap'; // adjust path if needed
-import { useLocation, useNavigate } from "react-router-dom"; 
+import { useLocation,Link, useNavigate } from "react-router-dom"; 
 import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
 import '../styles/HotelSearchPage.css';
 import logo from '../assets/logo.png';
