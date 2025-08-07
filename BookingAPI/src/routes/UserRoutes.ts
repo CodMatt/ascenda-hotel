@@ -93,6 +93,7 @@ router.post('/login', validateUserLogin,async (req:any, res:any) => {
                 username: user.username,
                 first_name: user.first_name,
                 last_name: user.last_name,
+                salutations: user.salutation,
                 email: user.email,
                 phone_num: user.phone_num
             }
@@ -122,6 +123,7 @@ router.get('/', async (_req, res) => {
             username: user.username,
             first_name: user.first_name,
             last_name: user.last_name,
+            salutations: user.salutation,
             email: user.email,
             phone_num: user.phone_num,
             created: user.created
@@ -148,6 +150,7 @@ router.get('/:id', async (req, res) => {
             username: user.username,
             first_name: user.first_name,
             last_name: user.last_name,
+            salutations: user.salutation,
             email: user.email,
             phone_num: user.phone_num,
             created: user.created
