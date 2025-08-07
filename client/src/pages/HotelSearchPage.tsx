@@ -5,7 +5,7 @@ import { useLocation,Link, useNavigate } from "react-router-dom";
 import { sortHotels } from '../utils/sortHotels'; // filtering from high-low price fxn.  
 import '../styles/HotelSearchPage.css';
 import logo from '../assets/logo.png';
-
+import { MutatingDots } from 'react-loader-spinner';
 
 
 export default function HotelSearchPage() {
@@ -232,7 +232,20 @@ export default function HotelSearchPage() {
                   </div>
       
                   {/* -- Error / Loading states -- */}
-                  {loading && <p className="message">Loading hotels…</p>}
+                  {loading && (
+                    <div className="loader-overlay">
+                      <MutatingDots
+                        height="100"
+                        width="100"
+                        color="#0066cc"
+                        secondaryColor="#8ca7d7ff"
+                        radius="12.5"
+                        ariaLabel="mutating-dots-loading"
+                        visible={true}
+                      />
+                      <p>Fetching hotels...</p>
+                    </div>
+                  )}
                   {error && <p className="error">{error}</p>}
       
                   {/* -- Hotels grid -- */}
