@@ -172,6 +172,7 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
             }}
             minDate={minCheckinDate}
             className="date-picker"
+            dateFormat="dd/MM/yyyy"
           />
           <small className="date-requirement">
             (Must be at least 3 days in advance)
@@ -183,6 +184,7 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
           <DatePicker
             key={checkinDate?.getTime()}
             selected={checkoutDate}
+            dateFormat='dd/MM/yyyy'
             onChange={(date) => {
               console.log("Checkout selected:", date);
               setCheckoutDate(date);
