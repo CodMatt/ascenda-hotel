@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import HotelSearchForm from "../components/HotelSearchForm";
 import "../styles/DestinationSearchPage.css";
 import logo from "../assets/logo.png";
+import NavBar from "../components/NavBar";
 
 const DestinationSearchPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -44,31 +45,7 @@ const DestinationSearchPage: React.FC = () => {
 
   return (
     <div className="destination-page-wrapper">
-      <header className="dsp-header">
-        <div className="dsp-logo">
-          <img src={logo} alt="Ascenda logo" className="logo-img" />
-        </div>
-        {/* <nav className="dsp-nav">
-          <a href="#" className="nav-link">
-            Destinations
-          </a>
-          <a href="#" className="nav-link">
-            Deals
-          </a>
-          <a href="#" className="nav-link">
-            Help
-          </a>
-        </nav> */}
-        <div className="dsp-actions">
-          <button className="btn-outline" onClick={() => navigate("/login")}>
-            Sign In
-          </button>
-          <button className="btn-primary" onClick={() => navigate("/signup")}>
-            Register
-          </button>
-        </div>
-      </header>
-
+      <NavBar/>
       <main className="dsp-main">
         <section className="hero">
           <div className="hero-text">

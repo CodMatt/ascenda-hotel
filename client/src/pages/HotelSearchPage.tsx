@@ -6,6 +6,7 @@ import { sortHotels } from "../utils/sortHotels"; // filtering from high-low pri
 import "../styles/HotelSearchPage.css";
 import logo from "../assets/logo.png";
 import { ClipLoader } from "react-spinnerS";
+import NavBar from "../components/NavBar";
 
 export default function HotelSearchPage() {
   const [visibleCount, setVisibleCount] = useState(30); // Lazy loading state to control visibility
@@ -129,19 +130,7 @@ export default function HotelSearchPage() {
   return (
     <div className="hotel-search-page">
       {/* -------- Header -------- */}
-      <header className="page-header">
-        <div className="dsp-logo">
-          <img src={logo} alt="Ascenda logo" className="logo-img" />
-        </div>
-        <div className="dsp-actions">
-          <button className="btn-outline" onClick={() => navigate("/login")}>
-            Sign In
-          </button>
-          <button className="btn-primary" onClick={() => navigate("/signup")}>
-            Register
-          </button>
-        </div>
-      </header>
+      <NavBar />
 
       {/* -------- Main scrollable content -------- */}
       <div className="content-wrapper">
