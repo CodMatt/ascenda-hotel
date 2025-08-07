@@ -8,7 +8,7 @@ const BASE_URL = 'https://hotelapi.loyalty.dev/api';
  * Get Hotel prices
  */
 router.get('/prices',validateSearchParams,async (req:any, res:any) => {
-  const { destination_id, checkin, checkout, guests } = req.body;// taking from body instead of params
+  const { destination_id, checkin, checkout, guests } = req.query;// taking from body instead of params
   
   try {
     console.log("Calling Loyalty API with URL:", `${BASE_URL}/hotels/prices?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=SGD&country_code=SG&guests=${guests}&partner_id=1089`);
@@ -25,7 +25,7 @@ router.get('/prices',validateSearchParams,async (req:any, res:any) => {
  * Get hotels based on destination id
  */
 router.get('/', async (req, res) => {
-  const { destination_id } = req.body;
+  const { destination_id } = req.query;
   if (!destination_id) {
     return res.status(400).json({ error: 'Missing destination_id' });
   }
@@ -61,7 +61,7 @@ router.get('/:id', async (req, res) => {
  */
 router.get('/:id/price',validateSearchParams ,async (req:any, res:any) => {
   const { id } = req.params;
-  const { destination_id, checkin, checkout, guests } = req.body;
+  const { destination_id, checkin, checkout, guests } = req.query;
 
   const url = `${BASE_URL}/hotels/${id}/price?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&guests=${guests}&lang=en_US&currency=SGD&country_code=SG&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
 
