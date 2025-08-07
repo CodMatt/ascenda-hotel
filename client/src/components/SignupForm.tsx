@@ -3,110 +3,133 @@ import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import type { SignupData } from "../types/auth";
+
 import isEmailValid from "../lib/IsEmailValid";
 import isNameValid from "../lib/IsNameValid";
 import isPhoneNumberValid from "../lib/IsPhoneNumberValid";
+import isCountryValid from '../lib/IsCountryValid';
+
 import CountryCodes from "../lib/CountryCodes";
+
+// For error pop-up when entered details are not valid
+import InvalidPhoneNotification from '../components/notifications/InvalidPhoneNotification';
+import InvalidEmailNotification from '../components/notifications/InvalidEmailNotification';
+import InvalidFirstNameNotification from '../components/notifications/InvalidFirstNameNotification';
+import InvalidLastNameNotification from '../components/notifications/InvalidLastNameNotification';
+import InvalidCountryNotification from '../components/notifications/InvalidCountryNotification';
+
+
 import "../styles/RegisterPage.css";
 
 const SignupForm: React.FC = () => {
   const { signup } = useAuth();
-  const [formData, setFormData] = useState<SignupData>({
-    username: "",
-    email: "",
-    password: "",
-    phone_num: "",
-    first_name: "",
-    last_name: "",
-    salutation: "",
-  });
-  const [error, setError] = useState<string>("");
+  
+  const [message, setMessage] = useState<string>(""); // For create account failure
+  const [success, setSuccess] = useState(false); // for deciding when to navigate
+
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [country, setCountry] = useState<string>("Singapore"); //default
-  const [countryCode, setCountryCode] = useState<string>("65"); //default
+  // const [country, setCountry] = useState<string>("Singapore"); //default
+  // const [countryCode, setCountryCode] = useState<string>("65"); //default
+
+  const countryCodes : { [key: string]: [number | number[], string] } = CountryCodes;
+
+  // show errors
+  const [showMessage, setShowMessage] = useState(false);
+
+  // Info collected from user in this page
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [salutation, setSalutation] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  
+
+  const [password, setPassword] = useState("");
+
+  // Default to SG
+  const [country, setCountry] = useState("Singapore");
+  const [countryCode, setCountryCode] = useState("65");
+
+  const validSalutations = ["Mr", "Mrs", "Ms", "Miss"];
+
+  const updateCountry = (country: string) => {
+    setCountry(country);
+    if (country && Object.keys(CountryCodes).includes(country)){
+      setCountryCode(CountryCodes[country][1]);
+    } else {
+      setCountryCode('');
+    } 
+  }
+
   const navigate = useNavigate();
 
+  if (success){
+    navigate("/HotelSearchPage"); //TODO: default to go home page for now
+  }
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    setError("");
+    setShowMessage(true);
     setIsLoading(true);
+    e.preventDefault();
+    if (salutation && isNameValid(firstName) && isNameValid(lastName) 
+      && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode)){
+        setMessage("Creating account")
+        try {
+          
+          const formData = {
+            username: "placeholder",
+            email: emailAddress,
+            password: password,
+            phone_num: countryCode + " " + phoneNumber,
+            first_name: firstName,
+            last_name: lastName,
+            salutation: salutation,
+            }
+          
+          const response = await signup(formData);
 
-    //input validations
-    if (!isEmailValid(formData.email)) {
-      setError("Please enter a valid email.");
-      setIsLoading(false);
-      return;
+          console.log(response)
+          
+          if (response.ok) { // show success before 
+            setTimeout(() => {
+              setMessage("Account registration successful.");
+              console.log("registration success");
+              setSuccess(true);
+            }, 5000)
+            // navigate("/HotelSearchPage"); //TODO: default to go home page for now
+          } else {
+            const errorData = await response.json();
+            console.log(errorData);
+            setMessage(errorData.message || "Signup failed");
+          }
+        } catch (err) {
+          setMessage("Network error occured.");
+        } 
+        
+    } else {
+      setMessage("Missing/invalid fields.")
     }
-
-    if (
-      !isNameValid(formData.first_name || "") ||
-      !isNameValid(formData.last_name || "")
-    ) {
-      setError("Please enter a valid first and last name.");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!isPhoneNumberValid(formData.phone_num, country, countryCode)) {
-      setError("Please enter a valid phone number.");
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const response = await signup(formData);
-
-      if (response.ok) {
-        navigate("/dashboard"); //TODO: CHANGE!! idk what we are navigating to
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Signup failed");
-      }
-    } catch (err) {
-      setError("Network error occured");
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(false);
+ 
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  
 
   return (
     <form onSubmit={handleSubmit}>
-      {error && <div className="error">{error}</div>}
+      {message && <div className="error">{message}</div>}
+  
   
       <div>
         <input
           type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleInputChange}
-          required
-          disabled={isLoading}
-        />
-      </div>
-  
-      <div>
-        <input
-          type="email"
           name="email"
           placeholder="Email"
-          value={formData.email}
-          onChange={handleInputChange}
+          value={emailAddress}
+          onChange={(event) => setEmailAddress(event.target.value)}
           required
           disabled={isLoading}
-          onBlur={() => {
-            if (!isEmailValid(formData.email)) {
-              setError("Invalid email format");
-            }
-          }}
         />
       </div>
   
@@ -115,79 +138,114 @@ const SignupForm: React.FC = () => {
           type="password"
           name="password"
           placeholder="Password"
-          value={formData.password}
-          onChange={handleInputChange}
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
           required
           disabled={isLoading}
         />
       </div>
   
       <div>
-        <select
-          name="country"
-          value={country}
-          onChange={(e) => {
-            const selected = e.target.value;
-            setCountry(selected);
-            setCountryCode(CountryCodes[selected][1]);
-          }}
-          required
+        <select 
+          name="country" 
+          onChange={(event) => updateCountry(event.target.value)} 
+          defaultValue="" 
+          required={true}
+        >
+          <option value="" key="select">Select One</option>
+          {Object.keys(countryCodes).map((countryCode) => (
+            <option value={countryCode} key={countryCode}>{countryCode}</option>
+          ))}
+          <option value="others" key="others">Others</option>
+        </select>
+        <input
+          name="country code"
+          type="text"
+          placeholder="Code"
+          value={countryCode}
+          onChange={(event) => setCountryCode(event.target.value)}
+          required={true}
+          disabled={country === "others" ? false : true}
+          className="phone-code-select"
+        />
+      </div>
+  
+      <div>
+        <input
+          name="phone_num"
+          type="text"
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChange={(event) => setPhoneNumber(event.target.value)}
+          required={true}
+          disabled={countryCode ? false : true || isLoading}
+          className="phone-number-input"
+        />
+      </div>
+  
+      <div>
+        <input
+          name="first_name"
+          type="text"
+          placeholder="First Name"
+          value={firstName}
+          required={true}
+          onChange={(event) => setFirstName(event.target.value)}
+          disabled={isLoading}
+        />
+      </div>
+  
+      <div>
+        <input
+          name="last_name"
+          type="text"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(event) => setLastName(event.target.value)}
+          required={true}
+          disabled={isLoading}
+        />
+      </div>
+
+      <div className="salutation-row">
+        <select 
+          name="salutation" 
+          onChange={(event) => setSalutation(event.target.value)} 
+          defaultValue="" 
+          required={true}
           disabled={isLoading}
         >
-          {Object.entries(CountryCodes).map(([name, [, code]]) => (
-            <option key={name} value={name}>
-              {name} (+{code})
-            </option>
+          <option value="" key="select">Select One</option>
+          {validSalutations.map((validSalutation) => (
+            <option value={validSalutation} key={validSalutation}>{validSalutation}</option>
           ))}
+          <option value="" key="others">Others</option>
         </select>
-      </div>
-  
-      <div>
-        <input
-          type="tel"
-          name="phone_num"
-          placeholder={`Phone Number (e.g., ${countryCode}12345678)`}
-          value={formData.phone_num}
-          onChange={handleInputChange}
-          required
-          disabled={isLoading}
-        />
-      </div>
-  
-      <div>
+        
         <input
           type="text"
-          name="first_name"
-          placeholder="First Name"
-          value={formData.first_name}
-          onChange={handleInputChange}
-          required
-          disabled={isLoading}
+          placeholder="Salutation (if others)"
+          value={salutation}
+          onChange={(event) => setSalutation(event.target.value)}
+          required={true}
+          disabled={validSalutations.includes(salutation) || isLoading}
         />
       </div>
-  
-      <div>
-        <input
-          type="text"
-          name="last_name"
-          placeholder="Last Name"
-          value={formData.last_name}
-          onChange={handleInputChange}
-          required
-          disabled={isLoading}
-        />
-      </div>
-  
-      <div>
-        <input
-          type="text"
-          name="salutation"
-          placeholder="Salutation"
-          value={formData.salutation}
-          onChange={handleInputChange}
-          disabled={isLoading}
-        />
-      </div>
+
+      {showMessage && (
+              (!isNameValid(firstName) || 
+              !isNameValid(lastName) || 
+              !isCountryValid(country) ||
+              !isPhoneNumberValid(phoneNumber, country, countryCode) || 
+              !isEmailValid(emailAddress)) && (
+              <div className="error-notifications">
+                {!isNameValid(firstName) && <InvalidFirstNameNotification />}
+                {!isNameValid(lastName) && <InvalidLastNameNotification />}
+                {!isCountryValid(country) && <InvalidCountryNotification />}
+                {!isPhoneNumberValid(phoneNumber, country, countryCode) && <InvalidPhoneNotification />}
+                {!isEmailValid(emailAddress) && <InvalidEmailNotification />}
+              </div>
+            ))}
   
       <div>
         <button type="submit" disabled={isLoading}>

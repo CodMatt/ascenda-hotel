@@ -15,13 +15,13 @@ export interface LoginCredentials{
 }
 
 export interface SignupData{
-    username: string;
+    username?: string;
     email: string;
     password: string;
     phone_num: string;
-    first_name?: string;
-    last_name?: string;
-    salutation?: string;
+    first_name: string;
+    last_name: string;
+    salutation: string;
 }
 
 export interface AuthResponse{
