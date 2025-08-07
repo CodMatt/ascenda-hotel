@@ -110,6 +110,7 @@ body {
   font-weight: 500;
   margin-bottom: 8px;
   color: #333;
+  font-size: 17px;
 }
 
 .form-group input {
@@ -117,7 +118,7 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 17px;
   transition: border-color 0.3s;
   background-color: white;
   color: black;
@@ -133,7 +134,7 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 17px;
   transition: border-color 0.3s;
   background-color: white;
   color: black;
@@ -156,7 +157,7 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 17px;
   transition: border-color 0.3s;
   background-color: white;
   color: black;
@@ -172,7 +173,7 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 17px;
   transition: border-color 0.3s;
   background-color: white;
   color: black;
@@ -195,7 +196,7 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 17px;
   transition: border-color 0.3s;
   background-color: white;
 }
@@ -210,7 +211,7 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 17px;
   transition: border-color 0.3s;
 }
 
@@ -225,7 +226,7 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 17px;
   resize: vertical;
   font-family: inherit;
   min-height: 100px;
@@ -265,6 +266,7 @@ body {
   padding: 8px 0;
   border-bottom: 1px solid #eee;
   color: black;
+  font-size: 17px;
 }
 
 .info-row:last-child {
@@ -283,7 +285,7 @@ body {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   transition: all 0.3s;
 }
@@ -328,6 +330,7 @@ body {
   margin-bottom: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid #eee;
+  font-size: 17px;
 }
 
 .summary-item:last-child {
@@ -347,10 +350,11 @@ body {
   margin-top: 20px;
   margin-bottom: 20px;
   padding: 15px;
-  background: #fff5f5;
-  border: 1px solid #fed7d7;
+  background: #Fdecea;
+  border: 1px solid #Fdecea;
   border-radius: 8px;
-  color: rgb(168, 2, 2);
+  color: #f44336;
+  font-weight: 400;
 }
 
 /* Error States */

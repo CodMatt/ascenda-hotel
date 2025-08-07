@@ -88,6 +88,7 @@ html:has(.hotel-info-page) {
   cursor: pointer;
   font-size: 0.85rem;
   transition: var(--transition);
+  color: #2563eb;
 }
 
 .btn-outline:hover {
@@ -698,6 +699,10 @@ body {
 
 .bottom-spacer {
   height: 40px;
+}
+
+.room-type-placeholder{
+  font-size: 16px;
 }
 
 /* Responsive Design */
