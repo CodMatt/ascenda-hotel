@@ -1,8 +1,7 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {useDestinations} from '../hooks/useDestinations';
-import {Destination} from '../types/destination';
-import '../styles/destinationDropdown.css'; 
-
+import React, { useState, useRef, useEffect } from "react";
+import { useDestinations } from "../hooks/useDestinations";
+import { Destination } from "../types/destination";
+import "../styles/destinationDropdown.css";
 
 let debounceTimer: ReturnType<typeof setTimeout>;
 
@@ -52,12 +51,11 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
       searchDestinations(value);
     }, 300);
     //debounce search (avoids too many API calls)
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() =>{
-    searchDestinations(value); 
-  }, 300);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      searchDestinations(value);
+    }, 300);
   };
-
 
   // handle destination selection
   const handleSelect = (destination: Destination) => {
@@ -66,29 +64,31 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
     setIsOpen(false);
   };
 
-   return (
-    <div className="destination-dropdown" ref={dropdownRef}>      
-      { /* Input field for searching destinations */}
+  return (
+    <div className="destination-dropdown" ref={dropdownRef}>
+      {/* Input field for searching destinations */}
       <input
-        id="destination"       
+        id="destination"
         type="text"
-        value={selectedDestination?.term || inputValue}
+        value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setIsOpen(true)}
         placeholder="Search destinations..."
         className="dropdown-input"
       />
-      { /* Dropdown menu for displaying search results*/}
+      {/* Dropdown menu for displaying search results*/}
       {isOpen && (
         <div className="dropdown-menu">
           {loading ? (
             <div className="dropdown-item">Loading...</div>
-            /* NO RESULTS STATE - Shows when no destinations found */
-          ) : destinations.length === 0 && hasSearched? (
-            <div className="dropdown-item no-results">No destinations found</div>
+          ) : /* NO RESULTS STATE - Shows when no destinations found */
+          destinations.length === 0 && hasSearched ? (
+            <div className="dropdown-item no-results">
+              No destinations found
+            </div>
           ) : (
             /* RESULTS LIST - Individual destination items */
-            destinations.map(destination => (
+            destinations.map((destination) => (
               <div
                 key={destination.uid}
                 className="dropdown-item"

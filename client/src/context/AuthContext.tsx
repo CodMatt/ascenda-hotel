@@ -8,7 +8,6 @@ interface AuthProviderProps{
     children: ReactNode;
 }
 
-//TODO: TEST DATA PERSISTENCE!!
 
 // Storage utility functions for easy switching between storage types
 const StorageUtils = {
@@ -31,17 +30,11 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const [token, setToken] = useState<string | null>(StorageUtils.getItem('token'));
     const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() =>{
-        if (token){
-            verifyToken();
-        } else{
-            setLoading(false);
-        }
-    }, [token]);
 
     const verifyToken = async (): Promise<void> => {
         try{
             const userId = StorageUtils.getItem('userId'); //get stored user id
+            console.log("userId",userId)
             if (!userId){
                 logout();
                 return;
@@ -72,7 +65,10 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             body: JSON.stringify({email, password})
         });
 
+        const respJson = await response.json()
+        console.log(respJson)
         if (response.ok){
+            console.log(respJson)
             const data: AuthResponse = await response.json();
             setToken(data.token);
             setUser(data.user);
@@ -91,8 +87,15 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             const data: AuthResponse = await response.json();
             setToken(data.token);
             setUser(data.user);
+            
             StorageUtils.setItem('token', data.token);
             StorageUtils.setItem('userId', data.user.id);
+            StorageUtils.setItem('emailAddress', userData.email);
+            StorageUtils.setItem('phoneNumber', userData.phone_num);
+            StorageUtils.setItem('firstName', userData.first_name);
+            StorageUtils.setItem('lastName', userData.last_name);
+            StorageUtils.setItem('salutation', userData.salutation);
+            
         }
         return response;
     };
