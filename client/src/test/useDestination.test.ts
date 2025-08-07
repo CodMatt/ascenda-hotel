@@ -7,7 +7,7 @@ import {setupServer} from 'msw/node';
 
 //mock server/API setup
 const server = setupServer(
-  http.get('http://localhost:4000/api/destinations', ({ request }) => {
+  http.get('http://localhost:6039/api/destinations', ({ request }) => {
     const url = new URL(request.url);
     const searchQuery = url.searchParams.get('search') ?? '';
 
@@ -56,7 +56,7 @@ test('fetches destinations', async () => {
 
 test('returns no results for gibberish query', async () =>{
   server.use(
-    http.get('http://localhost:4000/api/destinations', ()=>{
+    http.get('http://localhost:6039/api/destinations', ()=>{
       return HttpResponse.json([]); //simulate no results
     })
   );
@@ -74,7 +74,7 @@ test('returns no results for gibberish query', async () =>{
 
 test('handles API error gracefully', async () => {
   server.use(
-    http.get('http://localhost:4000/api/destinations', () => {
+    http.get('http://localhost:6039/api/destinations', () => {
       return HttpResponse.error(); // simulate server error
     })
   );
@@ -96,7 +96,7 @@ test('handles very long query input without crashing', async () => {
   const longQuery = 'a'.repeat(1000);
 
   server.use(
-    http.get('http://localhost:4000/api/destinations', () => {
+    http.get('http://localhost:6039/api/destinations', () => {
       return HttpResponse.json([]); // simulate empty results
     })
   );
@@ -117,7 +117,7 @@ test('sets loading state correctly during fetch', async () => {
   const fetchPromise = new Promise((resolve) => { resolveFetch = resolve; });
 
   server.use(
-    http.get('http://localhost:4000/api/destinations', () => {
+    http.get('http://localhost:6039/api/destinations', () => {
       return fetchPromise.then(() => HttpResponse.json([]));
     })
   );
