@@ -151,30 +151,8 @@ export const validateIdParam = [
 ];
 
 export const validateSearchParams =[
-    body('destination_id').notEmpty().withMessage('destination_id required'),
-    body('check_in').isISO8601()
-        .withMessage('Start date must be valid ISO 8601 format')
-        .custom((value) => {
-            const startDate = new Date(value);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (startDate < today) {
-                throw new Error('Start date cannot be in the past');
-            }
-            return true;
-        }),
-    body('check_out').isISO8601()
-        .withMessage('Start date must be valid ISO 8601 format')
-        .custom((value) => {
-            const startDate = new Date(value);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (startDate < today) {
-                throw new Error('Start date cannot be in the past');
-            }
-            return true;
-        }),
-    body('guests').notEmpty().withMessage('Number of guests required'),
+    param('destination_id').notEmpty().withMessage('destination_id required'),
+    param('guests').notEmpty().withMessage('Number of guests required'),
     handleValidationErrors
 ];
 

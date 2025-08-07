@@ -30,6 +30,8 @@ export default function HotelSearchPage() {
     checkout,
     guests
   } = searchParams ?? {};
+
+  console.log(searchParams);
   
   // Use URL values if present, otherwise use fixed ones as shown RsBU (SG)
   /*const destinationId = searchParams.get("destination_id") ?? "RsBU"; // Fallback to RsBU 

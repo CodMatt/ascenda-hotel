@@ -132,7 +132,7 @@ export default function HotelDetailsPage() {
   }
 
   //const query = new URLSearchParams(window.location.search);
-  const { hotelId } = useParams();
+  //const { hotelId } = useParams();
   const location = useLocation();
   const { searchParams } = location.state || {};
 
@@ -145,6 +145,8 @@ export default function HotelDetailsPage() {
     children
   } = searchParams ?? {};
 
+  console.log(searchParams);
+
   /*const destinationId = query.get("destination_id") || "WD0M";
   const checkin = query.get("checkin") || "2025-10-11";
   const checkout = query.get("checkout") || "2025-10-17";
@@ -152,6 +154,7 @@ export default function HotelDetailsPage() {
 
   console.log("hotel data: ", hotel);
   console.log("rooms data: ", rooms);
+  console.log("params data: " + JSON.stringify(location.state))
 
   useEffect(() => {
     async function loadDetails() {
@@ -160,7 +163,7 @@ export default function HotelDetailsPage() {
       try {
         const [hotelRes, priceRes] = await Promise.all([
           fetchHotelDetails(id!),
-          fetchHotelRoomPrices(id!, destinationId, checkin, checkout, guests),
+          fetchHotelRoomPrices(id!, destinationId!, checkin!, checkout!, guests!),
         ]);
         setHotel(hotelRes);
         setRooms(priceRes.rooms || []);
