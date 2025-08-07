@@ -66,14 +66,15 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
         });
 
         const respJson = await response.json()
-        console.log(respJson)
+        console.log("resp", respJson)
         if (response.ok){
             console.log(respJson)
-            const data: AuthResponse = await response.json();
-            setToken(data.token);
-            setUser(data.user);
-            StorageUtils.setItem('token', data.token);
-            StorageUtils.setItem('userId', data.user.id); // store user id
+            StorageUtils.clear(); // clear all current data
+            setToken(respJson.token);
+            setUser(respJson.user);
+            StorageUtils.setItem('token', respJson.token);
+            StorageUtils.setItem('token', respJson.token);
+            StorageUtils.setItem('userId', respJson.user.id); // store user id
         }
         return response;
     };
@@ -103,8 +104,8 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const logout = (): void =>{
         setToken(null);
         setUser(null);
-        StorageUtils.removeItem('token');
-        StorageUtils.removeItem('userId');  //clear user ID
+        StorageUtils.clear();
+
     };
 
     const value: AuthContextType = {

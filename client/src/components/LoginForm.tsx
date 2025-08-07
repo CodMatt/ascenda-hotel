@@ -3,8 +3,12 @@ import type {FormEvent} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import type { LoginCredentials } from '../types/auth';
+
+
+
+
+
 import "../styles/LoginPage.css";
-import isEmailValid from '../lib/IsEmailValid';
 
 const LoginForm: React.FC = () =>{
     const {login} = useAuth();
@@ -21,22 +25,19 @@ const LoginForm: React.FC = () =>{
         setError('');
         setIsLoading(true);
 
-        if (!isEmailValid(formData.email)) {
-          setError("Please enter a valid email.");
-          setIsLoading(false);
-          return;
-        }
-
         try{
             const response = await login(formData.email, formData.password);
-
+            
             if (response.ok){
-                navigate('/dashboard');
+                setError("Login Successful.");
+                setTimeout(() => {
+                    navigate(-1);
+                    }, 5000)
             } else{
-                const errorData = await response.json();
-                setError(errorData.message || 'Login failed');
+                setError('Login failed');
             }
         } catch (err){
+            console.log(err)
             setError('Network error occurred');
         } finally{ 
             setIsLoading(false);
@@ -62,11 +63,6 @@ const LoginForm: React.FC = () =>{
                onChange={handleInputChange}
                required
                disabled={isLoading} 
-               onBlur={() => {
-                if (!isEmailValid(formData.email)) {
-                  setError("Invalid email format");
-                }
-                }}
             />
             <input
                 type='password'
