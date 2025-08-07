@@ -18,6 +18,8 @@ import InvalidFirstNameNotification from '../components/notifications/InvalidFir
 import InvalidLastNameNotification from '../components/notifications/InvalidLastNameNotification';
 import InvalidCountryNotification from '../components/notifications/InvalidCountryNotification';
 
+// For account creation success pop-up when sign up success
+import AccountCreationSuccess from "./notifications/AccountCreationSuccess";
 
 import "../styles/RegisterPage.css";
 
@@ -34,6 +36,9 @@ const SignupForm: React.FC = () => {
 
   // show errors
   const [showMessage, setShowMessage] = useState(false);
+
+  // show signup success popup
+  const [success, setSuccess] = useState(false);
 
   // Info collected from user in this page
   const [firstName, setFirstName] = useState("");
@@ -70,7 +75,7 @@ const SignupForm: React.FC = () => {
     e.preventDefault();
     if (salutation && isNameValid(firstName) && isNameValid(lastName) 
       && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode)){
-        setMessage("Creating account")
+        setMessage("")
         try {
           
           const formData = {
@@ -85,18 +90,21 @@ const SignupForm: React.FC = () => {
           
           const response = await signup(formData);
 
-          console.log(response)
-
-          if (response.ok) { // show success before 
-            setMessage("Account registration successful.");
-            setTimeout(() => {
-              console.log("registration success");
-              navigate(-1);
-            }, 5000)
-            // navigate("/HotelSearchPage"); //TODO: default to go home page for now
-          } else {
+          
+          if (response.ok) { 
             
-            setMessage("Signup failed");
+            setSuccess(true);
+            setTimeout(() => {
+              navigate(-1);
+              }, 2000)
+            
+          } else {
+            const respJson = await response.json();
+            if (respJson.details=='duplicate key value violates unique constraint "customer_email_key"'){
+              setMessage("Account with this email already exists.");
+            } else {
+              setMessage("Sign up failed");
+            }
           }
         } catch (err) {
           setMessage("Network error occured.");
@@ -241,6 +249,8 @@ const SignupForm: React.FC = () => {
                 {!isEmailValid(emailAddress) && <InvalidEmailNotification />}
               </div>
             ))}
+
+      {success && <AccountCreationSuccess/>}
   
       <div>
         <button type="submit" disabled={isLoading}>

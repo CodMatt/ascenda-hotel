@@ -65,16 +65,22 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             body: JSON.stringify({email, password})
         });
 
-        const respJson = await response.json()
-        console.log("resp", respJson)
+        
         if (response.ok){
+            console.log("check")
+            const respJson = await response.json()
+            
             console.log(respJson)
             StorageUtils.clear(); // clear all current data
             setToken(respJson.token);
             setUser(respJson.user);
             StorageUtils.setItem('token', respJson.token);
-            StorageUtils.setItem('token', respJson.token);
             StorageUtils.setItem('userId', respJson.user.id); // store user id
+            StorageUtils.setItem('emailAddress', respJson.user.email);
+            StorageUtils.setItem('phoneNumber', respJson.user.phone_num);
+            StorageUtils.setItem('firstName', respJson.user.first_name);
+            StorageUtils.setItem('lastName', respJson.user.last_name);
+            StorageUtils.setItem('salutation', respJson.user.salutations);
         }
         return response;
     };
@@ -84,11 +90,17 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             headers:{'Content-Type': 'application/json'},
             body: JSON.stringify(userData)
         });
+
+        
+        
+        console.log(response);
         if (response.ok){
             const data: AuthResponse = await response.json();
+            
+            
             setToken(data.token);
             setUser(data.user);
-            
+            StorageUtils.clear();
             StorageUtils.setItem('token', data.token);
             StorageUtils.setItem('userId', data.user.id);
             StorageUtils.setItem('emailAddress', userData.email);
@@ -96,9 +108,9 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             StorageUtils.setItem('firstName', userData.first_name);
             StorageUtils.setItem('lastName', userData.last_name);
             StorageUtils.setItem('salutation', userData.salutation);
-            
         }
-        return response;
+
+        return response; // don't read json yet if error given
     };
 
     const logout = (): void =>{

@@ -4,7 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import type { LoginCredentials } from '../types/auth';
 
-
+import LoginSuccess from "./notifications/LoginSuccess";
 
 
 
@@ -20,6 +20,8 @@ const LoginForm: React.FC = () =>{
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
+    const [success, setSuccess] = useState(false);
+
     const handleSubmit = async(e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setError('');
@@ -27,21 +29,29 @@ const LoginForm: React.FC = () =>{
 
         try{
             const response = await login(formData.email, formData.password);
+            //console.log(response);
             
             if (response.ok){
-                setError("Login Successful.");
+
+                setSuccess(true);
                 setTimeout(() => {
                     navigate(-1);
-                    }, 5000)
+                    }, 2000)
             } else{
-                setError('Login failed');
+                const respJson = await response.json()
+                if (respJson.error == "Invalid credentials"){
+                    setError(respJson.error);
+                } else{
+                    setError('Login failed');
+                }
             }
         } catch (err){
             console.log(err)
             setError('Network error occurred');
-        } finally{ 
-            setIsLoading(false);
-        }
+            } 
+        
+        setIsLoading(false);
+        
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void =>{
@@ -73,6 +83,9 @@ const LoginForm: React.FC = () =>{
                 required
                 disabled={isLoading}
             />
+
+            {success && <LoginSuccess/>}
+
             <button type="submit" disabled={isLoading}>
                 {isLoading? 'Logging in...': 'Login'}
             </button>
