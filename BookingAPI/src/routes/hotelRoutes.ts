@@ -147,7 +147,7 @@ router.get('/:id', async (req, res) => {
 /**
  * Get prices for specific hotel
  */
-router.get('/:id/price' ,async (req:any, res:any) => {
+router.get('/:id/price', validateSearchParams ,async (req:any, res:any) => {
   const { id } = req.params;
   const { destination_id, checkin, checkout, guests } = req.query;
 

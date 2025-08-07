@@ -1,6 +1,6 @@
 import { isNumber, isDate } from 'jet-validators';
 import { transform } from 'jet-validators/utils';
-import { body, param, validationResult } from 'express-validator';
+import { body, param, query, validationResult } from 'express-validator';
 import {Request, Response, NextFunction} from 'express'
 
 
@@ -150,9 +150,12 @@ export const validateIdParam = [
     handleValidationErrors
 ];
 
-export const validateSearchParams =[
-    param('destination_id').notEmpty().withMessage('destination_id required'),
-    param('guests').notEmpty().withMessage('Number of guests required'),
+export const validateSearchParams = [
+    query('destination_id').notEmpty().withMessage('destination_id required'),
+    query('guests').notEmpty().withMessage('Number of guests required'),
+    // Add validation for other query params if needed
+    query('checkin').notEmpty().withMessage('Checkin date required'),
+    query('checkout').notEmpty().withMessage('Checkout date required'),
     handleValidationErrors
 ];
 
