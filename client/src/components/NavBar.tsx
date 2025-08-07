@@ -1,31 +1,47 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import logo from '../assets/logo.png';
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
+import { useAuth } from "../context/AuthContext";
 
 function NavBar() {
-    const navigate = useNavigate();
-    const no_account = true;
-    return (
-        <header className="page-header">
-            <div className="dsp-logo">
-                <img src={logo} alt="Ascenda logo" className="logo-img" />
-            </div>
+  const navigate = useNavigate();
+  const { token, logout } = useAuth();
 
-        {no_account ? (
-            <div className="dsp-actions">
-                <button className="btn-outline" onClick={() => navigate('/login')}>Sign In</button>
-                <button className="btn-primary" onClick={() => navigate('/signup')}>Register</button>
-            </div>
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  return (
+    <header className="page-header">
+      <div className="dsp-logo">
+        <img src={logo} alt="Ascenda logo" className="logo-img" />
+      </div>
+      <div className="dsp-actions">
+        {token ? (
+          <>
+            <button
+              className="btn-outline"
+              onClick={() => navigate("/bookings")}
+            >
+              View Booking
+            </button>
+            <button className="btn-primary" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
         ) : (
-            <div className="dsp-actions">
-                <button className="btn-outline" onClick={() => navigate('/login')}>Logout</button>
-                <button className="btn-primary" onClick={() => navigate('/signup')}>View Booking</button>
-            </div>
+          <>
+            <button className="btn-outline" onClick={() => navigate("/login")}>
+              Sign In
+            </button>
+            <button className="btn-primary" onClick={() => navigate("/signup")}>
+              Register
+            </button>
+          </>
         )}
-
-
-
-        </header>
-    );
+      </div>
+    </header>
+  );
 }
 
 export default NavBar;
