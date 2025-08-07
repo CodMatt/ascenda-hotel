@@ -28,6 +28,18 @@
     flex: 1 1 auto;
     min-width: 220px;
   }
+
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
   
   /* Inputs and selects consistent appearance */
   .hotel-search-form input,

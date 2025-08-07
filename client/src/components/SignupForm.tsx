@@ -25,8 +25,6 @@ const SignupForm: React.FC = () => {
   const { signup } = useAuth();
   
   const [message, setMessage] = useState<string>(""); // For create account failure
-  const [success, setSuccess] = useState(false); // for deciding when to navigate
-
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [country, setCountry] = useState<string>("Singapore"); //default
@@ -64,9 +62,7 @@ const SignupForm: React.FC = () => {
 
   const navigate = useNavigate();
 
-  if (success){
-    navigate("/HotelSearchPage"); //TODO: default to go home page for now
-  }
+
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     setShowMessage(true);
@@ -90,18 +86,17 @@ const SignupForm: React.FC = () => {
           const response = await signup(formData);
 
           console.log(response)
-          
+
           if (response.ok) { // show success before 
+            setMessage("Account registration successful.");
             setTimeout(() => {
-              setMessage("Account registration successful.");
               console.log("registration success");
-              setSuccess(true);
+              navigate(-1);
             }, 5000)
             // navigate("/HotelSearchPage"); //TODO: default to go home page for now
           } else {
-            const errorData = await response.json();
-            console.log(errorData);
-            setMessage(errorData.message || "Signup failed");
+            
+            setMessage("Signup failed");
           }
         } catch (err) {
           setMessage("Network error occured.");

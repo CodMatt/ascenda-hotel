@@ -158,10 +158,12 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
           onSelect={setSelectedDestination}
           selectedDestination={selectedDestination}
         />
+          <small className="date-requirement" style={{ visibility: "hidden" }}>
+            (Placeholder to align height)
+          </small>
       </div>
 
       {/* Date Pickers */}
-      <div className="form-row">
         <div className="form-group">
           <label>Check-in</label>
           <DatePicker
@@ -194,8 +196,11 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
             }
             className="date-picker"
           />
+          <small className="date-requirement" style={{ visibility: "hidden" }}>
+            (Placeholder to align height)
+          </small>
         </div>
-      </div>
+      
 
       {/* Rooms & Guests */}
       <div className="form-group">
