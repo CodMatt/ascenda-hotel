@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import formatDisplayDate from '../lib/FormatDisplayDate';
 import '../styles/SuccessPage.css'
+import NavBar from "../components/NavBar";
 
 function SuccessForm() {
   const [bookingData, setBookingData] = useState<any>(null);
@@ -123,7 +124,11 @@ function SuccessForm() {
   }
 
   return (
+    
     <div className="success-page">
+      {/* Navigation Bar */}
+      <NavBar />
+
       <div className="progress-bar">
         <div className="progress-step completed">✓</div>
         <div className="progress-step completed">✓</div>

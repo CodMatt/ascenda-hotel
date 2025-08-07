@@ -8,7 +8,7 @@
   text-align: center;
   padding: 30px 20px 20px;
   font-size: 32px;
-  color: #2e7d32;
+  color: #0066CC;
   font-weight: bold;
 }
 
@@ -30,14 +30,14 @@
 }
 
 .success-message-card h2 {
-  color: #2e7d32;
+  color: #0066CC;
   font-size: 28px;
   margin-bottom: 15px;
 }
 
 .success-message-card p {
   color: #666;
-  font-size: 16px;
+  font-size: 17px;
   margin-bottom: 25px;
   line-height: 1.6;
 }
@@ -80,7 +80,7 @@
 }
 
 .detail-section h4 {
-  color: #1976D2;
+  color: #0066CC;
   font-size: 18px;
   margin-bottom: 15px;
   padding-bottom: 8px;
@@ -121,7 +121,7 @@
   background: #f8f9fa;
   padding: 15px;
   border-radius: 8px;
-  border-left: 4px solid #1976D2;
+  border-left: 4px solid #0066CC;
   font-style: italic;
   color: #555;
 }
@@ -158,7 +158,7 @@
 }
 
 .payment-row.total {
-  border-top: 2px solid #1976D2;
+  border-top: 2px solid #0066CC;
   padding-top: 15px;
   margin-top: 10px;
   font-size: 18px;
@@ -166,7 +166,7 @@
 }
 
 .payment-row.total strong {
-  color: #1976D2;
+  color: #0066CC;
   font-weight: 700;
 }
 
@@ -180,19 +180,19 @@
 }
 
 .success-actions .pay-btn.primary {
-  background: #1976D2;
+  background: #0066CC;
   color: white;
   padding: 12px 24px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   transition: all 0.3s;
 }
 
 .success-actions .pay-btn.primary:hover {
-  background: #1565C0;
+  background: #0066CC;
 }
 
 .success-actions .back-btn {
@@ -202,7 +202,7 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   transition: all 0.3s;
 }

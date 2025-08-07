@@ -90,6 +90,8 @@ function CheckHotelDetailsPage() {
     });
   };
 
+  console.log("checking image: ",state.roomImage)
+
 return (
         <div className="booking-info-page">
             <NavBar />
@@ -120,11 +122,19 @@ return (
                             </div>
                             
                             <div className="hotel-room-image">
-                                <img 
-                                    src={state.roomImage} 
-                                    alt={state.roomType}
-                                    className="room-image"
-                                />
+                                {state.roomImage ? (
+                                    <img 
+                                        src={state.roomImage} 
+                                        alt={state.roomType}
+                                        className="room-image"
+                                    />
+                                ) : (
+                                  <div className="room-type-placeholder">
+                                    <span>No Image Available</span>
+                                  </div>
+                                )}
+                                
+
                             </div>
                         </div>
                     </div>

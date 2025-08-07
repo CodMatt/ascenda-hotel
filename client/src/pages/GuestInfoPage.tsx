@@ -121,7 +121,7 @@ function GuestInfoPage(){
   };
 
   const handleSubmit2 = async () => {
-    navigate("/"); // go back to hotel searching page
+    navigate(-1); // go back to hotel searching page
   }
 
 

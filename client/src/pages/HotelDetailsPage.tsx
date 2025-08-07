@@ -377,10 +377,6 @@ export default function HotelDetailsPage() {
               {parsedSections.attractions && (
                 <div className="overview-section">
                   <h3>Attractions</h3>
-                  <p>
-                    Distances are displayed to the nearest 0.1 mile and
-                    kilometer.
-                  </p>
                   <div className="attractions-content">
                     {formatAttractionsContent(parsedSections.attractions)}
                   </div>
@@ -451,7 +447,7 @@ export default function HotelDetailsPage() {
                                   />
                                 ) : (
                                   <div className="room-type-placeholder">
-                                    🛏️
+                                    <span>No Image Available</span>
                                   </div>
                                 )}
                               </div>
