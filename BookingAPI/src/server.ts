@@ -18,9 +18,6 @@ import UserRoutes from './repos/UserRepo';
 import bookingRoutes from './repos/bookingRepo';
 import nonAcctRoute from './repos/nonAccountRepo';
 
-//stripe
-import fastify from 'fastify';
-
 /******************************************************************************
                                 Setup
 ******************************************************************************/
@@ -52,12 +49,17 @@ Database.testConnection().then(isConnected => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Development logging
+/**
+ * Development logging
+ */
+
 if (ENV.NodeEnv === NodeEnvs.Dev) {
   app.use(morgan('dev'));
 }
-// CORS configurationnpm
 
+/**
+ * CORS configuration
+ */
 
 app.use(cors({
   origin: ENV.NodeEnv === NodeEnvs.Production 
@@ -69,7 +71,11 @@ app.use(cors({
 }));
 
 
-// Security headers
+/**
+ * Security headers
+ */ 
+
+
 if (ENV.NodeEnv === NodeEnvs.Production) {
   app.use(helmet({
     contentSecurityPolicy: {
@@ -103,8 +109,7 @@ if (ENV.NodeEnv === NodeEnvs.Dev){
 }));
 }
 
-// API Routes
-app.use(Paths.Base, BaseRouter);
+app.use(Paths.Base, BaseRouter); // import API routes
 
 // Error handling
 app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
@@ -138,6 +143,5 @@ app.get('/health', (_: Request, res: Response) => {
   });
 });
 
-// **** Frontend Content (commented out as in original) **** //
 
 export default app;

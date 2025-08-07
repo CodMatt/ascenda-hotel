@@ -18,5 +18,8 @@ export default {
   },
   Stripe:{
     Base:'/stripe'
+  },
+  mongo:{
+    Base:'/destinations'
   }
 } as const;

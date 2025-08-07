@@ -6,7 +6,7 @@ import UserRoutes from './UserRoutes';
 import noAcctRoutes from './noAcctRoutes';
 import hotelRoutes from './hotelRoutes';
 import stripeRoutes from './stripeRoutes';
-
+import searchRoutes from './SearchRoutes';
 
 /******************************************************************************
                                 Setup
@@ -19,6 +19,7 @@ apiRouter.use(Paths.Booking.Base, BookingRoutes)
 apiRouter.use(Paths.Users.Base, UserRoutes)
 apiRouter.use(Paths.Hotels.Base, hotelRoutes)
 apiRouter.use(Paths.Stripe.Base, stripeRoutes)
+apiRouter.use(Paths.mongo.Base, searchRoutes)
 
 // ** Add other routers here ** //
 // Add more routers as needed
