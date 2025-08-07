@@ -240,7 +240,16 @@ export default function HotelSearchPage() {
                     <div className="results-grid">
                     {sortedHotels.slice(0, visibleCount).map((hotel) => (
                       <Link
-                        to={`/hotels/${hotel.id}?destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`}
+                        to={`/hotels/${hotel.id}`} 
+                        state={{
+                          hotelId: hotel.id,
+                          searchParams: {
+                            destinationId,
+                            checkin,
+                            checkout,
+                            guests
+                          }
+                        }}
                         key={hotel.id}
                         className="hotel-card"
                       >
