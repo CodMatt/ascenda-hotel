@@ -292,10 +292,7 @@ export default function HotelDetailsPage() {
         checkout: checkoutDate,
         noAdults: adults,
         noChildren: children || 0,
-        roomType:
-          room?.roomDescription ||
-          room?.roomNormalizedDescription ||
-          "Standard Room",
+        roomType: room?.roomDescription || room?.roomNormalizedDescription || "Standard Room",
         noRooms: noRooms,
         roomImage: room?.images?.[0]?.url || "",
       },
