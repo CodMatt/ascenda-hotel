@@ -8,6 +8,7 @@ import isEmailValid from "../lib/IsEmailValid";
 import isNameValid from "../lib/IsNameValid";
 import isPhoneNumberValid from "../lib/IsPhoneNumberValid";
 import isCountryValid from '../lib/IsCountryValid';
+import isPasswordValid from '../lib/IsPasswordValid';
 
 import CountryCodes from "../lib/CountryCodes";
 
@@ -17,6 +18,7 @@ import InvalidEmailNotification from '../components/notifications/InvalidEmailNo
 import InvalidFirstNameNotification from '../components/notifications/InvalidFirstNameNotification';
 import InvalidLastNameNotification from '../components/notifications/InvalidLastNameNotification';
 import InvalidCountryNotification from '../components/notifications/InvalidCountryNotification';
+import InvalidPasswordNotification from '../components/notifications/InvalidPasswordNotification';
 
 // For account creation success pop-up when sign up success
 import AccountCreationSuccess from "./notifications/AccountCreationSuccess";
@@ -26,18 +28,18 @@ import "../styles/RegisterPage.css";
 const SignupForm: React.FC = () => {
   const { signup } = useAuth();
   
-  const [message, setMessage] = useState<string>(""); // For create account failure
+  // For errors while creating account
+  const [message, setMessage] = useState<string>(""); 
 
+  // To debounce
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [country, setCountry] = useState<string>("Singapore"); //default
-  // const [countryCode, setCountryCode] = useState<string>("65"); //default
 
   const countryCodes : { [key: string]: [number | number[], string] } = CountryCodes;
 
-  // show errors
+  // For validation check fails
   const [showMessage, setShowMessage] = useState(false);
 
-  // show signup success popup
+  // For success in creating account
   const [success, setSuccess] = useState(false);
 
   // Info collected from user in this page
@@ -46,8 +48,6 @@ const SignupForm: React.FC = () => {
   const [salutation, setSalutation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
-  
-
   const [password, setPassword] = useState("");
 
   // Default to SG
@@ -74,7 +74,8 @@ const SignupForm: React.FC = () => {
     setIsLoading(true);
     e.preventDefault();
     if (salutation && isNameValid(firstName) && isNameValid(lastName) 
-      && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode)){
+      && isEmailValid(emailAddress) && isPhoneNumberValid(phoneNumber, country, countryCode)
+      && isPasswordValid(password)){
         setMessage("")
         try {
           
@@ -132,7 +133,7 @@ const SignupForm: React.FC = () => {
           value={emailAddress}
           onChange={(event) => setEmailAddress(event.target.value)}
           required
-          disabled={isLoading}
+          disabled={isLoading || success}
         />
       </div>
   
@@ -144,7 +145,7 @@ const SignupForm: React.FC = () => {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           required
-          disabled={isLoading}
+          disabled={isLoading || success}
         />
       </div>
   
@@ -168,7 +169,7 @@ const SignupForm: React.FC = () => {
           value={countryCode}
           onChange={(event) => setCountryCode(event.target.value)}
           required={true}
-          disabled={country === "others" ? false : true}
+          disabled={country === "others" ? false : true || success || isLoading}
           className="phone-code-select"
         />
       </div>
@@ -181,7 +182,7 @@ const SignupForm: React.FC = () => {
           value={phoneNumber}
           onChange={(event) => setPhoneNumber(event.target.value)}
           required={true}
-          disabled={countryCode ? false : true || isLoading}
+          disabled={countryCode ? false : true || isLoading || success}
           className="phone-number-input"
         />
       </div>
@@ -194,7 +195,7 @@ const SignupForm: React.FC = () => {
           value={firstName}
           required={true}
           onChange={(event) => setFirstName(event.target.value)}
-          disabled={isLoading}
+          disabled={isLoading || success}
         />
       </div>
   
@@ -206,7 +207,7 @@ const SignupForm: React.FC = () => {
           value={lastName}
           onChange={(event) => setLastName(event.target.value)}
           required={true}
-          disabled={isLoading}
+          disabled={isLoading || success}
         />
       </div>
 
@@ -216,7 +217,7 @@ const SignupForm: React.FC = () => {
           onChange={(event) => setSalutation(event.target.value)} 
           defaultValue="" 
           required={true}
-          disabled={isLoading}
+          disabled={isLoading || success}
         >
           <option value="" key="select">Select One</option>
           {validSalutations.map((validSalutation) => (
@@ -231,7 +232,7 @@ const SignupForm: React.FC = () => {
           value={salutation}
           onChange={(event) => setSalutation(event.target.value)}
           required={true}
-          disabled={validSalutations.includes(salutation) || isLoading}
+          disabled={validSalutations.includes(salutation) || isLoading || success}
         />
       </div>
 
@@ -240,21 +241,32 @@ const SignupForm: React.FC = () => {
               !isNameValid(lastName) || 
               !isCountryValid(country) ||
               !isPhoneNumberValid(phoneNumber, country, countryCode) || 
-              !isEmailValid(emailAddress)) && (
+              !isEmailValid(emailAddress) || 
+              !isPasswordValid(password)) && (
               <div className="error-notifications">
                 {!isNameValid(firstName) && <InvalidFirstNameNotification />}
                 {!isNameValid(lastName) && <InvalidLastNameNotification />}
                 {!isCountryValid(country) && <InvalidCountryNotification />}
                 {!isPhoneNumberValid(phoneNumber, country, countryCode) && <InvalidPhoneNotification />}
                 {!isEmailValid(emailAddress) && <InvalidEmailNotification />}
+                {!isPasswordValid(password) && <InvalidPasswordNotification/>}
               </div>
             ))}
 
       {success && <AccountCreationSuccess/>}
   
       <div>
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? "Creating Account..." : "Create Account"}
+        <button type="submit" disabled={isLoading || success}>
+          {isLoading || success ? "Creating Account..." : "Create Account"}
+        </button>
+        {/* ← Back button */}
+        <button
+          type="button"
+          className="back-button"
+          onClick={() => navigate(-1)}
+          disabled={isLoading || success}
+        >
+          ← Back
         </button>
       </div>
     </form>

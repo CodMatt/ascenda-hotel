@@ -6,28 +6,34 @@ import type { LoginCredentials } from '../types/auth';
 
 import LoginSuccess from "./notifications/LoginSuccess";
 
-
-
 import "../styles/LoginPage.css";
 
 const LoginForm: React.FC = () =>{
     const {login} = useAuth();
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState<LoginCredentials>({
         email: '',
         password:''
     });
+
+    // For errors while logging in
     const [error, setError] = useState<string>('');
+
+    // To debounce
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const navigate = useNavigate();
-
+    
+    // For success in logging in 
     const [success, setSuccess] = useState(false);
-
+    
+    
     const handleSubmit = async(e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-        setError('');
-        setIsLoading(true);
+        
 
         try{
+            setError('');
+            setIsLoading(true);
             const response = await login(formData.email, formData.password);
             //console.log(response);
             
@@ -39,9 +45,13 @@ const LoginForm: React.FC = () =>{
                     }, 2000)
             } else{
                 const respJson = await response.json()
-                if (respJson.error == "Invalid credentials"){
-                    setError(respJson.error);
-                } else{
+                if (!respJson || !respJson.error){ // Other reasons for failure
+                    setError('Login failed');
+                } else if (respJson.error == "Invalid credentials"){
+                    setError("Email and/or password entered are wrong.");
+                } else if (respJson.error == "Validation failed"){
+                    setError("Invalid email or password.");
+                } else {
                     setError('Login failed');
                 }
             }
@@ -72,7 +82,7 @@ const LoginForm: React.FC = () =>{
                value={formData.email}
                onChange={handleInputChange}
                required
-               disabled={isLoading} 
+               disabled={isLoading || success} 
             />
             <input
                 type='password'
@@ -81,13 +91,22 @@ const LoginForm: React.FC = () =>{
                 value={formData.password}
                 onChange={handleInputChange}
                 required
-                disabled={isLoading}
+                disabled={isLoading || success}
             />
 
             {success && <LoginSuccess/>}
 
-            <button type="submit" disabled={isLoading}>
-                {isLoading? 'Logging in...': 'Login'}
+            <button type="submit" disabled={isLoading || success}>
+                {isLoading || success? 'Logging in...': 'Login'}
+            </button>
+            {/* ← Back button */}
+            <button
+            type="button"
+            className="back-button"
+            onClick={() => navigate(-1)}
+            disabled={isLoading || success}
+            >
+            ← Back
             </button>
         </form>
     );
