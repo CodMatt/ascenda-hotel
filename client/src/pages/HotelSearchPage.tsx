@@ -127,6 +127,16 @@ export default function HotelSearchPage() {
       },
     }));
 
+  // Calculate number of nights 
+  function getNights(checkin: string, checkout: string): number {
+    const checkinDate = new Date(checkin);
+    const checkoutDate = new Date(checkout);
+    const diffTime = Math.abs(checkoutDate.getTime() - checkinDate.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+    
+  const numNights = getNights(checkin, checkout);
+
   return (
     <div className="hotel-search-page">
       {/* -------- Header -------- */}
@@ -289,7 +299,7 @@ export default function HotelSearchPage() {
                         </div>
                         <div className="hotel-price">
                           {hotel.price != null
-                            ? `$${hotel.price.toFixed(2)}`
+                            ? `$${(hotel.price/ numNights).toFixed(2)}`
                             : "Price N/A"}
                           <span className="per-night"> / night</span>
                         </div>
