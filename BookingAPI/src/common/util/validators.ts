@@ -102,7 +102,7 @@ export const validateBookingCreation = [
         .withMessage('Valid email is required for guest bookings'),
     body('phone_num')
         .if(body('user_ref').isEmpty())
-        .matches(/^\+?[\d\s\-\(\)]{10,15}$/)
+        .matches(/^\+?[\d\s\-\(\)]{6,17}$/)
         .withMessage('Valid phone number is required for guest bookings'),
     handleValidationErrors
 ];
