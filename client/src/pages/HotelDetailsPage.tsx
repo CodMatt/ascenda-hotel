@@ -7,6 +7,7 @@ import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/HotelDetailsPage.css";
 import NavBar from "../components/NavBar";
+import calculateNights from "../lib/CalculateNights";
 
 //Replace icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -274,9 +275,10 @@ export default function HotelDetailsPage() {
   const handleSelect = (room: any) => {
     const checkinDate = new Date(checkin);
     const checkoutDate = new Date(checkout);
+    const nights = calculateNights(checkinDate, checkoutDate);
 
     const formattedPrice = Number(
-      room.converted_price || room.price || 0
+      (room.converted_price || room.price || 0)/nights
     ).toFixed(2);
     navigate("/checkhoteldetailspage", {
       state: {
