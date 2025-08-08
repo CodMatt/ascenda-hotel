@@ -50,6 +50,7 @@ function GuestInfoPage(){
   const userRef = location.state.userRef;
   const roomType = location.state.roomType;
 
+  console.log("user ref", userRef)
 
   // Info collected from user in this page
   const [firstName, setFirstName] = useState(location.state.firstName);

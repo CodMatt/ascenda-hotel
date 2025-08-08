@@ -9,7 +9,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage'
 
 import PaymentPage from './pages/PaymentPage'
-import SuccessForm from './pages/SuccessForm'
+import SuccessPage from './pages/SuccessPage'
 
 
 export default function App() {
@@ -27,7 +27,7 @@ export default function App() {
       <Route path="/checkhoteldetailspage" element={<CheckHotelDetailsPage />} />
       <Route path="/guestinfo" element={<GuestInfoPage />} />
       <Route path='/payment' element={<PaymentPage/>}/>
-      <Route path='/success' element={<SuccessForm/>}/>
+      <Route path='/success' element={<SuccessPage/>}/>
     </Routes>
     </AuthProvider>
   )

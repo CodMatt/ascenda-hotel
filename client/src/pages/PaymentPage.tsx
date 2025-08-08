@@ -7,7 +7,7 @@ import axios from "axios";
 
 import { useLocation } from "react-router-dom";
 
-import NavBar from "../components/NavBar";
+import EmptyNavBar from "../components/EmptyNavBar";
 import PaymentForm from '../components/PaymentForm'
 
 // call backend to get publishable key & load stripe with it
@@ -74,7 +74,7 @@ function PaymentPage(){
         <>
 
         {/* Navigation Bar */}
-        <NavBar />
+        <EmptyNavBar />
             
         <div>
         {clientSecretSettings.loading ? (

@@ -4,7 +4,7 @@ import formatDisplayDate from '../lib/FormatDisplayDate';
 import '../styles/SuccessPage.css'
 import NavBar from "../components/NavBar";
 
-function SuccessForm() {
+function SuccessPage() {
   const [bookingData, setBookingData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(true);
@@ -15,8 +15,8 @@ function SuccessForm() {
     
     if (bookingData) {
       console.log(JSON.stringify(bookingData))
-      if (bookingData.userRef != null) {
-        console.log("jere"); 
+      if (bookingData.userRef) {
+
         contents = { // logged in
           nights: bookingData.duration,
           adults: bookingData.noAdults,
@@ -30,7 +30,7 @@ function SuccessForm() {
           end_date: bookingData.checkout,
         };
       } else {
-        console.log("jet 2 holidayu");
+
         contents = { // no account
           nights: bookingData.duration,
           adults: bookingData.noAdults,
@@ -51,13 +51,18 @@ function SuccessForm() {
       }
 
       if (contents) {
-        const response = await fetch('http://localhost:6039/api/booking', {
+        const response = await fetch('/api/booking', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(contents)
+        
         });
+        console.log("contents",contents)
+
+        console.log("response", response)
         const data = await response.json();
-        console.log("responsee: "+ data.booking_id);
+        console.log("responsee: ", data);
+
         if (response.ok) {
           setBookingId(data.booking_id);
           return data; // Return the promise
@@ -65,6 +70,7 @@ function SuccessForm() {
       }
     }
   }
+  
 
   // FOR TESTING - WILL BE AUTO-GENERATED IN BACKEND
   const navigate = useNavigate();
@@ -260,4 +266,4 @@ function SuccessForm() {
   );
 }
 
-export default SuccessForm;
+export default SuccessPage;

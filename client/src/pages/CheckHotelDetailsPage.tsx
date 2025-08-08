@@ -1,44 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import React, {use, useState} from 'react';
 import '../styles/BookingConfirmation.css'; // to move
-import NavBar from "../components/NavBar";
+import EmptyNavBar from "../components/EmptyNavBar";
+
+import AccountInformation from '../components/AccountInformation';
 
 function CheckHotelDetailsPage() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [authToken, setAuthToken] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [salutation, setSalutation] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [emailAddress, setEmailAddress] = useState('');
-
-  const [country, setCountry] = useState('');
-  const [countryCode, setCountryCode] = useState('');
-
-  const testRegisterAccount = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setAuthToken("abcdefghijklm123");
-        setFirstName("Bugger");
-        setLastName("Smith");
-        setSalutation("They");
-        setPhoneNumber("65 12341234");
-        setEmailAddress("abc@gmail.com");
-        // set country and country code to pass the GuestInfo page validation
-        setCountry("Singapore");
-        setCountryCode("65");
-    }
-
-    const unsetAccount = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setAuthToken('');
-        setFirstName('');
-        setLastName('');
-        setSalutation('');
-        setPhoneNumber('');
-        setEmailAddress('');
-    }
 
   const formatDisplayDate = (date: Date) => {
         const day = date.getDate();
@@ -76,16 +45,18 @@ function CheckHotelDetailsPage() {
         noAdults: state.noAdults,
         noChildren: state.noChildren,
         roomType: state.roomType,
-        userRef: state.userRef,
+        
 
-        firstName: firstName,
-        authToken: authToken,
-        lastName: lastName,
-        salutation: salutation,
-        phoneNumber: phoneNumber,
-        emailAddress: emailAddress,
-        country: country,
-        countryCode: countryCode
+        // to remove and call directly from session storage maybe?
+        userRef: sessionStorage.getItem('userId') || "",
+        firstName: sessionStorage.getItem('firstName') || "",
+        authToken: sessionStorage.getItem('token') || "",
+        lastName: sessionStorage.getItem('lastName') || "",
+        salutation: sessionStorage.getItem('salutation') || "",
+        phoneNumber: sessionStorage.getItem('phoneNumber') || "",
+        emailAddress: sessionStorage.getItem('emailAddress') || "",
+        country: "", 
+        countryCode: ""
       }
     });
   };
@@ -94,7 +65,7 @@ function CheckHotelDetailsPage() {
 
 return (
         <div className="booking-info-page">
-            <NavBar />
+            <EmptyNavBar />
             {/* Progress Bar */}
             <div className="progress-bar">
                 <div className="progress-step active">1</div>
@@ -177,7 +148,9 @@ return (
                     </div>
 
                     {/* Account Management Section */}
-                    <div className="account-section">
+                    <AccountInformation/>
+                    
+                    {/* <div className="account-section">
                         <h4>Account Information</h4>
                         
                         {authToken ? (
@@ -221,7 +194,7 @@ return (
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </div> */}
 
                     {/* Action Buttons */}
                     <div className="booking-actions">

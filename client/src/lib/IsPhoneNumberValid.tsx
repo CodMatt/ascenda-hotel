@@ -11,7 +11,7 @@ const isPhoneNumberValid = (phoneNumber: string, country: string, countryCode: s
 
         // check if inputs are numbers for others
         if (country == "others"){
-            if (Number(phoneNumber) && Number(countryCode) && countryCode.length <= 4){
+            if (Number(phoneNumber) && Number(countryCode) && countryCode.length <= 4 && phoneNumber.length >= 6){
                 return true;
             } else{
                 return false;
