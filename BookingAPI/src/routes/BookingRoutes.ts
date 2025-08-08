@@ -2,9 +2,9 @@ import express from 'express';
 import * as bookingRepo from '../repos/bookingRepo';
 import * as nonAccountRepo from '../repos/nonAccountRepo';
 import db from '../models/db';
-import booking, { IBooking } from '../models/booking'; 
+import { IBooking } from '../models/booking'; 
 import { INonAcct } from '../models/nonAcct';
-import { validateBookingCreation, validateIdParam } from '@src/common/util/validators';
+import { validateBookingCreation } from '@src/common/util/validators';
 
 import { authenticateJWT } from '@src/common/util/auth';
 
@@ -129,11 +129,47 @@ router.put('/update/:id', async (req, res) => {
         }
         updates.updated_at = new Date(); // Update the timestamp
         const result = await bookingRepo.updateBooking(req.params.id, updates);
-        res.json({ message: 'Booking updated', result });
+        res.status(200).json({ message: 'Booking updated', result });
     } catch (error) {
         res.status(500).json({ error: 'Failed to update booking', details: error });
     }
 });
+
+/**
+ * READ booking by ID with contact information (public)
+ */
+router.get('/details-with-contact/:id', async (req, res) => {
+    try {
+        const booking = await bookingRepo.getBookingWithContactById(req.params.id);
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        res.json(booking);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch booking with contact', details: error });
+    }
+});
+
+// READ all bookings with contact information (public - consider adding authentication for this)
+router.get('/all-with-contact', async (_req, res) => {
+    try {
+        const bookings = await bookingRepo.getAllBookingsWithContact();
+        res.json(bookings);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch bookings with contact', details: error });
+    }
+});
+
+// READ bookings by hotel with contact information (public)
+router.get('/hotel-with-contact/:hotel_id', async (req, res) => {
+    try {
+        const bookings = await bookingRepo.getBookingsWithContactByHotel(req.params.hotel_id);
+        res.json(bookings);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch hotel bookings with contact', details: error });
+    }
+});
+
 
 
 router.use(authenticateJWT);// All routes below this line will require authentication
@@ -203,6 +239,21 @@ router.delete('/:id', async (req, res) => {
         res.json({ message: 'Booking deleted', result });
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete booking', details: error });
+    }
+});
+
+// Get user's bookings with contact information (protected)
+router.get('/my-bookings-with-contact', async (req, res) => {
+    try {
+        const userId = req.user?.userId;
+        if (!userId) {
+            return res.status(401).json({ error: 'User ID not found in token' });
+        }
+        
+        const bookings = await bookingRepo.getUserBookingsWithContact(userId);
+        res.json(bookings);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch user bookings with contact', details: error });
     }
 });
 

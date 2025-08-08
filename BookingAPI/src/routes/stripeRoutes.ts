@@ -1,4 +1,3 @@
-// src/routes/stripeRoutes.ts
 import { Router, Request, Response } from 'express';
 import Stripe from 'stripe';
 import 'dotenv/config';

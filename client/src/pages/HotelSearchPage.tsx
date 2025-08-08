@@ -5,7 +5,7 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { sortHotels } from "../utils/sortHotels"; // filtering from high-low price fxn.
 import "../styles/HotelSearchPage.css";
 import logo from "../assets/logo.png";
-import { ClipLoader } from "react-spinnerS";
+import { ClipLoader } from "react-spinners";
 import NavBar from "../components/NavBar";
 
 export default function HotelSearchPage() {

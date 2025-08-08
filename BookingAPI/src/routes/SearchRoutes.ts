@@ -1,4 +1,3 @@
-//TODO: for mongodb query, BUTTTTT i need to work on the autocorrect
 import express from 'express';
 import mongoose from 'mongoose';
 

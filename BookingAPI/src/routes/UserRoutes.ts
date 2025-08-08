@@ -6,10 +6,11 @@ import { hashPassword } from '@src/common/util/auth';
 import { generateToken, authenticateJWT, comparePasswords } from '@src/common/util/auth';
 import { validateUserCreation, validateUserLogin ,validateIdParam } from '@src/common/util/validators';
 
-
 const router = express.Router();
 
-// CREATE user
+/**
+ * CREATE new user
+ */
 router.post('/',validateUserCreation ,async (req :any, res:any) => {
 
     try {
@@ -64,7 +65,10 @@ router.post('/',validateUserCreation ,async (req :any, res:any) => {
     }
 });
 
-// User login route (additional authentication endpoint)
+/**
+ * Login User 
+ */
+
 router.post('/login', validateUserLogin,async (req:any, res:any) => {
     try {
         const { email, password } = req.body;
@@ -107,13 +111,14 @@ router.post('/login', validateUserLogin,async (req:any, res:any) => {
 });
 
 
-// Protect routes with JWT authentication
+/**
+ * Protected Routes with JWT authentication
+ */
 router.use(authenticateJWT);
-
 /**
  * All routes below this line will require authentication
+ * READ all users
 */
-// READ all users (consider adding authentication/authorization for this route)
 router.get('/', async (_req, res) => {
     try {
         const users = await userRepo.getAll();
@@ -137,7 +142,9 @@ router.get('/', async (_req, res) => {
     }
 });
 
-// READ user by ID
+/**
+ * GET User by ID
+ */
 router.get('/:id', async (req, res) => {
     try {
         const user = await userRepo.getOne(req.params.id);
@@ -163,7 +170,9 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// UPDATE user
+/**
+ * UPDATE User 
+ */
 router.put('/:id', async (req, res) => {
     try {
         // Only allow specific fields to be updated
@@ -199,8 +208,10 @@ router.put('/:id', async (req, res) => {
         });
     }
 });
-
-// DELETE user
+ 
+/**
+ * DELETE user
+ */
 router.delete('/:id', async (req, res) => {
     try {
         const result = await userRepo.deleteOne(req.params.id);

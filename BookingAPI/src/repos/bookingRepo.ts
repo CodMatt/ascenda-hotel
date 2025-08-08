@@ -1,3 +1,4 @@
+import { IBookingWithContact } from '@src/models/bookingWContact';
 import db from '../models/db';
 import { IBooking } from '@src/models/booking';
 
@@ -134,6 +135,205 @@ export async function deleteAllUserBooking(user_ref: string) {
     return rows;
 }
 
+
+/**
+ * Get booking by ID with contact information
+ * Joins with customer table if user_reference is not null,
+ * otherwise joins with nonaccount table
+ */
+export async function getBookingWithContactById(booking_id: string): Promise<IBookingWithContact | undefined> {
+  const sql = `
+    SELECT 
+      b.booking_id,
+      b.destination_id,
+      b.hotel_id,
+      b.nights,
+      b.start_date,
+      b.end_date,
+      b.adults,
+      b.children,
+      b.msg_to_hotel,
+      b.price,
+      b.user_reference,
+      b.created_at,
+      b.updated_at,
+      
+      -- Contact information from customer table (if user_reference is not null)
+      COALESCE(c.first_name, n.first_name) as contact_first_name,
+      COALESCE(c.last_name, n.last_name) as contact_last_name,
+      COALESCE(c.salutation, n.salutation) as contact_salutation,
+      COALESCE(c.email, n.email) as contact_email,
+      COALESCE(c.phone_num, n.phone_num) as contact_phone,
+      c.username as contact_username,
+      
+      -- Indicate source of contact information
+      CASE 
+        WHEN b.user_reference IS NOT NULL THEN 'customer'
+        ELSE 'nonaccount'
+      END as contact_source
+      
+    FROM ${tableName} b
+    LEFT JOIN customer c ON b.user_reference = c.id
+    LEFT JOIN nonaccount n ON b.booking_id = n.booking_id AND b.user_reference IS NULL
+    WHERE b.booking_id = $1
+  `;
+  
+  try {
+    const { rows } = await db.getPool().query(sql, [booking_id]);
+    return rows[0] || undefined;
+  } catch (error) {
+    console.error('❌ Error fetching booking with contact:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get all bookings with contact information
+ * Useful for admin views or reporting
+ */
+export async function getAllBookingsWithContact(): Promise<IBookingWithContact[]> {
+  const sql = `
+    SELECT 
+      b.booking_id,
+      b.destination_id,
+      b.hotel_id,
+      b.nights,
+      b.start_date,
+      b.end_date,
+      b.adults,
+      b.children,
+      b.msg_to_hotel,
+      b.price,
+      b.user_reference,
+      b.created_at,
+      b.updated_at,
+      
+      -- Contact information
+      COALESCE(c.first_name, n.first_name) as contact_first_name,
+      COALESCE(c.last_name, n.last_name) as contact_last_name,
+      COALESCE(c.salutation, n.salutation) as contact_salutation,
+      COALESCE(c.email, n.email) as contact_email,
+      COALESCE(c.phone_num, n.phone_num) as contact_phone,
+      c.username as contact_username,
+      
+      -- Source indicator
+      CASE 
+        WHEN b.user_reference IS NOT NULL THEN 'customer'
+        ELSE 'nonaccount'
+      END as contact_source
+      
+    FROM ${tableName} b
+    LEFT JOIN customer c ON b.user_reference = c.id
+    LEFT JOIN nonaccount n ON b.booking_id = n.booking_id AND b.user_reference IS NULL
+    ORDER BY b.created_at DESC
+  `;
+  
+  try {
+    const { rows } = await db.getPool().query(sql);
+    return rows;
+  } catch (error) {
+    console.error('❌ Error fetching all bookings with contact:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get bookings with contact information by hotel ID
+ * Combines both customer and non-account bookings for a specific hotel
+ */
+export async function getBookingsWithContactByHotel(hotel_id: string): Promise<IBookingWithContact[]> {
+  const sql = `
+    SELECT 
+      b.booking_id,
+      b.destination_id,
+      b.hotel_id,
+      b.nights,
+      b.start_date,
+      b.end_date,
+      b.adults,
+      b.children,
+      b.msg_to_hotel,
+      b.price,
+      b.user_reference,
+      b.created_at,
+      b.updated_at,
+      
+      -- Contact information
+      COALESCE(c.first_name, n.first_name) as contact_first_name,
+      COALESCE(c.last_name, n.last_name) as contact_last_name,
+      COALESCE(c.salutation, n.salutation) as contact_salutation,
+      COALESCE(c.email, n.email) as contact_email,
+      COALESCE(c.phone_num, n.phone_num) as contact_phone,
+      c.username as contact_username,
+      
+      -- Source indicator
+      CASE 
+        WHEN b.user_reference IS NOT NULL THEN 'customer'
+        ELSE 'nonaccount'
+      END as contact_source
+      
+    FROM ${tableName} b
+    LEFT JOIN customer c ON b.user_reference = c.id
+    LEFT JOIN nonaccount n ON b.booking_id = n.booking_id AND b.user_reference IS NULL
+    WHERE b.hotel_id = $1
+    ORDER BY b.start_date ASC
+  `;
+  
+  try {
+    const { rows } = await db.getPool().query(sql, [hotel_id]);
+    return rows;
+  } catch (error) {
+    console.error('❌ Error fetching hotel bookings with contact:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get user's bookings with contact information
+ * For authenticated users to see their booking history with full details
+ */
+export async function getUserBookingsWithContact(user_id: string): Promise<IBookingWithContact[]> {
+  const sql = `
+    SELECT 
+      b.booking_id,
+      b.destination_id,
+      b.hotel_id,
+      b.nights,
+      b.start_date,
+      b.end_date,
+      b.adults,
+      b.children,
+      b.msg_to_hotel,
+      b.price,
+      b.user_reference,
+      b.created_at,
+      b.updated_at,
+      
+      -- Contact information (will always be from customer table for this query)
+      c.first_name as contact_first_name,
+      c.last_name as contact_last_name,
+      c.salutation as contact_salutation,
+      c.email as contact_email,
+      c.phone_num as contact_phone,
+      c.username as contact_username,
+      'customer' as contact_source
+      
+    FROM ${tableName} b
+    INNER JOIN customer c ON b.user_reference = c.id
+    WHERE b.user_reference = $1
+    ORDER BY b.created_at DESC
+  `;
+  
+  try {
+    const { rows } = await db.getPool().query(sql, [user_id]);
+    return rows;
+  } catch (error) {
+    console.error('❌ Error fetching user bookings with contact:', error);
+    throw error;
+  }
+}
+
+
 /******************************************************************************
                                 Export
 ******************************************************************************/
@@ -146,5 +346,10 @@ export default {
     getAllBookings,
     updateBooking,
     deleteBooking,
-    deleteAllUserBooking
+    deleteAllUserBooking,
+    getBookingWithContactById,
+    getAllBookingsWithContact,
+    getBookingsWithContactByHotel,
+    getUserBookingsWithContact
+    
 } as const;
