@@ -278,6 +278,7 @@ export default function HotelDetailsPage() {
     const nights = calculateNights(checkinDate, checkoutDate);
     const formattedRate = Number((room.converted_price || room.price || 0)/nights).toFixed(2);
     const formattedPrice = Number(room.converted_price || room.price || 0).toFixed(2);
+    const noRooms = guests && guests.includes("|") ? guests.split("|").length : 1;
     navigate("/checkhoteldetailspage", {
       state: {
         id: id,
@@ -295,7 +296,7 @@ export default function HotelDetailsPage() {
           room?.roomDescription ||
           room?.roomNormalizedDescription ||
           "Standard Room",
-        userRef: "dummyUserRef",
+        noRooms: noRooms,
         roomImage: room?.images?.[0]?.url || "",
       },
     });
