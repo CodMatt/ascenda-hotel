@@ -26,7 +26,7 @@ export default function HotelSearchPage() {
   const location = useLocation();
   //const searchParams = new URLSearchParams(location.search);
   const searchParams = (location.state as any)?.searchParams;
-  const { destinationId, checkin, checkout, guests } = searchParams ?? {};
+  const { destinationId, checkin, checkout, guests, adults, children } = searchParams ?? {};
 
   console.log(searchParams);
 
@@ -267,6 +267,8 @@ export default function HotelSearchPage() {
                           checkin,
                           checkout,
                           guests,
+                          adults,
+                          children
                         },
                       }}
                       key={hotel.id}

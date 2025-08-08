@@ -290,8 +290,8 @@ export default function HotelDetailsPage() {
         rates: formattedPrice,
         checkin: checkinDate,
         checkout: checkoutDate,
-        noAdults: parseInt(guests.split(",")[0]) || 1,
-        noChildren: parseInt(guests.split(",")[1]) || 0,
+        noAdults: adults,
+        noChildren: children || 0,
         roomType:
           room?.roomDescription ||
           room?.roomNormalizedDescription ||
