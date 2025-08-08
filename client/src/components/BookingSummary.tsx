@@ -1,17 +1,18 @@
 
 import formatDisplayDate from '../lib/FormatDisplayDate';
 import calculateNights from '../lib/CalculateNights';
-import calculateTotalPrice from '../lib/CalculateTotalPrice';
+
 
 interface BookingDetails{
     hotelName: string;
     hotelAddr: String;
     rates: number;
+    totalPrice: number;
     checkin: Date;
     checkout: Date;
     noAdults: number;
     noChildren: number;
-
+    noRooms: number;
     
 }
 
@@ -46,8 +47,12 @@ const BookingSummary = (bookingdetails: BookingDetails) => {
               <strong>Children:</strong> {bookingdetails.noChildren}
             </div>
           )}
+          <div className="summary-item">
+            <strong>No. Rooms:</strong> {bookingdetails.noRooms} rooms
+          </div>
+
           <div className="summary-item total">
-            <strong>Total: ${calculateTotalPrice(bookingdetails.rates, bookingdetails.checkin, bookingdetails.checkout, "dollars").toFixed(2)} SGD</strong>
+            <strong>Total: ${bookingdetails.totalPrice} SGD</strong>
           </div>
         </div>)
 }

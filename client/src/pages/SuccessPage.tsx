@@ -232,7 +232,7 @@ function SuccessPage() {
               <h4>Payment Summary</h4>
               <div className="payment-summary">
                 <div className="payment-row">
-                  <span>Room Rate ({bookingData.duration} {bookingData.duration === 1 ? 'night' : 'nights'}):</span>
+                  <span>Per Night ({bookingData.duration} {bookingData.duration === 1 ? 'night' : 'nights'}):</span>
                   <span>${bookingData.rates} SGD</span>
                 </div>
                 <div className="payment-row total">

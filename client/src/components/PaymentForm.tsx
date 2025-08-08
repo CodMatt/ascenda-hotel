@@ -27,6 +27,7 @@ function PaymentForm() {
   const noChildren = location.state.noChildren;
   const duration = location.state.duration;
   const totalPrice = location.state.totalPrice;
+  const noRooms = location.state.noRooms;
   
   const destId = location.state.destId;
   const hotelId = location.state.hotelId;
@@ -197,6 +198,7 @@ function PaymentForm() {
         <BookingSummary hotelName = {hotelName} 
     hotelAddr = {hotelAddr} rates = {rates} 
     checkin = {checkin} checkout = {checkout} 
+    totalPrice = {totalPrice} noRooms = {noRooms}
     noAdults = {noAdults} noChildren = {noChildren}/>
       </div>
     </div>
