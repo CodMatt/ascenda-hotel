@@ -276,10 +276,8 @@ export default function HotelDetailsPage() {
     const checkinDate = new Date(checkin);
     const checkoutDate = new Date(checkout);
     const nights = calculateNights(checkinDate, checkoutDate);
-
-    const formattedPrice = Number(
-      (room.converted_price || room.price || 0)/nights
-    ).toFixed(2);
+    const formattedRate = Number((room.converted_price || room.price || 0)/nights).toFixed(2);
+    const formattedPrice = Number(room.converted_price || room.price || 0).toFixed(2);
     navigate("/checkhoteldetailspage", {
       state: {
         id: id,
@@ -287,7 +285,8 @@ export default function HotelDetailsPage() {
         hotelName: hotel?.name || "Unknown Hotel",
         hotelAddress: hotel?.address || "Unknown Address",
         key: room.key,
-        rates: formattedPrice,
+        rates: formattedRate,
+        price: formattedPrice,
         checkin: checkinDate,
         checkout: checkoutDate,
         noAdults: adults,
