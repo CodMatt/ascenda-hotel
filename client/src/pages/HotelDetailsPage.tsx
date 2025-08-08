@@ -136,14 +136,8 @@ export default function HotelDetailsPage() {
   const location = useLocation();
   const { searchParams } = location.state || {};
 
-  const {
-    destinationId,
-    checkin,
-    checkout,
-    guests,
-    adults,
-    children
-  } = searchParams ?? {};
+  const { destinationId, checkin, checkout, guests, adults, children } =
+    searchParams ?? {};
 
   console.log(searchParams);
 
@@ -154,7 +148,7 @@ export default function HotelDetailsPage() {
 
   console.log("hotel data: ", hotel);
   console.log("rooms data: ", rooms);
-  console.log("params data: " + JSON.stringify(location.state))
+  console.log("params data: " + JSON.stringify(location.state));
 
   useEffect(() => {
     async function loadDetails() {
@@ -163,7 +157,13 @@ export default function HotelDetailsPage() {
       try {
         const [hotelRes, priceRes] = await Promise.all([
           fetchHotelDetails(id!),
-          fetchHotelRoomPrices(id!, destinationId!, checkin!, checkout!, guests!),
+          fetchHotelRoomPrices(
+            id!,
+            destinationId!,
+            checkin!,
+            checkout!,
+            guests!
+          ),
         ]);
         setHotel(hotelRes);
         setRooms(priceRes.rooms || []);
@@ -274,6 +274,10 @@ export default function HotelDetailsPage() {
   const handleSelect = (room: any) => {
     const checkinDate = new Date(checkin);
     const checkoutDate = new Date(checkout);
+
+    const formattedPrice = Number(
+      room.converted_price || room.price || 0
+    ).toFixed(2);
     navigate("/checkhoteldetailspage", {
       state: {
         id: id,
@@ -281,7 +285,7 @@ export default function HotelDetailsPage() {
         hotelName: hotel?.name || "Unknown Hotel",
         hotelAddress: hotel?.address || "Unknown Address",
         key: room.key,
-        rates: room.converted_price || room.price || 0,
+        rates: formattedPrice,
         checkin: checkinDate,
         checkout: checkoutDate,
         noAdults: parseInt(guests.split(",")[0]) || 1,
@@ -291,10 +295,9 @@ export default function HotelDetailsPage() {
           room?.roomNormalizedDescription ||
           "Standard Room",
         userRef: "dummyUserRef",
-        roomImage: room?.images?.[0]?.url || ""
+        roomImage: room?.images?.[0]?.url || "",
       },
     });
-    
   };
 
   if (loading) return <div>Loading...</div>;
