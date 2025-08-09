@@ -123,9 +123,22 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
     delta: number
   ) => {
     const updatedGuests = [...guestsPerRoom];
-    const current = updatedGuests[index][type];
+    const currentAdults = updatedGuests[index].adults;
+    const currentChildren = updatedGuests[index].children;
+    /*const current = updatedGuests[index][type];
     const newValue = Math.max(0, current + delta); //no negative vals
-    updatedGuests[index] = { ...updatedGuests[index], [type]: newValue };
+    updatedGuests[index] = { ...updatedGuests[index], [type]: newValue };*/
+
+    if (type === "adults") {
+      const newAdults = currentAdults + delta;
+      //ensure at least 1 adult
+      if (newAdults < 1) return;
+      updatedGuests[index].adults = Math.max(0, newAdults);
+    } else if (type === "children") {
+      const newChildren = currentChildren + delta;
+      if (currentAdults === 0 && newChildren < 1) return;
+      updatedGuests[index].children = Math.max(0, newChildren);
+    }
     setGuestsPerRoom(updatedGuests);
   };
 
@@ -158,49 +171,48 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
           onSelect={setSelectedDestination}
           selectedDestination={selectedDestination}
         />
-          <small className="date-requirement" style={{ visibility: "hidden" }}>
-            (Placeholder to align height)
-          </small>
+        <small className="date-requirement" style={{ visibility: "hidden" }}>
+          (Placeholder to align height)
+        </small>
       </div>
 
       {/* Date Pickers */}
-        <div className="form-group">
-          <label>Check-in</label>
-          <DatePicker
-            selected={checkinDate}
-            onChange={(date) => {
-              console.log("Check-in changed to:", date);
-              setCheckinDate(date);
-            }}
-            minDate={minCheckinDate}
-            className="date-picker"
-            dateFormat="dd/MM/yyyy"
-          />
-          <small className="date-requirement">
-            (Must be at least 3 days in advance)
-          </small>      
-        </div>
+      <div className="form-group">
+        <label>Check-in</label>
+        <DatePicker
+          selected={checkinDate}
+          onChange={(date) => {
+            console.log("Check-in changed to:", date);
+            setCheckinDate(date);
+          }}
+          minDate={minCheckinDate}
+          className="date-picker"
+          dateFormat="dd/MM/yyyy"
+        />
+        <small className="date-requirement">
+          (Must be at least 3 days in advance)
+        </small>
+      </div>
 
-        <div className="form-group">
-          <label>Check-out</label>
-          <DatePicker
-            key={checkinDate?.getTime()}
-            selected={checkoutDate}
-            dateFormat='dd/MM/yyyy'
-            onChange={(date) => {
-              console.log("Checkout selected:", date);
-              setCheckoutDate(date);
-            }}
-            minDate={
-              checkinDate ? addDays(checkinDate, 1) : addDays(minCheckinDate, 1)
-            }
-            className="date-picker"
-          />
-          <small className="date-requirement" style={{ visibility: "hidden" }}>
-            (Placeholder to align height)
-          </small>
-        </div>
-      
+      <div className="form-group">
+        <label>Check-out</label>
+        <DatePicker
+          key={checkinDate?.getTime()}
+          selected={checkoutDate}
+          dateFormat="dd/MM/yyyy"
+          onChange={(date) => {
+            console.log("Checkout selected:", date);
+            setCheckoutDate(date);
+          }}
+          minDate={
+            checkinDate ? addDays(checkinDate, 1) : addDays(minCheckinDate, 1)
+          }
+          className="date-picker"
+        />
+        <small className="date-requirement" style={{ visibility: "hidden" }}>
+          (Placeholder to align height)
+        </small>
+      </div>
 
       {/* Rooms & Guests */}
       <div className="form-group">
