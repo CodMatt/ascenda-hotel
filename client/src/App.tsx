@@ -10,6 +10,7 @@ import RegisterPage from './pages/RegisterPage'
 
 import PaymentPage from './pages/PaymentPage'
 import SuccessPage from './pages/SuccessPage'
+import ViewBookingsPage from './pages/ViewBookingPage'
 
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/guestinfo" element={<GuestInfoPage />} />
       <Route path='/payment' element={<PaymentPage/>}/>
       <Route path='/success' element={<SuccessPage/>}/>
+      <Route path='/bookings' element={<ViewBookingsPage/>}/>
     </Routes>
     </AuthProvider>
   )
