@@ -633,6 +633,7 @@ body {
   position: sticky;
   top: 80px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
 }
 
 .price-display {
@@ -654,16 +655,26 @@ body {
 }
 
 .price-large {
-  display: block;
+  display: inline;
   font-size: 32px;
   font-weight: bold;
   color: #0066CC;
-  margin-bottom: 6px;
 }
 
 .duration-text {
+  display: inline;
   font-size: 17px;
   color: #666;
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.room-price .duration-text {
+  display: inline;
+  font-size: 13px;
+  color: #666;
+  margin-left: 1px;
+  font-weight: 500;
 }
 
 .facilities {
@@ -703,6 +714,28 @@ body {
 
 .room-type-placeholder{
   font-size: 16px;
+}
+
+
+.hotel-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.star {
+  font-size: 0.875rem;
+  color: #ddd;
+}
+
+.star.filled {
+  color: #f5a623;
+}
+
+.rating-number {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-left: 4px;
 }
 
 /* Responsive Design */

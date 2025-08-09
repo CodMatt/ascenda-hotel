@@ -8,6 +8,7 @@ import "leaflet/dist/leaflet.css";
 import "../styles/HotelDetailsPage.css";
 import NavBar from "../components/NavBar";
 import calculateNights from "../lib/CalculateNights";
+import { ClipLoader } from "react-spinnerS";
 
 //Replace icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -299,7 +300,17 @@ export default function HotelDetailsPage() {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <div className="loader-overlay">
+      <ClipLoader
+        size={60}
+        color="#0066cc"
+        loading={true}
+        aria-label="mutating-dots-loading"
+      />
+      <p>Fetching hotels...</p>
+    </div>
+  );
   if (error) return <div className="text-red-500">{error}</div>;
   if (!hotel) return <div>No hotel found.</div>;
 
@@ -317,7 +328,23 @@ export default function HotelDetailsPage() {
             View on Map
           </button>
         </div>
-        <span className="star-rating">Rating: {hotel.rating} / 5</span>
+        <div className="hotel-rating">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <span
+              key={i}
+              className={`star ${
+                Math.floor(hotel.rating ?? 0) >= i
+                  ? "filled"
+                  : ""
+              }`}
+            >
+              ★
+            </span>
+          ))}
+          <span className="rating-number">
+            {hotel.rating ?? "N/A"}
+          </span>
+        </div>
       </div>
 
       {/* Main Content Layout */}
@@ -414,7 +441,7 @@ export default function HotelDetailsPage() {
                   {(() => {
                     const grouped: { [key: string]: any[] } = {};
                     rooms.forEach((room: any) => {
-                      const roomType = room.type || "default";
+                      const roomType = room.roomDescription || "default";
                       if (!grouped[roomType]) {
                         grouped[roomType] = [];
                       }
@@ -495,13 +522,11 @@ export default function HotelDetailsPage() {
                                       <div className="room-option-price">
                                         <div className="price-info">
                                           <div className="room-price">
-                                            SGD{" "}
+                                            ${" "}
                                             {room.converted_price ||
                                               room.price ||
                                               0}
-                                          </div>
-                                          <div className="room-duration">
-                                            1 room • 1 night
+                                            <span className="duration-text">/night</span>
                                           </div>
                                         </div>
                                         <button
@@ -560,14 +585,14 @@ export default function HotelDetailsPage() {
           <div className="price-display">
             <span className="from-text">Select rooms starting from:</span>
             <span className="price-large">
-              SGD{" "}
+              ${" "}
               {rooms.length > 0
                 ? Math.min(
                     ...rooms.map((r) => r.converted_price || r.price || 0)
                   )
-                : "432"}
+                : "Loading..."}
             </span>
-            <span className="duration-text">1 Room 1 Night</span>
+            <span className="duration-text">/ night</span>
           </div>
           <button className="see-rooms-btn" onClick={scrollToRoomOptions}>
             See Room Options
