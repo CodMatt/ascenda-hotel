@@ -141,16 +141,16 @@ export default function HotelDetailsPage() {
   const { destinationId, checkin, checkout, guests, adults, children } =
     searchParams ?? {};
 
-  console.log(searchParams);
+  //console.log(searchParams);
 
   /*const destinationId = query.get("destination_id") || "WD0M";
   const checkin = query.get("checkin") || "2025-10-11";
   const checkout = query.get("checkout") || "2025-10-17";
   const guests = query.get("guests") || "2";*/
 
-  console.log("hotel data: ", hotel);
-  console.log("rooms data: ", rooms);
-  console.log("params data: " + JSON.stringify(location.state));
+  //console.log("hotel data: ", hotel);
+  //console.log("rooms data: ", rooms);
+  //console.log("params data: " + JSON.stringify(location.state));
 
   useEffect(() => {
     async function loadDetails() {
