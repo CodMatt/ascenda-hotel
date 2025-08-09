@@ -99,14 +99,15 @@ const LoginForm: React.FC = () =>{
             <button type="submit" disabled={isLoading || success}>
                 {isLoading || success? 'Logging in...': 'Login'}
             </button>
+
             {/* ← Back button */}
             <button
-            type="button"
-            className="back-button"
-            onClick={() => navigate(-1)}
-            disabled={isLoading || success}
-            >
-            ← Back
+                type="button"
+                className="back-button"
+                onClick={() => navigate(-1)}
+                disabled={isLoading || success}
+                >
+                ← Back
             </button>
         </form>
     );

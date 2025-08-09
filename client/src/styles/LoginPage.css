@@ -81,7 +81,6 @@
 /* ← Back button */
 .back-button {
   display: block;
-  margin: 1.75rem auto 0;
   background: transparent;
   border: none;
   color: #0066cc;
