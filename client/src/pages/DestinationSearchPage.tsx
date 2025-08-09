@@ -1,15 +1,37 @@
 //TODO
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import HotelSearchForm from "../components/HotelSearchForm";
 import "../styles/DestinationSearchPage.css";
 import logo from "../assets/logo.png";
 import NavBar from "../components/NavBar";
+import video from "../assets/jet2otomatone.mp4";  //jet2 holiday
 
 const DestinationSearchPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  /*const videoRef = useRef<HTMLVideoElement>(null);  //jet2holiday
+
+  //jet2 holiday useEffect
+  useEffect(() => {
+    // Try to autoplay with sound when component mounts
+    const attemptPlay = () => {
+      if (videoRef.current) {
+        videoRef.current.play()
+          .then(() => {
+            // Autoplay worked
+          })
+          .catch(error => {
+            // Autoplay was prevented, show controls
+            if (videoRef.current) {
+              videoRef.current.controls = true;
+            }
+          });
+      }
+    };
+    attemptPlay();
+  }, []);*/
 
   const handleSearch = async (searchParams: {
     destinationId: string;
@@ -24,7 +46,8 @@ const DestinationSearchPage: React.FC = () => {
   }) => {
     setIsLoading(true);
     setError("");
-
+    
+  
     try {
       //const { destinationId, checkin, checkout, guests } = searchParams;
       //const queryString = `destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
@@ -42,6 +65,8 @@ const DestinationSearchPage: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+
 
   return (
     <div className="destination-page-wrapper">
@@ -63,8 +88,15 @@ const DestinationSearchPage: React.FC = () => {
           </div>
         </section>
       </main>
-
+      
       <footer className="dsp-footer">
+        {/* jet2 holiday */}
+        {/*<div className="footer-video-container">
+          <video ref={videoRef} autoPlay loop className="footer-video" width="600" height="300">
+            <source src={video} type="video/mp4"/>
+            Your browser does not support the video tag
+          </video>
+        </div>*/}
         <div className="footer-block">
           <div className="footer-title">Ascenda</div>
           <div className="footer-text">
@@ -86,61 +118,3 @@ const DestinationSearchPage: React.FC = () => {
 };
 
 export default DestinationSearchPage;
-
-/* TODO
-CSS CLASSES TO STYLE:
-
-1. .hotel-search-page
-   - Main page container
-   - Controls overall page layout, background, centering
-   - Should handle responsive design and page-level spacing
-
-2. h1 (Page Title)
-   - Main page heading "Find Your Perfect Hotel"
-   - Typography styling, color, spacing from form
-   - Usually larger, bold, centered or left-aligned
-
-3. .error (Error Message)
-   - Error text styling for search failures
-   - Usually red/warning colors, may need icons
-   - Should be noticeable but not overwhelming
-
-4. Loading message (p element)
-   - "Loading..." text that appears during search
-   - May want loading spinner or animation
-   - Usually centered or positioned near search button
-
-KEY UI BEHAVIORS:
-- Page starts with no loading/error states
-- When search is submitted, briefly shows loading (currently commented out)
-- On search success, navigates to results page
-- On search failure, shows error message
-- Form validation errors are handled within HotelSearchForm component
-
-DESIGN CONSIDERATIONS FOR YOUR FRIEND:
-
-PAGE LAYOUT:
-- .hotel-search-page should be the main page container
-- Consider centering content or using max-width for desktop
-- Add appropriate padding/margins for mobile
-
-VISUAL HIERARCHY:
-- h1 should be prominent and welcoming
-- Clear separation between title and form
-- Loading/error states should be positioned logically
-
-RESPONSIVE DESIGN:
-- Ensure page works well on mobile devices
-- Form should be the main focus of the page
-- Consider hero section styling around the title
-
-LOADING/ERROR STATES:
-- Loading message could have a spinner animation
-- Error styling should match your design system
-- Both should be positioned where users expect feedback
-
-INTEGRATION:
-- This page contains the HotelSearchForm component
-- Make sure page styling complements form styling
-- Consider overall color scheme and spacing consistency
-*/

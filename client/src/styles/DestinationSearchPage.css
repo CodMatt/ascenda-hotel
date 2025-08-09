@@ -252,4 +252,53 @@ body,
     width: 100%;
     gap: 6px;
   }
+
+  /* nothing beats a jet2 holiday from here onwards delete lol*/
+.footer-video-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.footer-video {
+  width: 60%; /* Makes video take 60% of container width */
+  max-width: 600px; /* Maximum size */
+  height: auto;
+  border-radius: 8px; /* Optional: adds rounded corners */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: adds subtle shadow */
+}
+
+/* Footer layout */
+.dsp-footer {
+  padding: 20px;
+  background-color: #f8f9fa;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-block {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  
+  .footer-video {
+    width: 50%; /* Slightly smaller on larger screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-video {
+    width: 90%; /* Larger percentage on small screens */
+  }
+}
 }
