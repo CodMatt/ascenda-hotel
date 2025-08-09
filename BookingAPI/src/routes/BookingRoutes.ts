@@ -226,14 +226,13 @@ router.delete('/:id', async (req, res) => {
         
         // First check if booking exists and belongs to user
         const booking = await bookingRepo.getBookingById(req.params.id);
-        if(!booking){
+        if(!booking || booking.user_reference !== userId){
             return res.status(404).json({error: 'Booking not found or not owned by user'});
         }
-        
-        // Check if booking belongs to the authenticated user
-        if(booking.user_reference !== userId){
-            return res.status(404).json({error: 'Booking not found or not owned by user'});
-        }
+        // // Check if booking belongs to the authenticated user
+        // if(booking.user_reference !== userId){
+        //     return res.status(404).json({error: 'Booking not found or not owned by user'});
+        // }
         
         const result = await bookingRepo.deleteBooking(req.params.id);
         res.json({ message: 'Booking deleted', result });

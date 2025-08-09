@@ -1,4 +1,5 @@
-
+import { isAwaitKeyword } from 'typescript';
+import db from '../../models/db'
 /******************************************************************************
                                 Functions
 ******************************************************************************/
@@ -49,4 +50,20 @@ export async function fetchWithRetry(
   // All attempts exhausted, fallback
   console.warn("All fetch attempts completed without completed: true");
   return { hotels: [], completed: false };
+}
+
+export async function atomicTransaction<T>(operation: (client:any)=> Promise<T>):Promise<T>{
+  const client = await db.getPool().connect()
+  try{
+    await client.query('BEGIN ISOLATION LEVEL SERIALIZABLE');
+    const result = await operation(client);
+    await client.query('COMMIT');
+    return result;
+  }
+  catch(error){
+    await client.query('ROLLBACK');
+    throw error;
+  } finally{
+    client.release();
+  }
 }

@@ -1,7 +1,7 @@
 import { IUser } from '@src/models/User';
 import { getRandomInt } from '@src/common/util/misc';
 import db from '../models/db';
-
+import { atomicTransaction } from '@src/common/util/misc';
 const tableName = "customer";
 
 /******************************************************************************
@@ -77,12 +77,15 @@ export async function getAll(): Promise<IUser[]> {
  * Add one user.
  */
 export async function add(user: IUser): Promise<void> {
-    await db.getPool().query(
-        `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, phone_num, created)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-        [user.id, user.username, user.password, user.first_name, user.last_name, 
-         user.salutation, user.email, user.phone_num, user.created]
-    );
+    await atomicTransaction(async (client)=>{
+        await client.query(
+            `INSERT INTO ${tableName} (id, username, password, first_name, last_name, salutation, email, phone_num, created)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            [user.id, user.username, user.password, user.first_name, user.last_name, 
+            user.salutation, user.email, user.phone_num, user.created]
+        );
+    });
+    
 
 }
 
@@ -90,24 +93,36 @@ export async function add(user: IUser): Promise<void> {
  * Update a user.
  */
 export async function update(id: string, user: Partial<IUser>): Promise<void> {
-    const fields = Object.keys(user).map((key, index) => `${key} = $${index + 1}`).join(', ');
-    const values = Object.values(user);
-    const sql = 
-        `UPDATE ${tableName} 
-         SET ${fields}
-         WHERE id = $${values.length + 1}`;
+    await atomicTransaction(async (client)=>{
+        const fields = Object.keys(user).map((key, index) => `${key} = $${index + 1}`).join(', ');
+        const values = Object.values(user);
+        const sql = 
+            `UPDATE ${tableName} 
+            SET ${fields}
+            WHERE id = $${values.length + 1}`;
+        
+        await client.query(sql, [...values, id]);
+    });
+
     
-    await db.getPool().query(sql, [...values, id]);
 }
 
 /**
  * Delete one user.
  */
 export async function deleteOne(id: string): Promise<void> {
-    await db.getPool().query(
+    await atomicTransaction(async (client)=>{
+        const {rowCount} = await client.query(
         `DELETE FROM ${tableName} WHERE id = $1`,
-        [id]
-    );
+            [id]
+            );
+        if(rowCount === 0){
+            throw new Error('User not found');
+        }
+    });
+    
+    
+    
 }
 
 // **** Unit-Tests Only **** //
@@ -116,16 +131,21 @@ export async function deleteOne(id: string): Promise<void> {
  * Delete every user record.
  */
 export async function deleteAllForTest(): Promise<void> {
-    await db.getPool().query(`DELETE FROM ${tableName}`);
+    await atomicTransaction(async (client)=>{
+        await db.getPool().query(`DELETE FROM ${tableName}`);
+    });
 }
 
 /**
  * Insert multiple users.
  */
 export async function insertManyForTest(users: IUser[]): Promise<void> {
-    for (const user of users) {
-        await add(user);
-    }
+    await atomicTransaction(async (client)=>{
+        for (const user of users) {
+            await add(user);
+        }
+    });
+    
 }
 
 /******************************************************************************

@@ -1,6 +1,8 @@
 import { IBookingWithContact } from '@src/models/bookingWContact';
 import db from '../models/db';
 import { IBooking } from '@src/models/booking';
+import { atomicTransaction } from '@src/common/util/misc';
+import { Client } from 'pg';
 
 const tableName = 'booking';
 
@@ -111,28 +113,36 @@ export async function getAllBookings() {
 
 // UPDATE
 export async function updateBooking(booking_id: string, updates: Partial<IBooking>) {
-    const fields = Object.keys(updates)
+    return await atomicTransaction(async (client)=>{
+        const fields = Object.keys(updates)
         .map((key, index) => `${key} = $${index + 1}`)
         .join(', ');
     
-    const values = Object.values(updates);
-    const sql = `UPDATE ${tableName} SET ${fields} WHERE booking_id = $${values.length + 1} RETURNING *`;
-    
-    const { rows } = await db.getPool().query(sql, [...values, booking_id]);
-    return rows[0];
+        const values = Object.values(updates);
+        const sql = `UPDATE ${tableName} SET ${fields} WHERE booking_id = $${values.length + 1} RETURNING *`;
+        
+        const { rows } = await client.query(sql, [...values, booking_id]);
+        return rows[0];
+    });
 }
 
 // DELETE
 export async function deleteBooking(booking_id: string) {
-    const sql = `DELETE FROM ${tableName} WHERE booking_id = $1 RETURNING *`;
-    const { rows } = await db.getPool().query(sql, [booking_id]);
-    return rows[0];
+    return await atomicTransaction(async (client)=>{
+        const sql = `DELETE FROM ${tableName} WHERE booking_id = $1 RETURNING *`;
+        const { rows } = await client.query(sql, [booking_id]);
+        return rows[0];
+    });
+    
 }
 
 export async function deleteAllUserBooking(user_ref: string) {
-    const sql = `DELETE FROM ${tableName} WHERE user_reference = $1 RETURNING *`;
-    const { rows } = await db.getPool().query(sql, [user_ref]);
-    return rows;
+    return await atomicTransaction(async (client)=>{
+        const sql = `DELETE FROM ${tableName} WHERE user_reference = $1 RETURNING *`;
+        const { rows } = await client.query(sql, [user_ref]);
+        return rows;
+    });
+    
 }
 
 
