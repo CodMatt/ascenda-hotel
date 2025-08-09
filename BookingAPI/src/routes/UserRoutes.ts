@@ -78,12 +78,12 @@ router.post('/login', validateUserLogin,async (req:any, res:any) => {
 
         const user = await userRepo.getEmailOne(email);
         if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ error: 'No account with that email exists' });
         }
 
         const isMatch = await comparePasswords(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ error: 'Invalid username/password' });
         }
 
         // Generate JWT token
