@@ -168,6 +168,7 @@ export default function HotelDetailsPage() {
           ),
         ]);
         setHotel(hotelRes);
+        if (NoRooms(priceRes)) return;
         setRooms(priceRes.rooms || []);
         //If got no avaiable rooms, redirect to previous page
       } catch (err: any) {
@@ -178,6 +179,15 @@ export default function HotelDetailsPage() {
     }
     if (id) loadDetails();
   }, [id]);
+
+  function NoRooms(priceRes: { completed?: boolean; rooms?: any[] }) {
+    if (priceRes.completed && (!priceRes.rooms || priceRes.rooms.length === 0)) {
+      alert("This hotel has no rooms available for your selected dates.");
+      navigate(-1);
+      return true;
+    }
+    return false;
+  }
 
   // Function to parse hotel description into sections
   const parseHotelDescription = (description: string) => {
