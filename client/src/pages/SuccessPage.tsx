@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import formatDisplayDate from '../lib/FormatDisplayDate';
 import '../styles/SuccessPage.css'
-import NavBar from "../components/NavBar";
+import EmptyNavBar from "../components/EmptyNavBar";
 
 function SuccessPage() {
   const [bookingData, setBookingData] = useState<any>(null);
@@ -133,7 +133,7 @@ function SuccessPage() {
     
     <div className="success-page">
       {/* Navigation Bar */}
-      <NavBar />
+      <EmptyNavBar />
 
       <div className="progress-bar">
         <div className="progress-step completed">✓</div>
