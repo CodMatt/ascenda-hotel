@@ -149,7 +149,7 @@ const SignupForm: React.FC = () => {
         />
       </div>
   
-      <div>
+      {/* <div>
         <select 
           name="country" 
           onChange={(event) => updateCountry(event.target.value)} 
@@ -172,19 +172,41 @@ const SignupForm: React.FC = () => {
           disabled={country === "others" ? false : true || success || isLoading}
           className="phone-code-select"
         />
-      </div>
-  
-      <div>
-        <input
-          name="phone_num"
-          type="text"
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChange={(event) => setPhoneNumber(event.target.value)}
-          required={true}
-          disabled={countryCode ? false : true || isLoading || success}
-          className="phone-number-input"
-        />
+      </div> */}
+
+      <div className ="country-phone-row">
+        <div className="country-select">
+          <select
+            name="country"
+            onChange={(event) => {
+              const selectedCountry = event.target.value;
+              updateCountry(selectedCountry);
+            }}
+            value={country}
+            required
+          >
+            <option value="">Select One</option>
+            {Object.entries(countryCodes).map(([countryName, [, dialCode]]) => (
+              <option value={countryName} key={countryName}>
+                {countryName} ({dialCode})
+              </option>
+            ))}
+            <option value="others">Others</option>
+          </select>
+        </div>
+
+        <div>
+          <input
+            name="phone_num"
+            type="text"
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChange={(event) => setPhoneNumber(event.target.value)}
+            required={true}
+            disabled={countryCode ? false : true || isLoading || success}
+            className="phone-number-input"
+          />
+        </div>
       </div>
   
       <div>
@@ -262,7 +284,7 @@ const SignupForm: React.FC = () => {
         {/* ← Back button */}
         <button
           type="button"
-          className="back-button"
+          className="register-back-button"
           onClick={() => navigate(-1)}
           disabled={isLoading || success}
         >

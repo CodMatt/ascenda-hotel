@@ -8,7 +8,19 @@
     "dev:hot": "nodemon --exec \"npm run dev\" --watch ./src --ext .ts",
     "lint": "eslint .",
     "start": "NODE_ENV=production node -r ./config.js ./dist",
-    "test": "NODE_ENV=test vitest",
+    
+    "test": "NODE_ENV=test vitest --pool=forks --poolOptions.forks.singleFork=true --sequence.concurrent=false",
+    "test:parallel": "NODE_ENV=test vitest",
+    "test:watch": "NODE_ENV=test vitest --pool=forks --poolOptions.forks.singleFork=true --sequence.concurrent=false",
+    "test:run": "NODE_ENV=test vitest run --pool=forks --poolOptions.forks.singleFork=true --sequence.concurrent=false",
+    "test:debug": "NODE_ENV=test vitest run --pool=forks --poolOptions.forks.singleFork=true --sequence.concurrent=false --reporter=verbose",
+    "test:coverage": "NODE_ENV=test vitest run --coverage --pool=forks --poolOptions.forks.singleFork=true",
+    
+    "test:models": "NODE_ENV=test vitest run tests/models --pool=forks --poolOptions.forks.singleFork=true",
+    "test:repos": "NODE_ENV=test vitest run tests/repos --pool=forks --poolOptions.forks.singleFork=true",
+    "test:routes": "NODE_ENV=test vitest run tests/routes --pool=forks --poolOptions.forks.singleFork=true",
+    "test:ordered": "npm run test:models && npm run test:repos && npm run test:routes",
+    
     "type-check": "tsc --noEmit"
   },
   "engines": {

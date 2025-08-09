@@ -8,7 +8,7 @@
   }
   
   .signin-wrapper {
-    width: 360px;
+    width: 480px;
     padding: 2rem;
     background: #fff;
     border-radius: 8px;
@@ -52,6 +52,29 @@
     background-color: white;
     color: gray;
   }
+
+
+  .country-phone-row {
+    display: flex;
+    gap: 0.5rem; /* spacing between the two inputs */
+  }
+
+  .country-phone-row select,
+  .country-phone-row .phone-number-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: white;
+    box-sizing: border-box;
+  }
+
+  .country-phone-row select {
+    flex: 0 0 20%; 
+  }
+  .country-phone-row .phone-number-input {
+    flex: 1;  
+  }
   
   /* error message */
   .error {
@@ -81,7 +104,7 @@
 
   /* -------- Back button styling -------- */
 
-.back-button {
+.register-back-button {
     display: block;
     margin: 1.5rem auto 0;
     background: transparent;

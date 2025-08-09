@@ -20,9 +20,6 @@ function CheckHotelDetailsPage() {
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     };
 
-    const calculateTotalPrice = () => {
-        return state.rates * calculateNights();
-    };
 
   const state = location.state;
 
@@ -39,13 +36,19 @@ function CheckHotelDetailsPage() {
         hotelName: state.hotelName,
         hotelAddr: state.hotelAddress,
         key: state.key,
+    
+        totalPrice: state.price,
         rates: state.rates,
+
         checkin: state.checkin,
         checkout: state.checkout,
+        noNights: calculateNights(),
+
         noAdults: state.noAdults,
         noChildren: state.noChildren,
-        roomType: state.roomType,
         
+        roomType: state.roomType,
+        noRooms: state.noRooms,
 
         // to remove and call directly from session storage maybe?
         userRef: sessionStorage.getItem('userId') || "",
@@ -61,7 +64,9 @@ function CheckHotelDetailsPage() {
     });
   };
 
-  console.log("checking image: ",state.roomImage)
+  console.log("noRooms", state.noRooms)
+  console.log("rates", state.rates)
+  console.log("price", state.price)
 
 return (
         <div className="booking-info-page">
@@ -78,6 +83,7 @@ return (
 
             <div className="booking-container">
                 <div className="booking-details">
+
                     {/* Combined Hotel and Room Information */}
                     <div className="hotel-room-section">
                         <div className="hotel-room-content">
@@ -130,19 +136,25 @@ return (
                             <span>{state.noAdults} adults{state.noChildren > 0 ? `, ${state.noChildren} children` : ''}</span>
                         </div>
                         <div className="guest-field">
+                            <label>Number of Rooms: </label>
+                            <span>{state.noRooms} rooms</span>
+                        </div>
+                        
+                        <div className="guest-field">
                             <label>Duration: </label>
                             <span>{calculateNights()} nights</span>
                         </div>
+                        
                         <div className="guest-field">
-                            <label>Per night: </label>
-                            <span>${state.rates} SGD</span>
+                            <label>Per room per night: </label>
+                            <span>${(state.rates/calculateNights()).toFixed(2)} SGD</span>
                         </div>
                     </div>
 
                     {/* Pricing Summary */}
                     <div className="pricing-summary">
                         <div className="pricing-display">
-                            <p>You will pay <strong>SGD {calculateTotalPrice()}</strong></p>
+                            <p>You will pay <strong>SGD {state.price}</strong></p>
                             <p>for <strong>{calculateNights()} nights</strong></p>
                         </div>
                     </div>
@@ -150,51 +162,6 @@ return (
                     {/* Account Management Section */}
                     <AccountInformation/>
                     
-                    {/* <div className="account-section">
-                        <h4>Account Information</h4>
-                        
-                        {authToken ? (
-                            <div className="user-info-preview">
-                                <div className="account-display">
-                                    <div className="account-field">
-                                        <label>Name:</label>
-                                        <span>{firstName} {lastName}</span>
-                                    </div>
-                                    <div className="account-field">
-                                        <label>Salutation:</label>
-                                        <span>{salutation}</span>
-                                    </div>
-                                    <div className="account-field">
-                                        <label>Phone Number:</label>
-                                        <span>{phoneNumber}</span>
-                                    </div>
-                                    <div className="account-field">
-                                        <label>Email Address:</label>
-                                        <span>{emailAddress}</span>
-                                    </div>
-                                </div>
-                                
-                                <div className="account-actions">
-                                    <form onSubmit={unsetAccount}>
-                                        <button type="submit" className="cancel-btn">
-                                            Log Out
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="no-account">
-                                <p>No account logged in</p>
-                                <div className="account-actions">
-                                    <form onSubmit={testRegisterAccount}>
-                                        <button type="submit" className="book-btn">
-                                            Log in Account
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        )}
-                    </div> */}
 
                     {/* Action Buttons */}
                     <div className="booking-actions">

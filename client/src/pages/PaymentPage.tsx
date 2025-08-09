@@ -48,7 +48,8 @@ function PaymentPage(){
         // }
     console.log("Booking Info in Confirmation:", bookingInfo);
 
-    const totalCostInCents = bookingInfo.rates*bookingInfo.duration*100;
+    const totalCostInCents = ((bookingInfo.totalPrice)*100).toFixed(0);
+    
 
     const stripePromise = initStripe();
 

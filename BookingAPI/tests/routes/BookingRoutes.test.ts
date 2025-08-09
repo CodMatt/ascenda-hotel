@@ -6,36 +6,46 @@ import * as bookingRepo from '../../src/repos/bookingRepo';
 import * as nonAccountRepo from '../../src/repos/nonAccountRepo';
 import HelperFunctions from 'tests/support/HelperFunctions';
 import { hashPassword } from '@src/common/util/auth';
-import { hash } from 'crypto';
 
 const app = express();
 app.use(express.json());
 app.use('/booking', bookingRoutes);
-// Helper function to format dates for MySQLL
+
+// Helper function to format dates for MySQL
 function formatDateForSQL(date: Date): string {
   return date.toISOString().replace('T', ' ').replace(/\..+/, '');
 }
-
 
 describe('Booking Routes', () => {
   let testUserId: string;
   let authToken: string;
   let anotherUser: string;
   let anotherAuth: string;
+  let testUserEmail: string;
+  let anotherUserEmail: string;
 
   beforeEach(async () => {
     try {
       await bookingRepo.sync();
       await nonAccountRepo.sync();
       
-      // Generate test user and get auth token      
-      anotherUser = await HelperFunctions.generateUser();
-      authToken = await HelperFunctions.getAuthToken('test@example.com', 'correctpass');
+      // Generate unique emails for this test run
+      const timestamp = Date.now();
+      testUserEmail = `test-${timestamp}@example.com`;
+      anotherUserEmail = `another-${timestamp}@example.com`;
+      
+      // Create test user with unique email
+      testUserId = await HelperFunctions.generateUserWithEmail(testUserEmail);
+      authToken = await HelperFunctions.getAuthToken(testUserEmail, 'correctpass');
       
       // CRITICAL FIX: Get the userId from the JWT token
       const jwt = require('jsonwebtoken');
       const decoded = jwt.decode(authToken);
-      testUserId = decoded?.userId;  // Use the userId from the token
+      const tokenUserId = decoded?.userId;
+      
+      if (tokenUserId && tokenUserId !== testUserId) {
+        testUserId = tokenUserId; // Use the ID from token if different
+      }
       
       console.log('Auth token userId:', testUserId);
       
@@ -43,23 +53,9 @@ describe('Booking Routes', () => {
         throw new Error('No userId found in auth token');
       }
 
-      //create another user
-      anotherUser = "anotherUser";
-      const hashedPassword = await hashPassword('correctpass');
-          await userRepo.add({ // for booking with account
-              id: "anotherUser",
-              username: 'testuser',
-              password: hashedPassword,
-              first_name:'nabei',
-              last_name:'asomth8',
-              salutation:'somein',
-              email: 'another@example.com',
-              phone_num: '1234567890',
-              created: new Date()
-          })
-
-      anotherAuth = await HelperFunctions.getAuthToken("another@example.com", "correctpass")
-
+      // Create another user with unique email
+      anotherUser = await HelperFunctions.generateUserWithEmail(anotherUserEmail);
+      anotherAuth = await HelperFunctions.getAuthToken(anotherUserEmail, "correctpass");
       
     } catch (error) {
       console.log("beforeEach error: " + error);
@@ -73,6 +69,7 @@ describe('Booking Routes', () => {
       futureDate.setDate(futureDate.getDate() + 7); // 7 days from now
       const endDate = new Date(futureDate);
       endDate.setDate(endDate.getDate() + 3); // 3 days after start
+      
       const response = await request(app)
         .post('/booking')
         .send({
@@ -99,6 +96,7 @@ describe('Booking Routes', () => {
       futureDate.setDate(futureDate.getDate() + 5);
       const endDate = new Date(futureDate);
       endDate.setDate(endDate.getDate() + 2);
+      const timestamp = Date.now();
 
       const response = await request(app)
         .post('/booking')
@@ -115,11 +113,10 @@ describe('Booking Routes', () => {
           user_ref: null, // Guest booking
           first_name: 'Guest',
           last_name: 'User',
-          email: 'guest@example.com',
+          email: `guest-${timestamp}@example.com`,
           phone_num: '+1234567890',
           salutation: 'Mr'
         });
-
 
       expect(response.status).toBe(201);
       
@@ -159,7 +156,6 @@ describe('Booking Routes', () => {
           user_ref: null
           // Missing guest details: first_name, last_name, email, phone_num, salutation
         });
-
 
       expect(response.status).toBe(400);
       console.log("response status" + response.status);
@@ -234,7 +230,7 @@ describe('Booking Routes', () => {
 
       const response = await request(app).get('/booking/details/get-details-1');
       expect(response.status).toBe(200);
-      console.log("Mystring: "+JSON.stringify(response.body))
+      console.log("Mystring: " + JSON.stringify(response.body));
       expect(response.body.booking_id).toBe('get-details-1');
     });
 
@@ -271,7 +267,7 @@ describe('Booking Routes', () => {
           adults: 3,
           price: 250.50
         });
-      console.log(JSON.stringify(response))
+      console.log(JSON.stringify(response));
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('Booking updated');
       
@@ -294,7 +290,6 @@ describe('Booking Routes', () => {
     });
   });
 
-
   // AUTHENTICATED ROUTES TESTS
   describe('GET /booking/my-booking (authenticated)', () => {
     it('should return user bookings when authenticated', async () => {
@@ -314,7 +309,7 @@ describe('Booking Routes', () => {
         user_ref: testUserId,
         msg_to_hotel: ''
       } as any);
-      console.log("myres: "+JSON.stringify(res))
+      console.log("myres: " + JSON.stringify(res));
 
       const response = await request(app)
         .get('/booking/my-booking')
@@ -331,145 +326,144 @@ describe('Booking Routes', () => {
   });
 
   describe('GET /booking/my-booking/:id (authenticated)', () => {
-  it('should return specific user booking when authenticated', async () => {
-    // Create booking properly with formatted dates
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 1);
-    const endDate = new Date(futureDate);
-    endDate.setDate(endDate.getDate() + 1);
+    it('should return specific user booking when authenticated', async () => {
+      // Create booking properly with formatted dates
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 1);
+      const endDate = new Date(futureDate);
+      endDate.setDate(endDate.getDate() + 1);
 
-    const bookingData = {
-      id: 'user-booking-specific',
-      dest_id: 'dest-1',
-      hotel_id: 'hotel-1',
-      start_date: formatDateForSQL(futureDate),  // ✅ Use formatDateForSQL
-      end_date: formatDateForSQL(endDate),      // ✅ Use formatDateForSQL
-      nights: 1,
-      adults: 1,
-      children: 0,
-      price: 100,
-      user_ref: testUserId,  // This should match the userId in the JWT token
-      msg_to_hotel: ''
-    };
+      const bookingData = {
+        id: 'user-booking-specific',
+        dest_id: 'dest-1',
+        hotel_id: 'hotel-1',
+        start_date: formatDateForSQL(futureDate),
+        end_date: formatDateForSQL(endDate),
+        nights: 1,
+        adults: 1,
+        children: 0,
+        price: 100,
+        user_ref: testUserId,
+        msg_to_hotel: ''
+      };
 
-    const res = await request(app)
-      .post('/booking')
-      .send(bookingData);  // ✅ Use .send() not .set()
+      const res = await request(app)
+        .post('/booking')
+        .send(bookingData);
 
-    expect(res.status).toBe(201);
-    
-    const response = await request(app)
-      .get('/booking/my-booking/user-booking-specific')
-      .set('Authorization', `Bearer ${authToken}`);
+      expect(res.status).toBe(201);
+      
+      const response = await request(app)
+        .get('/booking/my-booking/user-booking-specific')
+        .set('Authorization', `Bearer ${authToken}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body.booking_id).toBe('user-booking-specific');
+      expect(response.status).toBe(200);
+      expect(response.body.booking_id).toBe('user-booking-specific');
+    });
+
+    it('should return 404 for booking not owned by user', async () => {
+      // Create booking for different user with proper date formatting
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 1);
+      const endDate = new Date(futureDate);
+      endDate.setDate(endDate.getDate() + 1);
+
+      await bookingRepo.createBooking({
+        id: 'other-user-booking',
+        dest_id: 'dest-1',
+        hotel_id: 'hotel-1',
+        start_date: futureDate,
+        end_date: endDate,
+        created: new Date(),
+        updated_at: new Date(),
+        nights: 1,
+        adults: 1,
+        children: 0,
+        price: 100,
+        user_ref: testUserId,
+        msg_to_hotel: ''
+      } as any);
+
+      const response = await request(app)
+        .get('/booking/my-booking/other-user-booking')
+        .set('Authorization', `Bearer ${anotherAuth}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('Booking not found or not owned by user');
+    });
   });
 
-  it('should return 404 for booking not owned by user', async () => {
-    // Create booking for different user with proper date formatting
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 1);
-    const endDate = new Date(futureDate);
-    endDate.setDate(endDate.getDate() + 1);
+  describe('DELETE /booking/:id (authenticated)', () => {
+    it('should delete a user booking when authenticated', async () => {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 1);
+      const endDate = new Date(futureDate);
+      endDate.setDate(endDate.getDate() + 1);
 
-    await bookingRepo.createBooking({
-      id: 'other-user-booking',
-      dest_id: 'dest-1',
-      hotel_id: 'hotel-1',
-      start_date: futureDate,  // createBooking expects Date objects
-      end_date: endDate,       // createBooking expects Date objects
-      created: new Date(),
-      updated_at: new Date(),
-      nights: 1,
-      adults: 1,
-      children: 0,
-      price: 100,
-      user_ref: testUserId,
-      msg_to_hotel: ''
-    } as any);
+      const testBooking: any = {
+        id: 'delete-booking-1',
+        dest_id: 'dest-1',
+        hotel_id: 'hotel-1',
+        start_date: futureDate,
+        end_date: endDate,
+        created: new Date(),
+        updated_at: new Date(),
+        nights: 1,
+        adults: 2,
+        children: 0,
+        user_ref: testUserId, 
+        price: 100,
+        msg_to_hotel: ''
+      };
+      await bookingRepo.createBooking(testBooking);
 
-    const response = await request(app)
-      .get('/booking/my-booking/other-user-booking')
-      .set('Authorization', `Bearer ${anotherAuth}`);
+      const response = await request(app)
+        .delete('/booking/delete-booking-1')
+        .set('Authorization', `Bearer ${authToken}`);
 
-    expect(response.status).toBe(404);
-    expect(response.body.error).toBe('Booking not found or not owned by user');
-  });
-});
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe('Booking deleted');
+      
+      // Verify deletion
+      const deletedBooking = await bookingRepo.getBookingById('delete-booking-1');
+      expect(deletedBooking).toBeUndefined();
+    });
 
-describe('DELETE /booking/:id (authenticated)', () => {
-  it('should delete a user booking when authenticated', async () => {
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 1);
-    const endDate = new Date(futureDate);
-    endDate.setDate(endDate.getDate() + 1);
+    it('should fail to delete booking not owned by user', async () => {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 1);
+      const endDate = new Date(futureDate);
+      endDate.setDate(endDate.getDate() + 1);
 
-    const testBooking: any = {
-      id: 'delete-booking-1',
-      dest_id: 'dest-1',
-      hotel_id: 'hotel-1',
-      start_date: futureDate,  // Use Date objects for createBooking
-      end_date: endDate,       // Use Date objects for createBooking
-      created: new Date(),
-      updated_at: new Date(),
-      nights: 1,
-      adults: 2,
-      children: 0,
-      user_ref: testUserId, 
-      price: 100,
-      msg_to_hotel: ''
-    };
-    await bookingRepo.createBooking(testBooking);
+      await bookingRepo.createBooking({
+        id: 'other-user-delete-booking',
+        dest_id: 'dest-1',
+        hotel_id: 'hotel-1',
+        start_date: futureDate,
+        end_date: endDate,
+        created: new Date(),
+        updated_at: new Date(),
+        nights: 1,
+        adults: 1,
+        children: 0,
+        price: 100,
+        user_ref: testUserId,
+        msg_to_hotel: ''
+      } as any);
 
-    const response = await request(app)
-      .delete('/booking/delete-booking-1')
-      .set('Authorization', `Bearer ${authToken}`);
+      // Verify the booking was created correctly
+      const verifyBooking = await bookingRepo.getBookingById('other-user-delete-booking');
+      console.log('Booking user_reference:', verifyBooking?.user_reference);
+      
+      const response = await request(app)
+        .delete('/booking/other-user-delete-booking')
+        .set('Authorization', `Bearer ${anotherAuth}`);
 
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Booking deleted');
-    
-    // Verify deletion
-    const deletedBooking = await bookingRepo.getBookingById('delete-booking-1');
-    expect(deletedBooking).toBeUndefined();
-  });
+      console.log('Response status:', response.status);
+      console.log('Response body:', response.body);
 
-  it('should fail to delete booking not owned by user', async () => {
-  const futureDate = new Date();
-  futureDate.setDate(futureDate.getDate() + 1);
-  const endDate = new Date(futureDate);
-  endDate.setDate(endDate.getDate() + 1);
-
-
-  await bookingRepo.createBooking({
-    id: 'other-user-delete-booking',
-    dest_id: 'dest-1',
-    hotel_id: 'hotel-1',
-    start_date: futureDate,
-    end_date: endDate,
-    created: new Date(),
-    updated_at: new Date(),
-    nights: 1,
-    adults: 1,
-    children: 0,
-    price: 100,
-    user_ref: testUserId,  // Hardcoded different user
-    msg_to_hotel: ''
-  } as any);
-
-  // Verify the booking was created correctly
-  const verifyBooking = await bookingRepo.getBookingById('other-user-delete-booking');
-  console.log('Booking user_reference:', verifyBooking?.user_reference);
-  
-  const response = await request(app)
-    .delete('/booking/other-user-delete-booking')
-    .set('Authorization', `Bearer ${anotherAuth}`);
-
-  console.log('Response status:', response.status);
-  console.log('Response body:', response.body);
-
-  expect(response.status).toBe(404);
-  expect(response.body.error).toBe('Booking not found or not owned by user');
-});
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('Booking not found or not owned by user');
+    });
   });
 });

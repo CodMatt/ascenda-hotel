@@ -20,7 +20,7 @@ import InvalidCountryNotification from '../components/notifications/InvalidCount
 
 // others
 import calculateNights from '../lib/CalculateNights';
-import calculateTotalPrice from '../lib/CalculateTotalPrice';
+
 
 import NavBar from '../components/NavBar';
 import '../styles/GuestInfoPage.css';
@@ -41,6 +41,9 @@ function GuestInfoPage(){
   const checkout = location.state.checkout;
   const noAdults = location.state.noAdults;
   const noChildren = location.state.noChildren;
+  const noNights = location.state.noNights;
+  const totalPrice = location.state.totalPrice; 
+  const noRooms = location.state.noRooms;
 
   const authToken = location.state.authToken;
 
@@ -112,7 +115,9 @@ function GuestInfoPage(){
         duration: duration,
         authToken: authToken,
         specialRequest: specialRequest,
-        totalPrice: calculateTotalPrice(rates, checkin, checkout, "dollars"),
+        totalPrice: totalPrice,
+        noNights: noNights,
+        noRooms: noRooms
         }});
 
       } else {
@@ -121,6 +126,7 @@ function GuestInfoPage(){
       
   };
 
+  console.log("totalPrice", totalPrice)
   const handleSubmit2 = async () => {
     navigate(-1); // go back to hotel searching page
   }
@@ -322,8 +328,8 @@ function GuestInfoPage(){
         </div>
 
         <BookingSummary hotelName = {hotelName} 
-          hotelAddr = {hotelAddr} rates = {rates} 
-          checkin = {checkin} checkout = {checkout} 
+          hotelAddr = {hotelAddr} totalPrice = {totalPrice} rates = {rates} 
+          checkin = {checkin} checkout = {checkout}  noRooms = {noRooms}
           noAdults = {noAdults} noChildren = {noChildren}/>
       </div>
     </div>
