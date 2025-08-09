@@ -125,9 +125,9 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
     const updatedGuests = [...guestsPerRoom];
     const currentAdults = updatedGuests[index].adults;
     const currentChildren = updatedGuests[index].children;
-    /*const current = updatedGuests[index][type];
+    const current = updatedGuests[index][type];
     const newValue = Math.max(0, current + delta); //no negative vals
-    updatedGuests[index] = { ...updatedGuests[index], [type]: newValue };*/
+    updatedGuests[index] = { ...updatedGuests[index], [type]: newValue };
 
     if (type === "adults") {
       const newAdults = currentAdults + delta;
