@@ -8,7 +8,7 @@ import "leaflet/dist/leaflet.css";
 import "../styles/HotelDetailsPage.css";
 import NavBar from "../components/NavBar";
 import calculateNights from "../lib/CalculateNights";
-import { ClipLoader } from "react-spinnerS";
+import { ClipLoader } from "react-spinners";
 
 //Replace icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
