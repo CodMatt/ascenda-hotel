@@ -1,0 +1,12 @@
+.btn-danger {
+  background-color: #dc3545;  /* Bootstrap's red */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background-color: #bb2d3b;  /* Darker red on hover */
+}

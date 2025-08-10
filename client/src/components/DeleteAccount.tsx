@@ -1,5 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import "../styles/DeleteAccount.css";
 
 const DeleteAccount = () => {
   const { token, user, logout } = useAuth(); // assuming you have user.id stored
