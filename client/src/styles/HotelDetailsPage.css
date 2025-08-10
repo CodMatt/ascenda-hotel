@@ -27,7 +27,6 @@ html:has(.hotel-info-page) {
 
 
 /* HEADER */
-
 .page-header {
   background: #fff;
   padding: 16px 32px;
@@ -36,78 +35,67 @@ html:has(.hotel-info-page) {
   align-items: center;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   z-index: 10;
+  min-height: 60px;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: nowrap; /* Prevent wrapping to new lines */
 }
 
-.dsp-header {
+.dsp-logo {
+  flex: 1;
+  min-width: 0;
+  max-width: calc(100% - 220px); /* Reserve space for buttons */
+  overflow: hidden; /* Hide overflow if logo gets too small */
+}
+
+.dsp-actions {
+  flex: 0 0 auto;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 30px;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
+  width: 200px; /* Fixed width for button area */
+  justify-content: flex-end;
+  flex-wrap: nowrap; /* Prevent buttons from wrapping */
 }
 
 .logo-img {
   height: 24px;
   object-fit: contain;
-}
-
-.dsp-nav {
-  display: flex;
-  gap: 18px;
-  flex: 1;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.nav-link {
-  text-decoration: none;
-  font-size: 0.9rem;
-  color: var(--text);
-  position: relative;
-  padding: 6px 4px;
-}
-
-.nav-link:hover {
-  color: var(--primary);
-}
-
-.dsp-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  max-width: 100%;
+  display: block;
 }
 
 .btn-outline {
   background: none;
-  border: 1px solid var(--primary);
+  border: 1px solid #2563eb;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   color: #2563eb;
+  white-space: nowrap;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
 .btn-outline:hover {
-  background: rgba(0, 102, 204, 0.05);
+  background: rgba(37, 99, 235, 0.05);
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: #2563eb;
   color: white;
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
-  transition: var(--transition);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
 .btn-primary:hover {
-  filter: brightness(1.05);
+  background: #1d4ed8;
 }
 
 
@@ -274,6 +262,7 @@ body {
   grid-template-columns: 2fr 1fr;
   gap: 40px;
   margin-bottom: 60px;
+  padding-bottom: 150px;
 }
 
 .left-content {
@@ -421,9 +410,6 @@ body {
 }
 
 /* Room Options */
-.room-options {
-  margin-top: 50px;
-}
 
 .room-options h2 {
   font-size: 28px;
@@ -598,8 +584,7 @@ body {
 
 /* Location Section */
 .location-section {
-  margin-top: 50px;
-  margin-bottom: 40px;
+  margin-top: 20px;
 }
 
 .location-section h2 {
