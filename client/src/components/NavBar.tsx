@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
+import DeleteAccount from "./DeleteAccount";
 
 function NavBar() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function NavBar() {
             >
               View Booking
             </button>
+            <DeleteAccount/>
             <button className="btn-primary" onClick={handleLogout}>
               Logout
             </button>
