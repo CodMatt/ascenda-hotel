@@ -5,6 +5,8 @@ import EmptyNavBar from "../components/EmptyNavBar";
 import { useAuth } from "../context/AuthContext";
 import { fetchHotelDetails } from "../api/hotels";
 
+import '../styles/ViewBookingPage.css'
+
 interface Booking {
   booking_id: string;
   hotel_id: string;
@@ -16,6 +18,7 @@ interface Booking {
   destination_id: string;
   hotelName: string | null;
   hotelAddress: string | null;
+  hotelImageUrl?: string | null;
   // Add any other fields you want to display
 }
 
@@ -56,10 +59,20 @@ function ViewBookingsPage() {
           data.map(async (booking) => {
             try {
               const hotelData = await fetchHotelDetails(booking.hotel_id);
+
+              const img =
+                hotelData.image ||
+                hotelData.thumbnail ||
+                hotelData.photo ||
+                hotelData.photos?.[0]?.url ||
+                hotelData.images?.[0] ||
+                null;
+
               return {
                 ...booking,
                 hotelName: hotelData.name,
                 hotelAddress: hotelData.address,
+                hotelImageUrl: img,     
               };
             } catch (error) {
               console.warn(
@@ -70,6 +83,7 @@ function ViewBookingsPage() {
                 ...booking,
                 hotelName: undefined,
                 hotelAddress: undefined,
+                hotelImageUrl: null,   
               };
             }
           })
@@ -94,37 +108,49 @@ function ViewBookingsPage() {
   if (bookings.length === 0) return <p>No previous bookings found.</p>;
 
   return (
-    <div  style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div className="view-booking-page">
       <EmptyNavBar />
-      <h1>My Bookings</h1>
-      <div
-        style={{
-        flex: 1, // take remaining space
-        overflowY: "auto",
-        padding: "1rem",
-      }}>
-        <ul>
-          {bookings.map((booking) => (
-            <li
-              key={booking.booking_id}
-              style={{ marginBottom: "1rem", cursor: "pointer" }}
-              onClick={() => navigate(`/booking-details/${booking.booking_id}`)} // Assume you have a route for booking details
-            >
-              <strong>{booking.hotelName}</strong>
-              <br />
-              Address: {booking.hotelAddress}
-              <br />
-              Check-in: {formatDisplayDate(booking.start_date)}
-              <br />
-              Check-out: {formatDisplayDate(booking.end_date)}
-              <br />
+      <h1 className="page-title">My Bookings</h1>
+      <p className="page-subtitle">Manage your hotel reservations</p>
+      <div className="bookings-container">
+        {bookings.map((booking) => (
+          <div
+            key={booking.booking_id}
+            className="booking-card"
+            onClick={() => navigate(`/booking-details/${booking.booking_id}`)}
+          >
+            <div className="booking-card-with-image">
+                <img
+                  src={
+                    booking.hotelImageUrl ||
+                    "https://images.unsplash.com/photo-1551776235-dde6d4829808?q=80&w=1200&auto=format&fit=crop"
+                  }
+                  alt={booking.hotelName || "Hotel"}
+                />
+            </div>
+
+            <h2 className="hotel-name">{booking.hotelName}</h2>
+            <p className="hotel-address">{booking.hotelAddress}</p>
+            <div className="dates-row">
+              <div className="date-block">
+                <span className="date-label">Check-in</span>
+                <span className="date-value">{formatDisplayDate(booking.start_date)}</span>
+              </div>
+              <div className="date-block">
+                <span className="date-label">Check-out</span>
+                <span className="date-value">{formatDisplayDate(booking.end_date)}</span>
+              </div>
+            </div>
+
+            <p className="guests">
               Guests: {booking.adults} adults
               {booking.children ? `, ${booking.children} children` : ""}
-              <br />
+            </p>
+            <p className="total-paid">
               Total Paid: ${parseFloat(booking.price).toFixed(2)} SGD
-            </li>
-          ))}
-        </ul>
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
