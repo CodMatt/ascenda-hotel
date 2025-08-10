@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 
 import EmptyNavBar from "../components/EmptyNavBar";
 import PaymentForm from '../components/PaymentForm'
+import { ClipLoader } from "react-spinners";
 
 // call backend to get publishable key & load stripe with it
 const initStripe = async () => {
@@ -79,7 +80,15 @@ function PaymentPage(){
             
         <div>
         {clientSecretSettings.loading ? (
-            <h1>Loading ...</h1>
+            <div className="loader-overlay">
+                <ClipLoader
+                    size={60}
+                    color="#0066cc"
+                    loading={true}
+                    aria-label="mutating-dots-loading"
+                />
+                <p>Loading...</p>
+            </div>
         ) : (
             <Elements
                 stripe={stripePromise}
