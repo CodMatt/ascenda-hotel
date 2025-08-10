@@ -320,8 +320,18 @@ export default function HotelSearchPage() {
 
               {/* -- No results fallback -- */}
               {!loading && !error && sortedHotels.length === 0 && (
-                <p className="message">No hotels found.</p>
+                <div className="popup-overlay">
+                  <div className="popup">
+                    <h2>No hotels found</h2>
+                    <p>Please try changing your location or dates and search again.</p>
+                    <div className="popup-actions">
+                      <button onClick={() => navigate(-1)}>Modify Search</button>
+                      <button onClick={() => window.location.reload()}>Try Again</button>
+                    </div>
+                  </div>
+                </div>
               )}
+
             </div>
           </div>
         </div>
