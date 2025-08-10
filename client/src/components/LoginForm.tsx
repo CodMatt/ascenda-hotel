@@ -45,12 +45,13 @@ const LoginForm: React.FC = () =>{
                     }, 2000)
             } else{
                 const respJson = await response.json()
+                console.log(respJson.error)
                 if (!respJson || !respJson.error){ // Other reasons for failure
                     setError('Login failed');
-                } else if (respJson.error == "Invalid credentials"){
-                    setError("Email and/or password entered are wrong.");
-                } else if (respJson.error == "Validation failed"){
-                    setError("Invalid email or password.");
+                } else if (respJson.error == "No account with that email exists"){
+                    setError("No account with that email exists.");
+                } else if (respJson.error == "Invalid username/password"){
+                    setError("Wrong password.");
                 } else {
                     setError('Login failed');
                 }
