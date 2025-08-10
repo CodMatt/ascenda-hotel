@@ -7,7 +7,7 @@ import { INonAcct } from '../models/nonAcct';
 import { validateBookingCreation } from '@src/common/util/validators';
 
 import { authenticateJWT } from '@src/common/util/auth';
-
+import { emailService } from '@src/services/emailService';
 const router = express.Router();
 
 // CREATE booking
@@ -168,6 +168,42 @@ router.get('/hotel-with-contact/:hotel_id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch hotel bookings with contact', details: error });
     }
+});
+
+// Request guest booking access via email
+router.post('/request-guest-access', async (req, res) => {
+  try {
+    const { booking_id, email } = req.body;
+    
+    if (!booking_id || !email) {
+      return res.status(400).json({ 
+        error: 'Booking ID and email are required' 
+      });
+    }
+    
+    // This will call the email service
+    const result = await emailService.sendBookingAccessEmail(booking_id, email);
+    
+    if (result.success) {
+      res.status(200).json({
+        message: 'If a booking exists with this email, an access link has been sent.',
+        // Always return success message for security (don't reveal if booking exists)
+      });
+    } else {
+      // Still return success for security, but log the actual error
+      console.error('Guest access request failed:', result.message);
+      res.status(200).json({
+        message: 'If a booking exists with this email, an access link has been sent.'
+      });
+    }
+    
+  } catch (error) {
+    console.error('Error in request-guest-access route:', error);
+    res.status(500).json({ 
+      error: 'Failed to process request',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 

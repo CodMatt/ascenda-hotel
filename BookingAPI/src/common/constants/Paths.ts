@@ -21,5 +21,11 @@ export default {
   },
   mongo:{
     Base:'/destinations'
+  },
+  Email: {  // Add this section
+    Base: '/email',
+    SendAccess: '/email/send-booking-access',
+    GuestBooking: '/email/guest-booking',
+    ResendAccess: '/email/resend-booking-access'
   }
 } as const;
