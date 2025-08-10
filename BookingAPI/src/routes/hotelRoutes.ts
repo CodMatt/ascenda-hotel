@@ -55,6 +55,7 @@ router.get("/search", async (req: Request, res: Response): Promise<void> => {
     // Combine price and static info into a unified hotel object
     const mergedHotels = priceData.hotels.map((hotel: any) => {
       const details = hotelMap.get(hotel.id);
+      console.log(hotel.id, details?.image_details);
       return {
         id: hotel.id,
         name: details?.name ?? null,
@@ -63,7 +64,7 @@ router.get("/search", async (req: Request, res: Response): Promise<void> => {
         latitude: details?.latitude ?? null,
         longitude: details?.longitude ?? null,
         image: details?.image_details?.prefix
-          ? `${details.image_details.prefix}0${details.image_details.suffix}`
+          ? `${details.image_details.prefix}1${details.image_details.suffix}`
           : null,
         price: hotel.price,
         free_cancellation: hotel.free_cancellation,
