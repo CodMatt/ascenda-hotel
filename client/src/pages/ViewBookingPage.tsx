@@ -94,31 +94,38 @@ function ViewBookingsPage() {
   if (bookings.length === 0) return <p>No previous bookings found.</p>;
 
   return (
-    <div>
+    <div  style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <EmptyNavBar />
       <h1>My Bookings</h1>
-      <ul>
-        {bookings.map((booking) => (
-          <li
-            key={booking.booking_id}
-            style={{ marginBottom: "1rem", cursor: "pointer" }}
-            onClick={() => navigate(`/booking-details/${booking.booking_id}`)} // Assume you have a route for booking details
-          >
-            <strong>{booking.hotelName}</strong>
-            <br />
-            Address: {booking.hotelAddress}
-            <br />
-            Check-in: {formatDisplayDate(booking.start_date)}
-            <br />
-            Check-out: {formatDisplayDate(booking.end_date)}
-            <br />
-            Guests: {booking.adults} adults
-            {booking.children ? `, ${booking.children} children` : ""}
-            <br />
-            Total Paid: ${parseFloat(booking.price).toFixed(2)} SGD
-          </li>
-        ))}
-      </ul>
+      <div
+        style={{
+        flex: 1, // take remaining space
+        overflowY: "auto",
+        padding: "1rem",
+      }}>
+        <ul>
+          {bookings.map((booking) => (
+            <li
+              key={booking.booking_id}
+              style={{ marginBottom: "1rem", cursor: "pointer" }}
+              onClick={() => navigate(`/booking-details/${booking.booking_id}`)} // Assume you have a route for booking details
+            >
+              <strong>{booking.hotelName}</strong>
+              <br />
+              Address: {booking.hotelAddress}
+              <br />
+              Check-in: {formatDisplayDate(booking.start_date)}
+              <br />
+              Check-out: {formatDisplayDate(booking.end_date)}
+              <br />
+              Guests: {booking.adults} adults
+              {booking.children ? `, ${booking.children} children` : ""}
+              <br />
+              Total Paid: ${parseFloat(booking.price).toFixed(2)} SGD
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
