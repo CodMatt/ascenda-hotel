@@ -1,5 +1,6 @@
 // Fetches list of avail hotels for given parameters from backend
-const HOTEL_API = import.meta.env.VITE_HOTEL_API; 
+const HOTEL_API = '/api/Hotels';
+
 
 export async function fetchHotels(
   destinationId: string,

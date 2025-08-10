@@ -16,7 +16,7 @@ export default defineConfig({
       // string shorthand
       // with options
       "/api": {
-        target: "http://localhost:6039",
+        target: "http://18.118.145.154:6039",
         changeOrigin: true,
       },
     },
