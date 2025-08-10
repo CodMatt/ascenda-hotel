@@ -34,15 +34,7 @@ Database.testConnection().then(isConnected => {
   }
   
   // Sync all database tables
-  Promise.all([
-    UserRoutes.sync(),
-    bookingRoutes.sync(),
-    nonAcctRoute.sync()
-  ]).then(() => {
-    logger.info('All database tables synchronized');
-  }).catch(err => {
-    logger.err('Failed to sync database tables: ' + err);
-  });
+  initializeTables();
 });
 
 // **** Middleware **** //
@@ -142,6 +134,19 @@ app.get('/health', (_: Request, res: Response) => {
     environment: ENV.NodeEnv
   });
 });
+
+// database helper functions
+async function initializeTables(){
+    try {
+      await UserRoutes.sync();
+      await bookingRoutes.sync();
+      await nonAcctRoute.sync();
+    logger.info('All database tables synchronized');
+    } catch (err) {
+      logger.err('Failed to sync database tables: ' + err);
+      process.exit(1);
+    }
+}
 
 
 export default app;

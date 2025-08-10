@@ -108,6 +108,25 @@ export async function getBookingsByHotel(hotel_id: string) {
     return rows;
 }
 
+export async function getGuestByBookingId(bookingId: string, connection?: any): Promise<INonAcct | null> {
+    const sql = `
+        SELECT * FROM ${tableName} 
+        WHERE booking_id = $1
+        LIMIT 1
+    `;
+    
+    try {
+        const conn = connection || db.getPool();
+        const { rows } = await conn.query(sql, [bookingId]);
+        return rows[0] || null;
+    } catch (error) {
+        console.error('Error fetching guest by booking ID:', error);
+        throw error;
+    }
+} 
+
+
+
 /******************************************************************************
                                 Export
 ******************************************************************************/
@@ -115,5 +134,6 @@ export async function getBookingsByHotel(hotel_id: string) {
 export default {
     sync,
     addNoAcctInfo,
-    getBookingsByHotel
+    getBookingsByHotel,
+    getGuestByBookingId
 } as const;

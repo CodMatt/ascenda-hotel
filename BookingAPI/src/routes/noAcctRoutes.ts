@@ -14,4 +14,5 @@ router.get('/:HotelId', async (req, res) => {
     }
 });
 
+
 export default router;

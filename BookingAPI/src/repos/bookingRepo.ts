@@ -27,7 +27,7 @@ export async function sync() {
                 user_reference VARCHAR(100) NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_reference) REFERENCES customer(id) ON DELETE SET NULL
+                FOREIGN KEY (user_reference) REFERENCES customer(id) ON DELETE CASCADE
             );
 
             CREATE OR REPLACE FUNCTION update_updated_at_column()

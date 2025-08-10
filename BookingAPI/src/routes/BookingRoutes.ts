@@ -219,27 +219,50 @@ router.get('/my-booking/:id', async(req, res)=>{
 // FIXED: DELETE booking with user ownership check
 router.delete('/:id', async (req, res) => {
     try {
-        const userId = req.user?.userId;
-        if(!userId){
-            return res.status(401).json({error: 'User ID not found in token'});
+        const bookingId = req.params.id;
+        const userId = req.user?.userId; // For authenticated users
+        const guestEmail = req.body?.email; // For guest bookings
+
+        // First check if booking exists
+        const booking = await bookingRepo.getBookingById(bookingId);
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
         }
-        
-        // First check if booking exists and belongs to user
-        const booking = await bookingRepo.getBookingById(req.params.id);
-        if(!booking || booking.user_reference !== userId){
-            return res.status(404).json({error: 'Booking not found or not owned by user'});
+
+        // Case 1: Booking belongs to authenticated user
+        if (userId && booking.user_reference === userId) {
+            const result = await bookingRepo.deleteBooking(bookingId);
+            return res.json({ message: 'Booking deleted', result });
         }
-        // // Check if booking belongs to the authenticated user
-        // if(booking.user_reference !== userId){
-        //     return res.status(404).json({error: 'Booking not found or not owned by user'});
-        // }
-        
-        const result = await bookingRepo.deleteBooking(req.params.id);
-        res.json({ message: 'Booking deleted', result });
+
+        // Case 2: Guest booking (no user reference)
+        if (!booking.user_reference) {
+            if (!guestEmail) {
+                return res.status(400).json({ error: 'Email required for guest booking deletion' });
+            }
+
+            // Verify guest details match
+            const guestDetails = await nonAccountRepo.getGuestByBookingId(bookingId);
+            if (!guestDetails || guestDetails.email !== guestEmail) {
+                return res.status(403).json({ error: 'Invalid email for guest booking' });
+            }
+
+            const result = await bookingRepo.deleteBooking(bookingId);
+            return res.json({ message: 'Guest booking deleted', result });
+        }
+
+        // If neither case matches
+        return res.status(403).json({ error: 'Not authorized to delete this booking' });
+
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete booking', details: error });
+        res.status(500).json({ 
+            error: 'Failed to delete booking', 
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
     }
 });
+
+
 
 // Get user's bookings with contact information (protected)
 router.get('/my-bookings-with-contact', async (req, res) => {
