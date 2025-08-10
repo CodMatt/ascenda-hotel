@@ -14,12 +14,24 @@ const ENV = jetEnv({
   JwtSecret: str,
   JwtExpiration: str,
   // Add other environment variables as needed
+  SmtpUser: str,
+  SmtpPassword: str,
+  SmtpFrom: str,
+  SmtpHost: str,
+  SmtpPort: num,
+  
+  // Frontend URL for email links
+  FrontendUrl: str,
 });
 
 // Set default values for development
 if (ENV.NodeEnv === NodeEnvs.Dev) {
   ENV.JwtSecret = ENV.JwtSecret || 'your-dev-secret-key'; // Never use this in production!
   ENV.JwtExpiration = ENV.JwtExpiration || '1h'; // 1 hour expiration for dev
+
+  ENV.SmtpPort = ENV.SmtpPort || 587;
+  ENV.SmtpFrom = ENV.SmtpFrom || ENV.SmtpUser || 'noreply@localhost';
+  ENV.FrontendUrl = ENV.FrontendUrl || 'http://localhost:4242';
 }
 
 
@@ -29,6 +41,8 @@ if (ENV.NodeEnv === NodeEnvs.Test) {
   ENV.JwtSecret = ENV.JwtSecret || 'your-dev-secret-key'; // Never use this in production!
   ENV.JwtExpiration = ENV.JwtExpiration || '1h'; // 1 hour expiration for dev
 }
+
+
 /******************************************************************************
                             Export default
 ******************************************************************************/

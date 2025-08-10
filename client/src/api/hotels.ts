@@ -1,5 +1,6 @@
 // Fetches list of avail hotels for given parameters from backend
-const HOTEL_API = 'http://18.118.145.154:6039/api/Hotels';
+const HOTEL_API = '/api/Hotels';
+
 
 export async function fetchHotels(
   destinationId: string,

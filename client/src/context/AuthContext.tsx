@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
                 logout();
                 return;
             }
-            const response = await fetch(`api/users/{$userId}`,{ //must have route to get current user, it uses the user id to verify tokens
+            const response = await fetch(`api/users/${userId}`,{ //must have route to get current user, it uses the user id to verify tokens
                 headers:{
                     'Authorization': `Bearer ${token}`,
                 },

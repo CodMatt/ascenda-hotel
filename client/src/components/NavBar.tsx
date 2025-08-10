@@ -33,6 +33,14 @@ function NavBar() {
           </>
         ) : (
           <>
+
+            <button
+              className="btn-outline"
+              onClick={() => navigate("/guest-bookings")}
+              >
+              View Booking
+              </button>
+
             <button className="btn-outline" onClick={() => navigate("/login")}>
               Sign In
             </button>

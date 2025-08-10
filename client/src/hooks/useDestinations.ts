@@ -8,7 +8,7 @@ export const useDestinations = () => {
     const searchDestinations = async (query: string) =>{
         setLoading(true);
         try{
-            const res = await fetch(`http://localhost:6039/api/destinations?search=${encodeURIComponent(query)}`);
+            const res = await fetch(`/api/destinations?search=${encodeURIComponent(query)}`);
             const data = await res.json();
             setDestinations(data);
         } catch (error){

@@ -17,6 +17,10 @@ import Database from './models/db';
 import UserRoutes from './repos/UserRepo';
 import bookingRoutes from './repos/bookingRepo';
 import nonAcctRoute from './repos/nonAccountRepo';
+import { createGuestAccessTable } from './services/emailService';
+
+// email services
+import CleanupService from './services/cleanupService'; 
 
 /******************************************************************************
                                 Setup
@@ -141,7 +145,9 @@ async function initializeTables(){
       await UserRoutes.sync();
       await bookingRoutes.sync();
       await nonAcctRoute.sync();
+      await createGuestAccessTable();
     logger.info('All database tables synchronized');
+    CleanupService.startPeriodicCleanup();
     } catch (err) {
       logger.err('Failed to sync database tables: ' + err);
       process.exit(1);

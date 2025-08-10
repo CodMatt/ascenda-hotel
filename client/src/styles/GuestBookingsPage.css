@@ -1,0 +1,44 @@
+/* Make form inputs look light, regardless of system dark mode */
+.input {
+    width: 100%;
+    background: #fff;
+    color: #111;
+    border: 1px solid #d1d5db;       /* gray-300 */
+    border-radius: 0.5rem;            /* rounded */
+    padding: 0.5rem 0.75rem;          /* px-3 py-2 */
+    line-height: 1.5;
+    box-sizing: border-box;
+    /* neutralize platform dark styling */
+    color-scheme: light;
+  }
+  
+  .input::placeholder {
+    color: #6b7280;                   /* gray-500 */
+    opacity: 1;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #3b82f6;            /* blue-500 */
+    box-shadow: 0 0 0 2px rgba(59,130,246,.25);
+  }
+  
+  /* Optional: button look similar to your existing btn-primary */
+  .btn-primary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: #2563eb;              /* blue-600 */
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .btn-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+  

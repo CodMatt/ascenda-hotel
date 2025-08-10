@@ -4,6 +4,7 @@ import formatDisplayDate from "../lib/FormatDisplayDate";
 import EmptyNavBar from "../components/EmptyNavBar";
 import { useAuth } from "../context/AuthContext";
 import { fetchHotelDetails } from "../api/hotels";
+import BookingDetailsModal from "../components/BookingDetailsModal";
 
 import '../styles/ViewBookingPage.css'
 
@@ -18,8 +19,18 @@ interface Booking {
   destination_id: string;
   hotelName: string | null;
   hotelAddress: string | null;
+<<<<<<< HEAD
   hotelImageUrl?: string | null;
   // Add any other fields you want to display
+=======
+  nights: number;
+  msg_to_hotel: string;
+  contact_email: string;
+  contact_first_name: string;
+  contact_last_name: string;
+  contact_phone: string;
+  contact_salutation: string;
+>>>>>>> c823ecb97c41e7e72e206d1634223a37a5710586
 }
 
 function ViewBookingsPage() {
@@ -27,6 +38,8 @@ function ViewBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,6 +116,16 @@ function ViewBookingsPage() {
     }
   }, [token]);
 
+  const handleBookingClick = (booking: Booking) =>{
+    setSelectedBooking(booking);
+    setShowModal(true);
+  };
+
+  const closeModal = () =>{
+    setShowModal(false);
+    setSelectedBooking(null);
+  }
+
   if (loading) return <p>Loading your bookings...</p>;
   if (error) return <p>Error: {error}</p>;
   if (bookings.length === 0) return <p>No previous bookings found.</p>;
@@ -110,6 +133,7 @@ function ViewBookingsPage() {
   return (
     <div className="view-booking-page">
       <EmptyNavBar />
+<<<<<<< HEAD
       <h1 className="page-title">My Bookings</h1>
       <p className="page-subtitle">Manage your hotel reservations</p>
       <div className="bookings-container">
@@ -143,6 +167,30 @@ function ViewBookingsPage() {
             </div>
 
             <p className="guests">
+=======
+      <h1>My Bookings</h1>
+      <div
+        style={{
+        flex: 1, // take remaining space
+        overflowY: "auto",
+        padding: "1rem",
+      }}>
+        <ul>
+          {bookings.map((booking) => (
+            <li
+              key={booking.booking_id}
+              style={{ marginBottom: "1rem", cursor: "pointer", padding:"1rem", border:"1px solid #ddd", borderRadius:"4px" }}
+              onClick={() => handleBookingClick(booking)} // Assume you have a route for booking details
+            >
+              <strong>{booking.hotelName}</strong>
+              <br />
+              Address: {booking.hotelAddress}
+              <br />
+              Check-in: {formatDisplayDate(booking.start_date)}
+              <br />
+              Check-out: {formatDisplayDate(booking.end_date)}
+              <br />
+>>>>>>> c823ecb97c41e7e72e206d1634223a37a5710586
               Guests: {booking.adults} adults
               {booking.children ? `, ${booking.children} children` : ""}
             </p>
@@ -152,6 +200,11 @@ function ViewBookingsPage() {
           </div>
         ))}
       </div>
+      <BookingDetailsModal
+        booking={selectedBooking}
+        isOpen={showModal}
+        onClose={closeModal}
+      />
     </div>
   );
 }

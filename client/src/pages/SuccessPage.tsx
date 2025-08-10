@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import formatDisplayDate from '../lib/FormatDisplayDate';
 import '../styles/SuccessPage.css'
 import EmptyNavBar from "../components/EmptyNavBar";
+import { ClipLoader } from "react-spinners";
 
 function SuccessPage() {
   const [bookingData, setBookingData] = useState<any>(null);
@@ -21,7 +22,7 @@ function SuccessPage() {
           nights: bookingData.duration,
           adults: bookingData.noAdults,
           children: bookingData.noChildren || 0,
-          msg_to_hotel: bookingData.msg_to_hotel || "",
+          msg_to_hotel: bookingData.specialRequest || "",
           price: bookingData.totalPrice,
           user_ref: bookingData.userRef,
           dest_id: bookingData.destId,
@@ -35,7 +36,7 @@ function SuccessPage() {
           nights: bookingData.duration,
           adults: bookingData.noAdults,
           children: bookingData.noChildren || 0,
-          msg_to_hotel: bookingData.msg_to_hotel || "",
+          msg_to_hotel: bookingData.specialRequest || "",
           price: bookingData.totalPrice,
           dest_id: bookingData.destId,
           hotel_id: bookingData.hotelId,
@@ -107,11 +108,14 @@ function SuccessPage() {
 
   if (loading) {
     return (
-      <div className="success-page">
-        <div style={{ textAlign: 'center', padding: '50px' }}>
-          <h1>Processing...</h1>
+      <div className="loader-overlay">
+          <ClipLoader
+              size={60}
+              color="#0066cc"
+              loading={true}
+              aria-label="mutating-dots-loading"
+          />
           <p>Loading your booking confirmation...</p>
-        </div>
       </div>
     );
   }
@@ -126,7 +130,17 @@ function SuccessPage() {
   }
 
   if (saving) {
-    return <div><h1>Saving to db</h1></div>;
+    return (
+      <div className="loader-overlay">
+          <ClipLoader
+              size={60}
+              color="#0066cc"
+              loading={true}
+              aria-label="mutating-dots-loading"
+          />
+          <p>Saving to database</p>
+      </div>
+    );
   }
 
   return (
@@ -210,12 +224,16 @@ function SuccessPage() {
                   <strong>Adults:</strong>
                   <span>{bookingData.noAdults}</span>
                 </div>
-                {(bookingData.noChildren && bookingData.noChildren > 0) && (
+                <div className="detail-item">
+                  <strong>Children:</strong>
+                  <span>{bookingData.noChildren}</span>
+                </div>
+                {/* {(bookingData.noChildren && bookingData.noChildren > 0) && (
                   <div className="detail-item">
                     <strong>Children:</strong>
                     <span>{bookingData.noChildren}</span>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
 

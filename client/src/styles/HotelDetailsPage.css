@@ -38,23 +38,23 @@ html:has(.hotel-info-page) {
   min-height: 60px;
   width: 100%;
   box-sizing: border-box;
-  flex-wrap: nowrap; /* Prevent wrapping to new lines */
+  flex-wrap: nowrap; 
 }
 
 .dsp-logo {
   flex: 1;
   min-width: 0;
-  max-width: calc(100% - 220px); /* Reserve space for buttons */
-  overflow: hidden; /* Hide overflow if logo gets too small */
+  max-width: calc(100% - 220px); 
+  overflow: hidden;
 }
 
 .dsp-actions {
   flex: 0 0 auto;
   display: flex;
   gap: 10px;
-  width: 200px; /* Fixed width for button area */
+  width: 200px; 
   justify-content: flex-end;
-  flex-wrap: nowrap; /* Prevent buttons from wrapping */
+  flex-wrap: nowrap; 
 }
 
 .logo-img {
@@ -74,7 +74,7 @@ html:has(.hotel-info-page) {
   transition: all 0.3s ease;
   color: #2563eb;
   white-space: nowrap;
-  flex-shrink: 0; /* Prevent buttons from shrinking */
+  flex-shrink: 0; 
 }
 
 .btn-outline:hover {
@@ -91,11 +91,29 @@ html:has(.hotel-info-page) {
   font-size: 0.85rem;
   transition: all 0.3s ease;
   white-space: nowrap;
-  flex-shrink: 0; /* Prevent buttons from shrinking */
+  flex-shrink: 0;
 }
 
 .btn-primary:hover {
   background: #1d4ed8;
+}
+
+.btn-danger {
+  white-space: nowrap; 
+  min-width: fit-content; 
+  padding: 8px 16px; 
+  font-size: 0.85rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0; 
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
 }
 
 
