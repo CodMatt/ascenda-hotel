@@ -7,7 +7,19 @@ const DeleteAccount = () => {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    if (!user?.id) {
+
+    const userId = user?.id || sessionStorage.getItem('userId');
+
+    console.log("Delete account clicked");
+    console.log("User:", user);
+    console.log("Token:", token);
+    console.log("User ID:", userId);
+    if (!token) {
+      console.error("No token found - user not authenticated");
+      alert("You must be logged in to delete your account.");
+      return;
+    }
+    if (!userId) {
       console.error("No user ID found");
       return;
     }
@@ -16,7 +28,7 @@ const DeleteAccount = () => {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`api/users/${user.id}`, {
+      const res = await fetch(`api/users/${userId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
