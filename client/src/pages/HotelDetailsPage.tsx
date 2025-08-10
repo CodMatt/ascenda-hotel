@@ -27,6 +27,7 @@ export default function HotelDetailsPage() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+
   // ImageCarousel component with error handling and image counter
   function ImageCarousel({
     prefix,
