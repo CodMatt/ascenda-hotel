@@ -66,7 +66,8 @@ function PaymentForm() {
       hotelAddr: hotelAddr,
       key: key,
       authToken: authToken,
-      rates: rates
+      rates: rates,
+      noRooms: noRooms
     };
 
   if (bookingData){

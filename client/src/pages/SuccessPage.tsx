@@ -253,6 +253,10 @@ function SuccessPage() {
                   <span>Per Night ({bookingData.duration} {bookingData.duration === 1 ? 'night' : 'nights'}):</span>
                   <span>${bookingData.rates} SGD</span>
                 </div>
+                <div className="payment-row">
+                  <span>Number of Room:</span>
+                  <span>{Math.round(bookingData.totalPrice / (bookingData.rates*bookingData.duration))}</span>
+                </div>
                 <div className="payment-row total">
                   <strong>Total Paid:</strong>
                   <strong>${bookingData.totalPrice} SGD</strong>
