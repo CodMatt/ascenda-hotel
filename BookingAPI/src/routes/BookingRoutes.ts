@@ -288,7 +288,7 @@ router.delete('/:id', async (req, res) => {
         }
 
         // If neither case matches
-        return res.status(403).json({ error: 'Not authorized to delete this booking' });
+        return res.status(404).json({ error: 'Not authorized to delete this booking' });
 
     } catch (error) {
         res.status(500).json({ 

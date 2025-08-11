@@ -1,6 +1,6 @@
-import * as nonAcctRepo from '../../src/repos/nonAccountRepo';
-import nonAcct from '../../src/models/nonAcct';
-import * as bookingRepo from '../../src/repos/bookingRepo';
+import * as nonAcctRepo from '../../../src/repos/nonAccountRepo';
+import nonAcct from '../../../src/models/nonAcct';
+import * as bookingRepo from '../../../src/repos/bookingRepo';
 import HelperFunctions from 'tests/support/HelperFunctions';
 
 describe('NonAcct Repository', () => {

@@ -1,5 +1,5 @@
-import * as bookingRepo from '../../src/repos/bookingRepo';
-import booking from '../../src/models/booking';
+import * as bookingRepo from '../../../src/repos/bookingRepo';
+import booking from '../../../src/models/booking';
 import HelperFunctions from 'tests/support/HelperFunctions';
 
 describe('Booking Repository', () => {
@@ -192,3 +192,5 @@ describe('Booking Repository', () => {
     });
   });
 });
+
+

@@ -1,4 +1,4 @@
-import booking from '../../src/models/booking';
+import booking from '../../../src/models/booking';
 
 describe('Booking Model', () => {
   describe('__new__', () => {

@@ -1,8 +1,8 @@
 import request from 'supertest';
 import express from 'express';
-import UserRoutes from '../../src/routes/UserRoutes';
-import * as userRepo from '../../src/repos/UserRepo';
-import { hashPassword } from '../../src/common/util/auth';
+import UserRoutes from '../../../src/routes/UserRoutes';
+import * as userRepo from '../../../src/repos/UserRepo';
+import { hashPassword } from '../../../src/common/util/auth';
 import HelperFunctions from 'tests/support/HelperFunctions';
  
 const app = express();

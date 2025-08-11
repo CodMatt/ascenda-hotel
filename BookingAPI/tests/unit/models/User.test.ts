@@ -1,4 +1,4 @@
-import User from '../../src/models/User';
+import User from '../../../src/models/User';
 
 describe('User Model', () => {
   describe('__new__', () => {

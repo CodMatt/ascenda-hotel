@@ -1,6 +1,6 @@
-import * as userRepo from '../../src/repos/UserRepo';
-import User from '../../src/models/User';
-import db from '../../src/models/db';
+import * as userRepo from '../../../src/repos/UserRepo';
+import User from '../../../src/models/User';
+import db from '../../../src/models/db';
 import HelperFunctions from 'tests/support/HelperFunctions';
 
 describe('User Repository', () => {

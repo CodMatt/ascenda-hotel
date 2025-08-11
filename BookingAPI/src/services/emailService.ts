@@ -260,132 +260,181 @@ export class EmailService {
   /**
    * Send booking access email to both guest and registered users
    */
-  async sendBookingAccessEmail(bookingId: string, email: string): Promise<{ success: boolean; accessToken?: string; message: string }> {
-    const connection = await db.getPool().connect();
-    
-    try {
-      await connection.query("BEGIN");
-      
-      // 1. Check for guest booking first (non-account)
-      const guestBookingQuery = `
-        SELECT b.booking_id, n.first_name, n.last_name, n.email, 'guest' as booking_type
-        FROM booking b
-        JOIN nonaccount n ON b.booking_id = n.booking_id
-        WHERE b.booking_id = $1 AND n.email = $2 AND b.user_reference IS NULL
-      `;
-      
-      // 2. Check for user account booking
-      const userBookingQuery = `
-        SELECT b.booking_id, c.first_name, c.last_name, c.email, c.username, 'user' as booking_type
-        FROM booking b
-        JOIN customer c ON b.user_reference = c.id
-        WHERE b.booking_id = $1 AND c.email = $2 AND b.user_reference IS NOT NULL
-      `;
-      
-      // Execute both queries
-      const [guestResult, userResult] = await Promise.all([
-        connection.query(guestBookingQuery, [bookingId, email]),
-        connection.query(userBookingQuery, [bookingId, email])
-      ]);
-      
-      let booking;
-      let bookingType: 'guest' | 'user';
-      let customerName: string;
-      
-      // Determine which type of booking this is
-      if (guestResult.rows.length > 0) {
-        booking = guestResult.rows[0];
-        bookingType = 'guest';
-        customerName = `${booking.first_name} ${booking.last_name}`;
-      } else if (userResult.rows.length > 0) {
-        booking = userResult.rows[0];
-        bookingType = 'user';
-        customerName = `${booking.first_name} ${booking.last_name}`;
-      } else {
-        await connection.query("ROLLBACK");
+  async sendBookingAccessEmail(bookingId: string, email: string): Promise<{ 
+      success: boolean; 
+      accessToken?: string; 
+      message: string 
+    }> {
+      // Validate inputs first
+      if (!bookingId || !email) {
         return {
           success: false,
-          message: 'Booking not found or email does not match our records'
+          message: 'Booking ID and email are required'
         };
       }
-      
-      // 3. Check if there's already a valid access token
-      const existingTokenQuery = `
-        SELECT access_token, expires_at 
-        FROM guest_booking_access 
-        WHERE booking_id = $1 AND email = $2 AND expires_at > NOW() AND used = FALSE
-        ORDER BY created_at DESC LIMIT 1
-      `;
-      
-      const existingTokenResult = await connection.query(existingTokenQuery, [bookingId, email]);
-      
-      let accessToken: string;
-      
-      if (existingTokenResult.rows.length > 0) {
-        // Use existing valid token
-        accessToken = existingTokenResult.rows[0].access_token;
-      } else {
-        // 4. Generate new access token
-        accessToken = this.generateAccessToken(bookingId, email);
-        const accessId = `access-${Date.now()}`;
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-        
-        // 5. Store access token in database
-        const insertTokenQuery = `
-          INSERT INTO guest_booking_access 
-          (id, booking_id, email, access_token, expires_at)
-          VALUES ($1, $2, $3, $4, $5)
-        `;
-        
-        await connection.query(insertTokenQuery, [
-          accessId, 
+
+      let connection;
+      try {
+        connection = await db.getPool().connect();
+        await connection.query("BEGIN");
+
+        // 1. Get booking info (combine both queries into one)
+        const bookingInfo = await this.getBookingInfo(connection, bookingId, email);
+        if (!bookingInfo) {
+          await connection.query("ROLLBACK");
+          return {
+            success: false,
+            message: 'Booking not found or email does not match our records'
+          };
+        }
+
+        // 2. Get or create access token
+        const { accessToken, isNewToken } = await this.getOrCreateAccessToken(
+          connection, 
           bookingId, 
-          email, 
-          accessToken, 
-          expiresAt
-        ]);
+          email
+        );
+
+        // 3. Prepare and send email
+        await this.sendAccessEmail(
+          bookingInfo,
+          accessToken
+        );
+
+        await connection.query("COMMIT");
+        console.log("access token"+accessToken);
+        return { 
+          success: true, 
+          accessToken,
+          message: `Access email sent successfully to ${bookingInfo.bookingType === 'user' ? 
+            'registered user' : 'guest'}`
+        };
+
+      } catch (error) {
+        try {
+          if (connection) {
+            await connection.query("ROLLBACK");
+          }
+        } catch (rollbackError) {
+          console.error('Rollback failed:', rollbackError);
+          // Continue with original error
+        }
+
+        console.error('Error sending booking access email:', error);
+        return { 
+          success: false, 
+          message: this.getErrorMessage(error) 
+        };
+      } finally {
+        if (connection) {
+          try {
+            connection.release();
+          } catch (releaseError) {
+            console.error('Failed to release connection:', releaseError);
+          }
+        }
       }
-      
-      // 6. Generate access link and email template based on booking type
-      const accessLink = this.generateAccessLink(accessToken);
-      const emailTemplate = this.createBookingAccessTemplate(
-        bookingId, 
-        accessLink, 
-        customerName,
-        bookingType,
-        booking.username // Only available for user bookings
-      );
-      
-      // 7. Send email
-      const mailOptions = {
-        from: `"Hotel Booking System" <${ENV.SmtpFrom}>`,
-        to: email,
-        subject: emailTemplate.subject,
-        text: emailTemplate.textContent,
-        html: emailTemplate.htmlContent,
-      };
-      
-      await this.transporter.sendMail(mailOptions);
-      
-      await connection.query("COMMIT");
-      
-      return { 
-        success: true, 
-        accessToken,
-        message: `Access email sent successfully to ${bookingType === 'user' ? 'registered user' : 'guest'}`
-      };
-      
-    } catch (error) {
-      await connection.query("ROLLBACK");
-      console.error('Error sending booking access email:', error);
-      return { 
-        success: false, 
-        message: 'Failed to send access email. Please try again later.' 
-      };
-    } finally {
-      connection.release();
+    }
+
+// Helper methods extracted from main function
+private async getBookingInfo(connection: any, bookingId: string, email: string) {
+  const query = `
+    SELECT 
+      b.booking_id,
+      COALESCE(n.first_name, c.first_name) as first_name,
+      COALESCE(n.last_name, c.last_name) as last_name,
+      COALESCE(n.email, c.email) as email,
+      c.username,
+      CASE WHEN b.user_reference IS NULL THEN 'guest' ELSE 'user' END as booking_type
+    FROM booking b
+    LEFT JOIN nonaccount n ON b.booking_id = n.booking_id AND b.user_reference IS NULL
+    LEFT JOIN customer c ON b.user_reference = c.id AND b.user_reference IS NOT NULL
+    WHERE b.booking_id = $1 
+    AND (n.email = $2 OR c.email = $2)
+  `;
+
+  const result = await connection.query(query, [bookingId, email]);
+  return result.rows[0] || null;
+}
+
+private async getOrCreateAccessToken(
+    connection: any, 
+    bookingId: string, 
+    email: string
+  ): Promise<{ accessToken: string; isNewToken: boolean }> {
+    // Check for existing valid token
+    const existingToken = await this.getValidAccessToken(connection, bookingId, email);
+    if (existingToken) {
+      return { accessToken: existingToken, isNewToken: false };
+    }
+
+    // Create new token
+    const accessToken = this.generateAccessToken(bookingId, email);
+    await this.storeAccessToken(connection, bookingId, email, accessToken);
+    return { accessToken, isNewToken: true };
+  }
+
+private async getValidAccessToken(connection: any, bookingId: string, email: string) {
+  const query = `
+    SELECT access_token 
+    FROM guest_booking_access 
+    WHERE booking_id = $1 AND email = $2 AND expires_at > NOW() AND used = FALSE
+    ORDER BY created_at DESC LIMIT 1
+  `;
+  const result = await connection.query(query, [bookingId, email]);
+  return result.rows[0]?.access_token;
+}
+
+private async storeAccessToken(
+  connection: any, 
+  bookingId: string, 
+  email: string, 
+  token: string
+) {
+  const query = `
+    INSERT INTO guest_booking_access 
+    (id, booking_id, email, access_token, expires_at)
+    VALUES ($1, $2, $3, $4, $5)
+  `;
+  await connection.query(query, [
+    `access-${Date.now()}`, 
+    bookingId, 
+    email, 
+    token, 
+    new Date(Date.now() + 24 * 60 * 60 * 1000)
+  ]);
+}
+
+private async sendAccessEmail(bookingInfo: any, accessToken: string) {
+  const accessLink = this.generateAccessLink(accessToken);
+  const template = this.createBookingAccessTemplate(
+    bookingInfo.booking_id,
+    accessLink,
+    `${bookingInfo.first_name} ${bookingInfo.last_name}`,
+    bookingInfo.bookingType,
+    bookingInfo.username
+  );
+
+  await this.transporter.sendMail({
+    from: `"Hotel Booking System" <${ENV.SmtpFrom}>`,
+    to: bookingInfo.email,
+    subject: template.subject,
+    text: template.textContent,
+    html: template.htmlContent,
+  });
+}
+
+private getErrorMessage(error: any): string {
+  if (error instanceof Error) {
+    if (error.message.includes('ECONNREFUSED') || error.message.includes('Connection lost')) {
+      return 'Database connection failed. Please try again later.';
+    }
+    if (error.message.includes('SMTP')) {
+      return 'Failed to send email. Please try again later.';
     }
   }
+  return 'Failed to process your request. Please try again later.';
+}
 
   /**
    * Enhanced token verification that works for both guest and user bookings

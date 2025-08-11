@@ -151,7 +151,7 @@ export async function deleteAllUserBooking(user_ref: string) {
  * Joins with customer table if user_reference is not null,
  * otherwise joins with nonaccount table
  */
-export async function getBookingWithContactById(booking_id: string): Promise<IBookingWithContact | undefined> {
+export async function getBookingWithContactById(booking_id: string){
   const sql = `
     SELECT 
       b.booking_id,

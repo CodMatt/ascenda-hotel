@@ -1,9 +1,9 @@
 import request from 'supertest';
 import express from 'express';
-import bookingRoutes from '../../src/routes/BookingRoutes';
-import userRepo from '../../src/repos/UserRepo';
-import * as bookingRepo from '../../src/repos/bookingRepo';
-import * as nonAccountRepo from '../../src/repos/nonAccountRepo';
+import bookingRoutes from '../../../src/routes/BookingRoutes';
+import userRepo from '../../../src/repos/UserRepo';
+import * as bookingRepo from '../../../src/repos/bookingRepo';
+import * as nonAccountRepo from '../../../src/repos/nonAccountRepo';
 import HelperFunctions from 'tests/support/HelperFunctions';
 import { hashPassword } from '@src/common/util/auth';
 
@@ -463,7 +463,7 @@ describe('Booking Routes', () => {
       console.log('Response body:', response.body);
 
       expect(response.status).toBe(404);
-      expect(response.body.error).toBe('Booking not found or not owned by user');
+      expect(response.body.error).toBe('Not authorized to delete this booking');
     });
   });
 });

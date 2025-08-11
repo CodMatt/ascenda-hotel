@@ -1,4 +1,4 @@
-import nonAcct from '../../src/models/nonAcct';
+import nonAcct from '../../../src/models/nonAcct';
 
 describe('NonAcct Model', () => {
   describe('__new__', () => {
