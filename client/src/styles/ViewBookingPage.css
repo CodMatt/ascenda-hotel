@@ -133,4 +133,11 @@
     font-size: 1rem;
     color: #555;
   }
+
+  /* Modal Section Title */
+  .modal-section-title {
+    border-bottom: 2px solid #e5e7eb; /* light grey underline */
+    padding-bottom: 4px;
+    margin-bottom: 0.5rem;
+  }
   
