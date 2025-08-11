@@ -7,6 +7,7 @@ import { fetchHotelDetails } from "../api/hotels";
 import BookingDetailsModal from "../components/BookingDetailsModal";
 import getHotelImageUrl from "../lib/getHotelImageUrl";
 import { ClipLoader } from "react-spinners";
+import DeleteAccount from "../components/DeleteAccount";
 
 
 import "../styles/ViewBookingPage.css";
@@ -140,6 +141,16 @@ function ViewBookingsPage() {
   return (
     <div className="view-booking-page">
       <EmptyNavBar />
+        <div className="header-actions">
+          <button
+            type="button"
+            className="back-button"
+            onClick={() => navigate(-1)}
+          >
+            ← Back
+          </button>
+          <DeleteAccount />
+      </div>
       <h1 className="page-title">My Bookings</h1>
       <p className="page-subtitle">Manage your hotel reservations</p>
       <div className="bookings-container">
@@ -159,7 +170,7 @@ function ViewBookingsPage() {
             </div>
 
             <div className="booking-card-details">
-              
+
               <h2 className="hotel-name">{booking.hotelName}</h2>
               <p className="hotel-address">{booking.hotelAddress}</p>
               <div className="dates-row">
