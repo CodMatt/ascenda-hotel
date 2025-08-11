@@ -85,8 +85,6 @@ export async function add(user: IUser): Promise<void> {
             user.salutation, user.email, user.phone_num, user.created]
         );
     });
-    
-
 }
 
 /**
