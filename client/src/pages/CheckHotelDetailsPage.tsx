@@ -26,7 +26,6 @@ function CheckHotelDetailsPage() {
   if (!state) {
     return <div>No booking data received.</div>;
   }
-  console.log("check", state);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,7 +37,7 @@ function CheckHotelDetailsPage() {
         hotelAddr: state.hotelAddress,
         key: state.key,
     
-        totalPrice: state.price*state.noRooms,
+        totalPrice: state.price,
         rates: state.rates,
 
         checkin: state.checkin,
@@ -148,14 +147,14 @@ return (
                         
                         <div className="guest-field">
                             <label>Per room per night: </label>
-                            <span>${(state.rates)} SGD</span>
+                            <span>${(state.rates/calculateNights()).toFixed(2)} SGD</span>
                         </div>
                     </div>
 
                     {/* Pricing Summary */}
                     <div className="pricing-summary">
                         <div className="pricing-display">
-                            <p>You will pay <strong>${state.price*state.noRooms}</strong></p>
+                            <p>You will pay <strong>SGD {state.price}</strong></p>
                             <p>for <strong>{calculateNights()} nights</strong></p>
                         </div>
                     </div>
