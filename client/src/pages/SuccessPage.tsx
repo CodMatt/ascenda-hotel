@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
-import formatDisplayDate from '../lib/FormatDisplayDate';
+
 import '../styles/SuccessPage.css'
 
-import EmptyNavBar from "../components/EmptyNavBar";
+
 import BookingSuccessCard from "../components/BookingSuccessCard";
 
 import { ClipLoader } from "react-spinners";
@@ -194,6 +193,7 @@ function SuccessPage() {
     specialRequest = {bookingData.specialRequest}
     rates = {bookingData.rates}
     totalPrice = {bookingData.totalPrice}
+    noRooms = {bookingData.noRooms}
     />
 
   );
