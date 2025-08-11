@@ -3,7 +3,7 @@ const isCountryValid = (country: string) => {
     if (!country) {
         return false;
     } else {
-        return true;
+        return country.toLowerCase() === 'others' || country in CountryCodes;
         
     }
 }
