@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { fetchHotelDetails } from "../api/hotels";
 import BookingDetailsModal from "../components/BookingDetailsModal";
 
-import '../styles/ViewBookingPage.css'
+import "../styles/ViewBookingPage.css";
 
 interface Booking {
   booking_id: string;
@@ -32,7 +32,6 @@ interface Booking {
   contact_phone: string;
 
   contact_salutation: string;
-
 }
 
 function ViewBookingsPage() {
@@ -84,11 +83,10 @@ function ViewBookingsPage() {
                 null;
 
               return {
-
                 ...booking,
                 hotelName: hotelData.name,
                 hotelAddress: hotelData.address,
-                hotelImageUrl: img,     
+                hotelImageUrl: img,
               };
             } catch (error) {
               console.warn(
@@ -99,7 +97,7 @@ function ViewBookingsPage() {
                 ...booking,
                 hotelName: undefined,
                 hotelAddress: undefined,
-                hotelImageUrl: null,   
+                hotelImageUrl: null,
               };
             }
           })
@@ -119,15 +117,15 @@ function ViewBookingsPage() {
     }
   }, [token]);
 
-  const handleBookingClick = (booking: Booking) =>{
+  const handleBookingClick = (booking: Booking) => {
     setSelectedBooking(booking);
     setShowModal(true);
   };
 
-  const closeModal = () =>{
+  const closeModal = () => {
     setShowModal(false);
     setSelectedBooking(null);
-  }
+  };
 
   if (loading) return <p>Loading your bookings...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -143,16 +141,16 @@ function ViewBookingsPage() {
           <div
             key={booking.booking_id}
             className="booking-card"
-            onClick={() => navigate(`/booking-details/${booking.booking_id}`)}
+            onClick={() => handleBookingClick(booking)}
           >
             <div className="booking-card-with-image">
-                <img
-                  src={
-                    booking.hotelImageUrl ||
-                    "https://images.unsplash.com/photo-1551776235-dde6d4829808?q=80&w=1200&auto=format&fit=crop"
-                  }
-                  alt={booking.hotelName || "Hotel"}
-                />
+              <img
+                src={
+                  booking.hotelImageUrl ||
+                  "https://images.unsplash.com/photo-1551776235-dde6d4829808?q=80&w=1200&auto=format&fit=crop"
+                }
+                alt={booking.hotelName || "Hotel"}
+              />
             </div>
 
             <h2 className="hotel-name">{booking.hotelName}</h2>
@@ -160,11 +158,15 @@ function ViewBookingsPage() {
             <div className="dates-row">
               <div className="date-block">
                 <span className="date-label">Check-in</span>
-                <span className="date-value">{formatDisplayDate(booking.start_date)}</span>
+                <span className="date-value">
+                  {formatDisplayDate(booking.start_date)}
+                </span>
               </div>
               <div className="date-block">
                 <span className="date-label">Check-out</span>
-                <span className="date-value">{formatDisplayDate(booking.end_date)}</span>
+                <span className="date-value">
+                  {formatDisplayDate(booking.end_date)}
+                </span>
               </div>
             </div>
 
