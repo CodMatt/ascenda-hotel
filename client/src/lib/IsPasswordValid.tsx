@@ -1,7 +1,7 @@
 
 const isPasswordValid = (password: string) => {
 
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s)/;
         
     if (password && password.length >= 8 && regex.test(password)) {
         return true;
