@@ -152,9 +152,41 @@ function SuccessPage() {
 
   // Saving to DB failed
   if (fail) {
-    return <h1>
-      Processing failed. Please contact support!
-    </h1>
+    return (
+      <div className="failure-page">
+
+      <div className="progress-bar">
+        <div className="progress-step completed">✓</div>
+        <div className="progress-step completed">✓</div>
+        <div className="progress-step completed">✓</div>
+        <div className="progress-step failed">✗</div>
+      </div>
+
+      <h1>Payment Failed</h1>
+
+      <div className="failure-container">
+        <div className="failure-message-card">
+          <div className="failure-icon">
+          </div>
+          <h2>We're sorry, your payment could not be processed</h2>
+          <p>Your reservation was not confirmed due to a payment issue. Please try again or use a different payment method.</p>
+          
+        </div>
+
+        <div className="failure-actions">
+          <button 
+            className="back-btn"
+            onClick={() => {
+              sessionStorage.removeItem('pendingBookingData');
+              // navigate('/');
+            }}
+          >
+            Start Over
+          </button>
+        </div>
+      </div>
+    </div>
+    )
   }
 
   // Saving to DB

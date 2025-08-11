@@ -146,8 +146,8 @@ return (
                         </div>
                         
                         <div className="guest-field">
-                            <label>Per room per night: </label>
-                            <span>${(state.rates/calculateNights()).toFixed(2)} SGD</span>
+                            <label>Per night: </label>
+                            <span>${state.rates} SGD</span>
                         </div>
                     </div>
 

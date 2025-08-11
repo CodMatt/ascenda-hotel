@@ -33,7 +33,6 @@ const BookingSuccesCard = (details: BookingSuccessDetails) => {
       {/* Navigation Bar */}
       <EmptyNavBar />
 
-        <p>No. Rooms: {details.noRooms}</p>
       <div className="progress-bar">
         <div className="progress-step completed">✓</div>
         <div className="progress-step completed">✓</div>
@@ -132,6 +131,10 @@ const BookingSuccesCard = (details: BookingSuccessDetails) => {
                 <div className="payment-row">
                   <span>Per Night ({details.duration} {details.duration === 1 ? 'night' : 'nights'}):</span>
                   <span>${details.rates} SGD</span>
+                </div>
+                <div className="payment-row">
+                  <span>Number of Rooms:</span>
+                  <span>{details.noRooms}</span>
                 </div>
                 
                 
