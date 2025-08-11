@@ -4,6 +4,8 @@ import EmptyNavBar from "../components/EmptyNavBar";
 import { getGuestBookingByToken, type Booking } from "../api/email";
 import { fetchHotelDetails } from "../api/hotels";
 import formatDisplayDate from "../lib/FormatDisplayDate";
+import { useNavigate } from 'react-router-dom';
+
 
 type Enriched = Booking & {
   hotelName?: string | null;
@@ -24,6 +26,11 @@ export default function GuestBookingAccessPage() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [booking, setBooking] = useState<Enriched | null>(null);
+  const navigate = useNavigate();
+  const goBack = () => (window.history.length > 1 ? navigate(-1) : navigate('/'));
+
+
+
 
   useEffect(() => {
     let active = true;
@@ -61,7 +68,12 @@ export default function GuestBookingAccessPage() {
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <EmptyNavBar />
       <div style={{ maxWidth: 720, margin: "1.5rem auto", width: "100%", padding: "0 1rem" }}>
-        <h1 style={{ marginBottom: "1rem" }}>Your booking</h1>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1rem' }}>
+            <h1 style={{ margin:0 }}>Your booking</h1>
+            <button type="button" className="btn-outline" onClick={goBack}>
+            Return to check-in
+            </button>
+        </div>
 
         {loading && <p>Loading…</p>}
         {err && <p style={{ color: "#dc2626" }}>{err}</p>}
