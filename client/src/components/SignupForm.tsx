@@ -191,7 +191,7 @@ const SignupForm: React.FC = () => {
                 {countryName} ({dialCode})
               </option>
             ))}
-            <option value="others">Others</option>
+{/*             <option value="others">Others</option> */}
           </select>
         </div>
 
