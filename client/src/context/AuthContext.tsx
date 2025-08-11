@@ -30,29 +30,11 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const [token, setToken] = useState<string | null>(StorageUtils.getItem('token'));
     const [loading, setLoading] = useState<boolean>(true);
 
-    const checkTokenExpiration = (): void => {
-        const token = StorageUtils.getItem('token');
-        if (!token) return;
-
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const expirationTime = payload.exp * 1000; 
-            const currentTime = Date.now();
-
-            if (currentTime >= expirationTime) {
-                logout();
-                alert('Your session has expired. Please log in again.');
-            }
-        } catch (error) {
-            console.error('Error checking token expiration:', error);
-            logout();
-        }
-     };
-
     useEffect(() => {
         if (token) {
-            checkTokenExpiration();
-            const interval = setInterval(checkTokenExpiration, 60000); // Check every minute
+            console.log("token", token);
+            verifyToken();
+            const interval = setInterval(verifyToken, 60000); // Check every minute
             return () => clearInterval(interval);
         }
     }, [token]);
@@ -61,46 +43,49 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const verifyToken = async (): Promise<void> => {
         try{
             const userId = StorageUtils.getItem('userId'); //get stored user id
+            const token = StorageUtils.getItem('token');
             console.log("userId",userId)
-            if (!userId){
+            console.log("token", token)
+            console.log(new Date().toString())
+            if (!userId || !token){
                 logout();
                 return;
+                
             }
-            const response = await fetch(`api/users/${userId}`,{ //must have route to get current user, it uses the user id to verify tokens
+
+            const response = await fetch(`/api/users/${userId}`,{ //must have route to get current user, it uses the user id to verify tokens
                 headers:{
                     'Authorization': `Bearer ${token}`,
                 },
             });
 
             if (response.ok){
+                console.log("pass token check");
                 const userData: User = await response.json();
                 setUser(userData);
             } else{
                 logout();
+                alert('Your session has expired. Please log in again.');
             }
         } catch (error){
             console.error('Token verification failed:', error);
             logout();
-        } finally{
-            setLoading(false);
-        }
+        } 
     };
-    const login = async (email: string, password: string): Promise<Response> => {
-        const response = await fetch('api/users/login',{
+    const login = async (email: string, password: string) => {
+        try{
+            const response = await fetch('api/users/login',{
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({email, password})
+            
         });
 
-        
         if (response.ok){
             console.log("check")
             const respJson = await response.json()
-            
             console.log(respJson)
             StorageUtils.clear(); // clear all current data
-            setToken(respJson.token);
-            setUser(respJson.user);
             StorageUtils.setItem('token', respJson.token);
             StorageUtils.setItem('userId', respJson.user.id); // store user id
             StorageUtils.setItem('emailAddress', respJson.user.email);
@@ -108,8 +93,16 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             StorageUtils.setItem('firstName', respJson.user.first_name);
             StorageUtils.setItem('lastName', respJson.user.last_name);
             StorageUtils.setItem('salutation', respJson.user.salutations);
+            setToken(respJson.token);
+            setUser(respJson.user);
         }
         return response;
+
+        } catch (error){
+            console.log(error)
+        }
+        
+        
     };
     const signup = async (userData:SignupData): Promise<Response> =>{
         const response = await fetch('api/users',{
@@ -147,12 +140,6 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
 
     };
 
-    const handleApiError = (response: Response): void => {
-        if (response.status === 403) {
-            logout();
-            alert('Your session has expired. Please log in again.');
-        }
-    };
     
     const value: AuthContextType = {
         user,
