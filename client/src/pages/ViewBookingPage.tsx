@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { fetchHotelDetails } from "../api/hotels";
 import BookingDetailsModal from "../components/BookingDetailsModal";
 import getHotelImageUrl from "../lib/getHotelImageUrl";
+import { ClipLoader } from "react-spinners";
 
 
 import "../styles/ViewBookingPage.css";
@@ -122,7 +123,17 @@ function ViewBookingsPage() {
     setSelectedBooking(null);
   };
 
-  if (loading) return <p>Loading your bookings...</p>;
+  if (loading) return (
+    <div className="loader-overlay">
+        <ClipLoader
+            size={60}
+            color="#0066cc"
+            loading={true}
+            aria-label="mutating-dots-loading"
+        />
+        <p>Loading your booking ...</p>
+    </div>
+  );
   if (error) return <p>Error: {error}</p>;
   if (bookings.length === 0) return <p>No previous bookings found.</p>;
 
