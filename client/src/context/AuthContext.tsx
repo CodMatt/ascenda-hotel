@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const [token, setToken] = useState<string | null>(StorageUtils.getItem('token'));
     const [loading, setLoading] = useState<boolean>(true);
 
-    const checkTokenExpiration = (): void => {
+    /*const checkTokenExpiration = (): void => {
         const token = StorageUtils.getItem('token');
         if (!token) return;
 
@@ -47,13 +47,12 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             console.error('Error checking token expiration:', error);
             logout();
         }
-    };
+     };*/
 
-    // Add periodic token expiration check
     useEffect(() => {
         if (token) {
-            checkTokenExpiration();
-            const interval = setInterval(checkTokenExpiration, 60000);
+            verifyToken();
+            const interval = setInterval(verifyToken, 60000); // Check every minute
             return () => clearInterval(interval);
         }
     }, [token]);
