@@ -119,7 +119,7 @@ export const validateUserCreation = [
     body('password')
         .isLength({ min: 8 })
         .withMessage('Password must be at least 8 characters')
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s)/)
         .withMessage('Password must contain at least one lowercase, uppercase, and number'),
     body('email')
         .isEmail()
