@@ -131,7 +131,7 @@ describe('Email Service', () => {
   expect(mockSendMail).toHaveBeenCalledOnce();
   
   // Verify transaction was committed
-  const commitCalled = mockConnection.query.mock.calls.some(call => 
+  const commitCalled = mockConnection.query.mock.calls.some((call: string[]) => 
     call[0] === 'COMMIT'
   );
   expect(commitCalled).toBe(true);
@@ -211,7 +211,7 @@ describe('Email Service', () => {
     });
 
     // 7. Verify the query sequence
-    const queryCalls = mockConnection.query.mock.calls.map(call => call[0]);
+    const queryCalls = mockConnection.query.mock.calls.map((call: any[]) => call[0]);
     expect(queryCalls).toEqual([
       'BEGIN',
       expect.stringContaining('FROM booking'), // The booking info query
@@ -220,7 +220,7 @@ describe('Email Service', () => {
     ]);
 
     // 8. Verify no new token was inserted
-    const insertQueryCalled = queryCalls.some(call => 
+    const insertQueryCalled = queryCalls.some((call: string | string[]) => 
       call.includes('INSERT INTO guest_booking_access')
     );
     expect(insertQueryCalled).toBe(false);
