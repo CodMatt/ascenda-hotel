@@ -52,18 +52,53 @@ export async function fetchWithRetry(
   return { hotels: [], completed: false };
 }
 
-export async function atomicTransaction<T>(operation: (client:any)=> Promise<T>):Promise<T>{
-  const client = await db.getPool().connect()
-  try{
-    await client.query('BEGIN ISOLATION LEVEL SERIALIZABLE');
-    const result = await operation(client);
-    await client.query('COMMIT');
-    return result;
+// export async function atomicTransaction<T>(operation: (client:any)=> Promise<T>):Promise<T>{
+//   const client = await db.getPool().connect()
+//   try{
+//     await client.query('BEGIN ISOLATION LEVEL SERIALIZABLE');
+//     const result = await operation(client);
+//     await client.query('COMMIT');
+//     return result;
+//   }
+//   catch(error){
+//     await client.query('ROLLBACK');
+//     throw error;
+//   } finally{
+//     client.release();
+//   }
+// }
+
+
+export async function atomicTransaction<T>(
+  operation: (client: any) => Promise<T>,
+  maxRetries = 3
+): Promise<T> {
+  let retryCount = 0;
+  
+  while (retryCount < maxRetries) {
+    const client = await db.getPool().connect();
+    try {
+      await client.query('BEGIN ISOLATION LEVEL SERIALIZABLE');
+      const result = await operation(client);
+      await client.query('COMMIT');
+      return result;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      
+      // Check if it's a serialization failure
+      if (error.code === '40001' || error.message.includes('could not serialize access')) {
+        retryCount++;
+        if (retryCount >= maxRetries) throw error;
+        // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 100 * Math.pow(2, retryCount)));
+        continue;
+      }
+      
+      throw error;
+    } finally {
+      client.release();
+    }
   }
-  catch(error){
-    await client.query('ROLLBACK');
-    throw error;
-  } finally{
-    client.release();
-  }
+  
+  throw new Error('Max retries exceeded');
 }
