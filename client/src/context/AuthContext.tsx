@@ -30,6 +30,33 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
     const [token, setToken] = useState<string | null>(StorageUtils.getItem('token'));
     const [loading, setLoading] = useState<boolean>(true);
 
+    /*const checkTokenExpiration = (): void => {
+        const token = StorageUtils.getItem('token');
+        if (!token) return;
+
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const expirationTime = payload.exp * 1000; 
+            const currentTime = Date.now();
+
+            if (currentTime >= expirationTime) {
+                logout();
+                alert('Your session has expired. Please log in again.');
+            }
+        } catch (error) {
+            console.error('Error checking token expiration:', error);
+            logout();
+        }
+     };*/
+
+    useEffect(() => {
+        if (token) {
+            verifyToken();
+            const interval = setInterval(verifyToken, 60000); // Check every minute
+            return () => clearInterval(interval);
+        }
+    }, [token]);
+
 
     const verifyToken = async (): Promise<void> => {
         try{
@@ -120,6 +147,13 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
 
     };
 
+    const handleApiError = (response: Response): void => {
+        if (response.status === 403) {
+            logout();
+            alert('Your session has expired. Please log in again.');
+        }
+    };
+    
     const value: AuthContextType = {
         user,
         token,

@@ -142,6 +142,18 @@ export default function HotelDetailsPage() {
   const { destinationId, checkin, checkout, guests, adults, children } =
     searchParams ?? {};
 
+    
+  
+  // Calculate number of nights 
+  function getNights(checkin: string, checkout: string): number {
+    const checkinDate = new Date(checkin);
+    const checkoutDate = new Date(checkout);
+    const diffTime = Math.abs(checkoutDate.getTime() - checkinDate.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+    
+  const numNights = getNights(checkin, checkout);
+
   //console.log(searchParams);
 
   /*const destinationId = query.get("destination_id") || "WD0M";
@@ -534,9 +546,7 @@ export default function HotelDetailsPage() {
                                         <div className="price-info">
                                           <div className="room-price">
                                             ${" "}
-                                            {room.converted_price ||
-                                              room.price ||
-                                              0}
+                                            {(room.converted_price/numNights).toFixed(2)}
                                             <span className="duration-text">/night</span>
                                           </div>
                                         </div>
@@ -598,9 +608,9 @@ export default function HotelDetailsPage() {
             <span className="price-large">
               ${" "}
               {rooms.length > 0
-                ? Math.min(
+                ? (Math.min(
                     ...rooms.map((r) => r.converted_price || r.price || 0)
-                  )
+                  )/numNights).toFixed(2)
                 : "Loading..."}
             </span>
             <span className="duration-text">/ night</span>

@@ -8,7 +8,7 @@ const getToken = (): string | null => sessionStorage.getItem('token');
 export const apiCall = async (endpoint: string, options: ApiOptions = {}): Promise<Response> =>{
     const token = getToken();
 
-    return fetch(endpoint,{
+    const response = await fetch(endpoint,{
         ...options,
         headers:{
             'Content-Type': 'application/json',
@@ -16,4 +16,12 @@ export const apiCall = async (endpoint: string, options: ApiOptions = {}): Promi
             ...options.headers,
         },
     });
+
+
+    if (response.status === 403) {
+        sessionStorage.clear();
+        window.location.href = '/login';
+        throw new Error('Session expired - please log in again');
+    }
+    return response;
 };
