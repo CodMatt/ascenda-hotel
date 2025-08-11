@@ -117,7 +117,7 @@ function BookingDetailsModal({ booking, isOpen, onClose }: BookingDetailsModalPr
           </div>
         )}
 
-        <button
+        {/* <button
           onClick={onClose}
           style={{
             backgroundColor: "#007bff",
@@ -131,7 +131,7 @@ function BookingDetailsModal({ booking, isOpen, onClose }: BookingDetailsModalPr
           }}
         >
           Close
-        </button>
+        </button> */}
       </div>
     </div>
   );
