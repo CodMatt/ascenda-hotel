@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStripe, useElements, PaymentElement, AddressElement } from '@stripe/react-stripe-js';
 import { useLocation, useNavigate } from "react-router-dom";
 import CardDeclinedNotification from './notifications/CardDeclinedNotification';
-import BookingSummary from './BookingSummary' // For booking details display
-//import '../styles/PaymentForm.css';
+import BookingSummary from './BookingSummary';
+import { ClipLoader } from "react-spinners";
 
 function PaymentForm() {
   const stripe = useStripe();
@@ -33,7 +33,6 @@ function PaymentForm() {
   const hotelId = location.state.hotelId;
   const userRef = location.state.userRef;
   const roomType = location.state.roomType;
-
   const key = location.state.key;
   const authToken = location.state.authToken;
   
@@ -41,8 +40,29 @@ function PaymentForm() {
   const [cardDeclined, setCardDeclined] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Store booking data in sessionStorage before Stripe redirect
+  // Disable back button while processing payment
+  useEffect(() => {
+    if (processing) {
+      console.log('Payment processing - disabling back button');
+      
+      window.history.pushState({ processing: true }, '', window.location.pathname);
+      
+      const handleBackButton = (event:any) => {
+        console.log('Back button blocked during payment processing');
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        alert('Please wait while your payment is being processed. Do not use the back button.');
+        window.history.pushState({ processing: true }, '', window.location.pathname);
+        return false;
+      };
 
+      window.addEventListener('popstate', handleBackButton);
+      
+      return () => {
+        window.removeEventListener('popstate', handleBackButton);
+      };
+    }
+  }, [processing]);
 
   const bookingData = {
 
@@ -71,13 +91,9 @@ function PaymentForm() {
     };
 
   if (bookingData){
-    // Store in sessionStorage!
     sessionStorage.setItem('pendingBookingData', JSON.stringify(bookingData));
     console.log("Stored booking data in sessionStorage:", bookingData);
   }
-  
-
-  
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -87,21 +103,17 @@ function PaymentForm() {
     }
 
     setIsProcessing(true);
-    
 
     let returnUrl = `${window.location.origin}/success`;
     
     const result = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: returnUrl, // Use dynamic return URL
+        return_url: returnUrl,
       }
     });
 
-    // Original
     if (result.error) {
-      // // Remove stored data if payment fails
-      // localStorage.removeItem('pendingBookingData');
       if (result.error.decline_code === "card_not_supported") {
         setErrorMsg("Card not supported!");
         setCardDeclined(true);
@@ -111,7 +123,6 @@ function PaymentForm() {
         console.log(result.error);
       }
       setIsProcessing(false);
-
     }
   };
 
@@ -125,6 +136,20 @@ function PaymentForm() {
       </div>
 
       <h1>Payment Details</h1>
+
+      {processing && (
+        <div style={{ 
+          padding: '15px', 
+          backgroundColor: '#fff3cd', 
+          border: '1px solid #ffeaa7', 
+          borderRadius: '5px',
+          color: '#856404',
+          marginBottom: '20px',
+          textAlign: 'center'
+        }}>
+          <strong>⚠️ Processing payment... Please do not use the back button or refresh the page</strong>
+        </div>
+      )}
 
       <div className="payment-container">
         <div className="payment-form">
@@ -163,11 +188,7 @@ function PaymentForm() {
             <div className="billing-section">
               <h3>Billing Information</h3>
               <div className="stripe-element-wrapper">
-                <AddressElement
-                  options={{
-                    mode: 'billing', 
-                  }}
-                />
+                <AddressElement options={{ mode: 'billing' }} />
               </div>
             </div>
 
@@ -196,11 +217,17 @@ function PaymentForm() {
           </form>
         </div>
 
-        <BookingSummary hotelName = {hotelName} 
-    hotelAddr = {hotelAddr} rates = {rates} 
-    checkin = {checkin} checkout = {checkout} 
-    totalPrice = {totalPrice} noRooms = {noRooms}
-    noAdults = {noAdults} noChildren = {noChildren}/>
+        <BookingSummary 
+          hotelName={hotelName} 
+          hotelAddr={hotelAddr} 
+          rates={rates} 
+          checkin={checkin} 
+          checkout={checkout} 
+          totalPrice={totalPrice} 
+          noRooms={noRooms}
+          noAdults={noAdults} 
+          noChildren={noChildren}
+        />
       </div>
     </div>
   );

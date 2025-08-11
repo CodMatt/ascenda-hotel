@@ -1,111 +1,134 @@
 import React, {useEffect, useState} from "react";
-import {Elements} from "@stripe/react-stripe-js"; // install
-
-import { loadStripe } from "@stripe/stripe-js"; // install
-
+import {Elements} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
-
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import EmptyNavBar from "../components/EmptyNavBar";
 import PaymentForm from '../components/PaymentForm'
 import { ClipLoader } from "react-spinners";
 
-// call backend to get publishable key & load stripe with it
 const initStripe = async () => {
-    const res = await axios.get("/api/stripe/publishable-key");
-    const publishableKey = await res.data.publishable_key;
-
-    return loadStripe(publishableKey);
+  const res = await axios.get("/api/stripe/publishable-key");
+  const publishableKey = await res.data.publishable_key;
+  return loadStripe(publishableKey);
 }
-    
+
 function PaymentPage(){
-    
+  const location = useLocation();
+  const navigate = useNavigate();
+  const bookingInfo = location.state;
+  
+  // Check if we have booking data - if not, redirect to home
+  useEffect(() => {
+    if (!bookingInfo || !bookingInfo.totalPrice) {
+      console.log('No booking data found in PaymentPage - redirecting to home');
+      navigate('/', { replace: true });
+      return;
+    }
+  }, [bookingInfo, navigate]);
 
-     // INFO FROM PaymentInfoForm (provided by previous feature)
-    const location = useLocation();
-    const bookingInfo = location.state;
-
-    // NOT TO USE - FOR REF (info contained by bookingInfo)
-        // state: {
-        //     firstName: firstName,
-        //     lastName: lastName,
-        //     salutation: salutation,
-        //     phoneNumber: countryCode + phoneNumber,
-        //     emailAddress: emailAddress,
-        //     hotelId: hotelId, 
-        //     destId: destId, 
-        //     hotelName: hotelName,
-        //     hotelAddr: hotelAddr,
-        //     key: key,
-        //     rates: rates,
-        //     checkin: checkin,
-        //     checkout: checkout,
-        //     noAdults: noAdults,
-        //     noChildren: noChildren,
-        //     duration: duration,
-        //     authToken: authToken,
-        //     specialRequest: specialRequest,
-        // }
-    console.log("Booking Info in Confirmation:", bookingInfo);
-
-    const totalCostInCents = ((bookingInfo.totalPrice)*100).toFixed(0);
-    
-
-    const stripePromise = initStripe();
-
-    const [clientSecretSettings, setClientSecretSettings] = useState({
-        clientSecret: "",
-        loading: true, // display once backend has replied
-    });
-    
-    useEffect(() => {
-        async function createPaymentIntent(){ // async call to server to create stripe payment intent
-            const response = await axios.post("/api/stripe/create-payment-intent", {totalCost: totalCostInCents});
-            
-            setClientSecretSettings({ // save client's secret key
-                clientSecret: response.data.client_secret, // needed to complete payment using stripe element/ui
-                loading: false,
-            });
-        }
-
-        createPaymentIntent();
-    }, []);
-    
+  // If no booking info, show loading while redirect happens
+  if (!bookingInfo || !bookingInfo.totalPrice) {
     return (
-        <>
-
-        {/* Navigation Bar */}
-        <EmptyNavBar />
-            
-        <div>
-        {clientSecretSettings.loading ? (
-            <div className="loader-overlay">
-                <ClipLoader
-                    size={60}
-                    color="#0066cc"
-                    loading={true}
-                    aria-label="mutating-dots-loading"
-                />
-                <p>Loading...</p>
-            </div>
-        ) : (
-            <Elements
-                stripe={stripePromise}
-                options={{
-                    clientSecret: clientSecretSettings.clientSecret,
-                    appearance: { theme: "stripe",
-                    },
-                    
-                }}
-                >
-                <PaymentForm/>
-            </Elements>
-        )}
-        </div>
-        </>
-        
+      <div className="loader-overlay">
+        <ClipLoader
+          size={60}
+          color="#0066cc"
+          loading={true}
+          aria-label="redirecting-loading"
+        />
+        <p>Redirecting...</p>
+      </div>
     );
+  }
+  
+  console.log("Booking Info in Confirmation:", bookingInfo);
+  const totalCostInCents = ((bookingInfo.totalPrice)*100).toFixed(0);
+  const stripePromise = initStripe();
+  const [clientSecretSettings, setClientSecretSettings] = useState({
+    clientSecret: "",
+    loading: true,
+  });
+
+  // Disable back button while loading payment intent
+  useEffect(() => {
+    if (clientSecretSettings.loading) {
+      console.log('Payment intent loading - disabling back button');
+      
+      window.history.pushState({ loading: true }, '', window.location.pathname);
+      
+      const handleBackButton = (event:any) => {
+        console.log('Back button blocked during payment intent loading');
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        alert('Please wait while we prepare your payment. Do not use the back button.');
+        window.history.pushState({ loading: true }, '', window.location.pathname);
+        return false;
+      };
+
+      window.addEventListener('popstate', handleBackButton);
+      
+      return () => {
+        window.removeEventListener('popstate', handleBackButton);
+      };
+    }
+  }, [clientSecretSettings.loading]);
+
+  useEffect(() => {
+    async function createPaymentIntent(){
+      try {
+        const response = await axios.post("/api/stripe/create-payment-intent", {totalCost: totalCostInCents});
+        setClientSecretSettings({
+          clientSecret: response.data.client_secret,
+          loading: false,
+        });
+      } catch (error) {
+        console.error('Error creating payment intent:', error);
+        // If payment intent creation fails, redirect to home
+        navigate('/', { replace: true });
+      }
+    }
+    createPaymentIntent();
+  }, [totalCostInCents, navigate]);
+
+  return (
+    <>
+      <EmptyNavBar />
+      <div>
+        {clientSecretSettings.loading ? (
+          <div className="loader-overlay">
+            <ClipLoader
+              size={60}
+              color="#0066cc"
+              loading={true}
+              aria-label="mutating-dots-loading"
+            />
+            <p>Loading...</p>
+            <div style={{ 
+              marginTop: '20px', 
+              padding: '15px', 
+              backgroundColor: '#fff3cd', 
+              border: '1px solid #ffeaa7', 
+              borderRadius: '5px',
+              color: '#856404'
+            }}>
+              <strong>⚠️ Please do not use the back button while we prepare your payment</strong>
+            </div>
+          </div>
+        ) : (
+          <Elements
+            stripe={stripePromise}
+            options={{
+              clientSecret: clientSecretSettings.clientSecret,
+              appearance: { theme: "stripe" },
+            }}
+          >
+            <PaymentForm/>
+          </Elements>
+        )}
+      </div>
+    </>
+  );
 }
 
 export default PaymentPage;
