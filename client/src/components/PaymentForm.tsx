@@ -65,28 +65,30 @@ function PaymentForm() {
   }, [processing]);
 
   const bookingData = {
-    destId: destId,
-    hotelId: hotelId,
-    duration: duration,
-    checkin: checkin,
-    checkout: checkout,
-    noAdults: noAdults,
-    noChildren: noChildren,
-    userRef: userRef,
-    salutation: salutation,
-    firstName: firstName,
-    lastName: lastName,
-    phoneNumber: phoneNumber,
-    emailAddress: emailAddress,
-    specialRequest: specialRequest,
-    roomType: roomType,
-    totalPrice: totalPrice,
-    hotelName: hotelName,
-    hotelAddr: hotelAddr,
-    key: key,
-    authToken: authToken,
-    rates: rates
-  };
+
+      destId: destId,
+      hotelId: hotelId,
+      duration: duration,
+      checkin: checkin,
+      checkout: checkout,
+      noAdults: noAdults,
+      noChildren: noChildren,
+      userRef: userRef,
+      salutation: salutation,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      emailAddress: emailAddress,
+      specialRequest: specialRequest,
+      roomType: roomType,
+      totalPrice: totalPrice,
+      hotelName: hotelName,
+      hotelAddr: hotelAddr,
+      key: key,
+      authToken: authToken,
+      rates: rates,
+      noRooms: noRooms
+    };
 
   if (bookingData){
     sessionStorage.setItem('pendingBookingData', JSON.stringify(bookingData));

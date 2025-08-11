@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
-import formatDisplayDate from '../lib/FormatDisplayDate';
+import { useNavigate } from "react-router-dom";
 import '../styles/SuccessPage.css'
-import EmptyNavBar from "../components/EmptyNavBar";
+import BookingSuccessCard from "../components/BookingSuccessCard";
 import { ClipLoader } from "react-spinners";
 
 function SuccessPage() {
   const [bookingData, setBookingData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // loading 
   const [saving, setSaving] = useState(true);
   const [bookingId, setBookingId] = useState("");
+  const [fail, setFail] = useState(false);
   const navigate = useNavigate();
 
   // Disable back button during loading and saving
@@ -108,25 +108,28 @@ function SuccessPage() {
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(contents)
         });
-        
-        console.log("API response:", response);
+
+        console.log("response", response)
         const data = await response.json();
-        console.log("Response data:", data);
+        console.log("responsee: ", data);
 
         if (response.ok) {
           setBookingId(data.booking_id);
-          console.log('Booking saved successfully with ID:', data.booking_id);
-          
-          // Clear session data after successful save
-          sessionStorage.removeItem('pendingBookingData');
-          
-          return data;
+          setSaving(false);
+          return data; // Return the promise
+        } else {
+          console.log("check", data);
+          setFail(true);
+          setSaving(false);
         }
+
       } catch (error) {
-        console.error('Error saving booking:', error);
+        console.log(error);
+        setFail(true);
+        setSaving(false);
       }
     }
-  }
+  } // <-- This was the missing closing bracket for the saveBooking function
 
   const startTime = Date.now();
 
@@ -159,6 +162,7 @@ function SuccessPage() {
     return () => { isMounted = false; };
   }, [saving, bookingData]);
 
+  // Retrieving booking data from session storage
   if (loading) {
     return (
       <div className="loader-overlay">
@@ -183,6 +187,7 @@ function SuccessPage() {
     );
   }
 
+  // Failed to retrieve booking data from session storage
   if (!bookingData) {
     return (
       <div className="success-page">
@@ -192,6 +197,14 @@ function SuccessPage() {
     );
   }
 
+  // Saving to DB failed
+  if (fail) {
+    return <h1>
+      Processing failed. Please contact support!
+    </h1>
+  }
+
+  // Saving to DB
   if (saving) {
     return (
       <div className="loader-overlay">
@@ -215,134 +228,29 @@ function SuccessPage() {
       </div>
     );
   }
-
+  
+  // Booking Success
   return (
-    <div className="success-page">
-      <EmptyNavBar />
-
-      <div className="progress-bar">
-        <div className="progress-step completed">✓</div>
-        <div className="progress-step completed">✓</div>
-        <div className="progress-step completed">✓</div>
-        <div className="progress-step completed">✓</div>
-      </div>
-
-      <h1>Booking Confirmed!</h1>
-
-      <div className="success-container">
-        <div className="success-message-card">
-          <h2>Thank you for your booking!</h2>
-          <p>Your reservation has been confirmed and you will receive a confirmation email shortly.</p>
-          <div className="booking-id-display">
-            <strong>Booking ID: {bookingId || "no booking ID"}</strong>
-          </div>
-
-          <div className="booking-confirmation-card">
-            <h3>Booking Details</h3>
-            
-            <div className="detail-section">
-              <h4>Hotel Information</h4>
-              <div className="detail-grid">
-                <div className="detail-item">
-                  <strong>Hotel:</strong>
-                  <span>{bookingData.hotelName || "Failed to save hotel name"}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Address:</strong>
-                  <span>{bookingData.hotelAddr || "Failed to save hotel address"}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Room Type:</strong>
-                  <span>{bookingData.roomType || "Failed to save room type"}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="detail-section">
-              <h4>Stay Information</h4>
-              <div className="detail-grid">
-                <div className="detail-item">
-                  <strong>Check-in:</strong>
-                  <span>{formatDisplayDate(bookingData.checkin || "Failed to save check-in date")}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Check-out:</strong>
-                  <span>{formatDisplayDate(bookingData.checkout || "Failed to save check-out date")}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Duration:</strong>
-                  <span>{bookingData.duration} {bookingData.duration === 1 ? 'night' : 'nights'}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="detail-section">
-              <h4>Guest Information</h4>
-              <div className="detail-grid">
-                <div className="detail-item">
-                  <strong>Guest Name:</strong>
-                  <span>{`${bookingData.salutation} ${bookingData.firstName} ${bookingData.lastName}`.trim()}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Email:</strong>
-                  <span>{bookingData.emailAddress}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Phone:</strong>
-                  <span>{bookingData.phoneNumber}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Adults:</strong>
-                  <span>{bookingData.noAdults}</span>
-                </div>
-                <div className="detail-item">
-                  <strong>Children:</strong>
-                  <span>{bookingData.noChildren}</span>
-                </div>
-              </div>
-            </div>
-
-            {bookingData.specialRequest && (
-              <div className="detail-section">
-                <h4>Special Requests</h4>
-                <div className="special-request-box">
-                  {bookingData.specialRequest}
-                </div>
-              </div>
-            )}
-
-            <div className="detail-section">
-              <h4>Payment Summary</h4>
-              <div className="payment-summary">
-                <div className="payment-row">
-                  <span>Per Night ({bookingData.duration} {bookingData.duration === 1 ? 'night' : 'nights'}):</span>
-                  <span>${bookingData.rates} SGD</span>
-                </div>
-                <div className="payment-row total">
-                  <strong>Total Paid:</strong>
-                  <strong>${bookingData.totalPrice} SGD</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="success-actions">
-          <button 
-            className="pay-btn primary"
-            onClick={() => window.print()}
-          >
-            Print Confirmation
-          </button>
-          <button 
-            className="back-btn"
-            onClick={() => navigate('/')}
-          >
-            Book Another Stay
-          </button>
-        </div>
-      </div>
-    </div>
+    <BookingSuccessCard 
+      bookingId={bookingId}
+      hotelName={bookingData.hotelName}
+      hotelAddr={bookingData.hotelAddr}
+      roomType={bookingData.roomType}
+      checkin={bookingData.checkin}
+      checkout={bookingData.checkout}
+      duration={bookingData.duration}
+      salutation={bookingData.salutation}
+      firstName={bookingData.firstName}
+      lastName={bookingData.lastName}
+      phoneNumber={bookingData.phoneNumber}
+      emailAddress={bookingData.emailAddress}
+      noAdults={bookingData.noAdults}
+      noChildren={bookingData.noChildren}
+      specialRequest={bookingData.specialRequest}
+      rates={bookingData.rates}
+      totalPrice={bookingData.totalPrice}
+      noRooms={bookingData.noRooms}
+    />
   );
 }
 
