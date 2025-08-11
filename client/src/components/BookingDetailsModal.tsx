@@ -1,6 +1,8 @@
 import React from "react";
 import formatDisplayDate from "../lib/FormatDisplayDate";
 
+import "../styles/ViewBookingPage.css";
+
 interface Booking {
   booking_id: string;
   hotel_id: string;
@@ -79,32 +81,32 @@ function BookingDetailsModal({ booking, isOpen, onClose }: BookingDetailsModalPr
         <h2>Booking Details</h2>
         
         <div style={{ marginBottom: "1rem" }}>
-          <h3>Booking Information</h3>
+          <h3 className="modal-section-title">Booking Information</h3>
           <p><strong>Booking ID:</strong> {booking.booking_id}</p>
           <p><strong>Nights:</strong> {booking.nights}</p>
           <p><strong>Total Price:</strong> ${parseFloat(booking.price).toFixed(2)} SGD</p>
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
-          <h3>Hotel Information</h3>
+          <h3 className="modal-section-title">Hotel Information</h3>
           <p><strong>Hotel Name:</strong> {booking.hotelName || "Not available"}</p>
           <p><strong>Hotel Address:</strong> {booking.hotelAddress || "Not available"}</p>
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
-          <h3>Stay Dates</h3>
+          <h3 className="modal-section-title">Stay Dates</h3>
           <p><strong>Check-in:</strong> {formatDisplayDate(booking.start_date)}</p>
           <p><strong>Check-out:</strong> {formatDisplayDate(booking.end_date)}</p>
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
-          <h3>Guest Information</h3>
+          <h3 className="modal-section-title">Guest Information</h3>
           <p><strong>Adults:</strong> {booking.adults}</p>
           <p><strong>Children:</strong> {booking.children}</p>
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
-          <h3>Contact Information</h3>
+          <h3 className="modal-section-title">Contact Information</h3>
           <p><strong>Name:</strong> {booking.contact_salutation} {booking.contact_first_name} {booking.contact_last_name}</p>
           <p><strong>Email:</strong> {booking.contact_email}</p>
           <p><strong>Phone:</strong> {booking.contact_phone}</p>

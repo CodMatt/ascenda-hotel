@@ -10,8 +10,16 @@
     margin: 1rem 0;
     font-size: 3rem;
     color: #333;
+    margin: 0 110px;
+  }
+
+  .header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
     margin: 20px 110px;
   }
+  
 
     .page-subtitle {
     text-align: left;
@@ -20,6 +28,19 @@
     color: #666;
     margin: 10px 110px;
     }
+
+  .back-button {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    justify-content: flex-start;
+  }
+
+  .back-button:hover {
+    background-color: #f0f0f0;
+  }
   
   .bookings-container {
     display: flex;
