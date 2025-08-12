@@ -22,43 +22,14 @@ beforeAll(() => {
     }
   };
 });
-// Mock the dependencies
-vi.mock("../lib/FormatDisplayDate", () => ({
-  default: vi.fn((date) => {
-    if (
-      !date ||
-      date === "Failed to save check-in date" ||
-      date === "Failed to save check-out date"
-    ) {
-      return date;
-    }
-    return new Date(date).toLocaleDateString("en-GB");
-  }),
-}));
 
-vi.mock("./EmptyNavBar", () => ({
-  default: () => <div data-testid="empty-navbar">Empty Nav Bar</div>,
-}));
 
 vi.mock("react-spinners", () => ({
   ClipLoader: ({ loading }: { loading: boolean }) =>
     loading ? <div data-testid="spinner">Loading...</div> : null,
 }));
 
-vi.mock("../styles/SuccessPage.css", () => ({}));
 
-// Mock IntersectionObserver
-const mockIntersectionObserver = vi.fn();
-mockIntersectionObserver.mockReturnValue({
-  observe: () => null,
-  unobserve: () => null,
-  disconnect: () => null,
-});
-Object.defineProperty(window, "IntersectionObserver", {
-  writable: true,
-  configurable: true,
-  value: mockIntersectionObserver,
-});
 
 // Mock fetch for API calls
 const mockFetch = vi.fn();
@@ -96,7 +67,7 @@ const mockBookingData = {
   salutation: "Mr.",
   firstName: "John",
   lastName: "Doe",
-  phoneNumber: "+65 9123 4567",
+  phoneNumber: "65 91234567",
   emailAddress: "john.doe@example.com",
   noAdults: "2",
   noChildren: "1",
@@ -158,7 +129,7 @@ describe("BookingSuccessCard and SuccessPage Integration Tests", () => {
       // Guest information
       expect(screen.getByText("Mr. John Doe")).toBeInTheDocument();
       expect(screen.getByText("john.doe@example.com")).toBeInTheDocument();
-      expect(screen.getByText("+65 9123 4567")).toBeInTheDocument();
+      expect(screen.getByText("65 91234567")).toBeInTheDocument();
 
       // Special request
       expect(screen.getByText("Late check-in requested")).toBeInTheDocument();
@@ -348,7 +319,7 @@ describe("BookingSuccessCard and SuccessPage Integration Tests", () => {
           first_name: "John",
           last_name: "Doe",
           salutation: "Mr.",
-          phone_num: "+65 9123 4567",
+          phone_num: "65 91234567",
           email: "john.doe@example.com",
           user_ref: null,
         }),
