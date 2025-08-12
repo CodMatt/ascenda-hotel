@@ -264,3 +264,40 @@
   justify-content: center;
   margin-top: 20px; /* optional for spacing */
 }
+
+.success-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.pay-btn {
+  flex: none;
+}
+
+.success-actions .pay-btn.primary {
+  background: #0066CC;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.success-actions .pay-btn.primary:hover {
+  background: #0066CC;
+}
+
+.success-actions .back-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.success-actions .back-btn:hover {
+  background: #5a6268;
+}
