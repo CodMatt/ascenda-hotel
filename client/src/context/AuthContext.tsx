@@ -83,9 +83,6 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
                 const respJson = await response.json()
                 //console.log("resp.json"+respJson)
                 
-                // Handle both response formats:
-                // Format 1: { token: "...", user: {...} } (expected)
-                // Format 2: { id: "...", email: "...", token: "..." } (actual from your API)
                 let token, user;
                 
                 if (respJson.user && respJson.token) {
@@ -93,37 +90,26 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
                     token = respJson.token;
                     user = respJson.user;
                     //console.log("Using wrapped format - token:", token, "user:", user);
-                } else if (respJson.id && respJson.token) {
-                    // Format 2: User object with token included
-                    token = respJson.token;
-                    user = respJson;
-                    //console.log("Using user-with-token format - token:", token, "user:", user);
-                } else if (respJson.id) {
-                    // Format 3: Just user object (no token) - this seems to be your current API
-                    //console.log("ERROR: No token found in response, only user object");
-                    //console.log("Your login API needs to return a token");
-                    return response; // Return early, can't proceed without token
+                 
+                
+                    StorageUtils.clear(); // clear all current data
+                    StorageUtils.setItem('token', token);
+                    StorageUtils.setItem('userId', user.id);
+                    StorageUtils.setItem('emailAddress', user.email);
+                    StorageUtils.setItem('phoneNumber', user.phone_num);
+                    StorageUtils.setItem('firstName', user.first_name);
+                    StorageUtils.setItem('lastName', user.last_name);
+                    StorageUtils.setItem('salutation', user.salutations);
+                    setToken(token);
+                    setUser(user);
                 } else {
-                    //console.log("ERROR: Unrecognized response format:", respJson);
                     return response;
                 }
-                //console.log("stuffs"+token+user)
-                
-                StorageUtils.clear(); // clear all current data
-                StorageUtils.setItem('token', token);
-                StorageUtils.setItem('userId', user.id);
-                StorageUtils.setItem('emailAddress', user.email);
-                StorageUtils.setItem('phoneNumber', user.phone_num);
-                StorageUtils.setItem('firstName', user.first_name);
-                StorageUtils.setItem('lastName', user.last_name);
-                StorageUtils.setItem('salutation', user.salutations);
-                setToken(token);
-                setUser(user);
             }
             return response;
 
         } catch (error){
-            //console.log(error)
+            console.log(error)
         }
     };
     
@@ -144,7 +130,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             // Auto-login after signup
             const loginResponse = await login(userData.email, userData.password);
             //console.log("loginresponse: " + JSON.stringify(loginResponse))
-            if (!loginResponse.ok) {
+            if (loginResponse ==  undefined || !loginResponse.ok) {
                 throw new Error('Auto-login failed after signup');
             }
 
