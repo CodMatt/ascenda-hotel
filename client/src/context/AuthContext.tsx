@@ -8,7 +8,6 @@ interface AuthProviderProps{
     children: ReactNode;
 }
 
-
 // Storage utility functions for easy switching between storage types
 const StorageUtils = {
     getItem: (key: string): string | null => {
@@ -39,7 +38,6 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
         }
     }, [token]);
 
-
     const verifyToken = async (): Promise<void> => {
         try{
             const userId = StorageUtils.getItem('userId'); //get stored user id
@@ -50,7 +48,6 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             if (!userId || !token){
                 logout();
                 return;
-                
             }
 
             const response = await fetch(`/api/users/${userId}`,{ //must have route to get current user, it uses the user id to verify tokens
@@ -72,75 +69,98 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             logout();
         } 
     };
+    
     const login = async (email: string, password: string) => {
         try{
             const response = await fetch('api/users/login',{
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email, password})
-            
-        });
-
-        if (response.ok){
-            console.log("check")
-            const respJson = await response.json()
-            console.log(respJson)
-            StorageUtils.clear(); // clear all current data
-            StorageUtils.setItem('token', respJson.token);
-            StorageUtils.setItem('userId', respJson.user.id); // store user id
-            StorageUtils.setItem('emailAddress', respJson.user.email);
-            StorageUtils.setItem('phoneNumber', respJson.user.phone_num);
-            StorageUtils.setItem('firstName', respJson.user.first_name);
-            StorageUtils.setItem('lastName', respJson.user.last_name);
-            StorageUtils.setItem('salutation', respJson.user.salutations);
-            setToken(respJson.token);
-            setUser(respJson.user);
-        }
-        return response;
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email, password})
+            });
+            console.log("hello there"+ JSON.stringify(response))
+            if (response.ok){
+                console.log("check")
+                const respJson = await response.json()
+                console.log("resp.json"+respJson)
+                
+                // Handle both response formats:
+                // Format 1: { token: "...", user: {...} } (expected)
+                // Format 2: { id: "...", email: "...", token: "..." } (actual from your API)
+                let token, user;
+                
+                if (respJson.user && respJson.token) {
+                    // Format 1: Wrapped format like signup API
+                    token = respJson.token;
+                    user = respJson.user;
+                    console.log("Using wrapped format - token:", token, "user:", user);
+                } else if (respJson.id && respJson.token) {
+                    // Format 2: User object with token included
+                    token = respJson.token;
+                    user = respJson;
+                    console.log("Using user-with-token format - token:", token, "user:", user);
+                } else if (respJson.id) {
+                    // Format 3: Just user object (no token) - this seems to be your current API
+                    console.log("ERROR: No token found in response, only user object");
+                    console.log("Your login API needs to return a token");
+                    return response; // Return early, can't proceed without token
+                } else {
+                    console.log("ERROR: Unrecognized response format:", respJson);
+                    return response;
+                }
+                console.log("stuffs"+token+user)
+                
+                StorageUtils.clear(); // clear all current data
+                StorageUtils.setItem('token', token);
+                StorageUtils.setItem('userId', user.id);
+                StorageUtils.setItem('emailAddress', user.email);
+                StorageUtils.setItem('phoneNumber', user.phone_num);
+                StorageUtils.setItem('firstName', user.first_name);
+                StorageUtils.setItem('lastName', user.last_name);
+                StorageUtils.setItem('salutation', user.salutations);
+                setToken(token);
+                setUser(user);
+            }
+            return response;
 
         } catch (error){
             console.log(error)
         }
-        
-        
     };
-    const signup = async (userData:SignupData): Promise<Response> =>{
-        const response = await fetch('api/users',{
-            method: 'POST',
-            headers:{'Content-Type': 'application/json'},
-            body: JSON.stringify(userData)
-        });
+    
+    const signup = async (userData: SignupData): Promise<Response> => {
+        try {
+            const response = await fetch('api/users', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(userData)
+            });
 
-        
-        
-        console.log(response);
-        if (response.ok){
-            const data: AuthResponse = await response.json();
+            if (!response.ok) {
+                return response;
+            }
+
+            const data = await response.json();
             
-            
-            setToken(data.token);
-            setUser(data.user);
-            StorageUtils.clear();
-            StorageUtils.setItem('token', data.token);
-            StorageUtils.setItem('userId', data.user.id);
-            StorageUtils.setItem('emailAddress', userData.email);
-            StorageUtils.setItem('phoneNumber', userData.phone_num);
-            StorageUtils.setItem('firstName', userData.first_name);
-            StorageUtils.setItem('lastName', userData.last_name);
-            StorageUtils.setItem('salutation', userData.salutation);
+            // Auto-login after signup
+            const loginResponse = await login(userData.email, userData.password);
+            console.log("loginresponse: " + JSON.stringify(loginResponse))
+            if (!loginResponse.ok) {
+                throw new Error('Auto-login failed after signup');
+            }
+
+            return response;
+        } catch (error) {
+            console.error('Signup error:', error);
+            throw error;
         }
-
-        return response; // don't read json yet if error given
     };
 
     const logout = (): void =>{
         setToken(null);
         setUser(null);
         StorageUtils.clear();
-
     };
 
-    
     const value: AuthContextType = {
         user,
         token,
@@ -149,6 +169,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
         signup,
         logout
     };
+    
     return(
         <AuthContext.Provider value={value}>
             {children}

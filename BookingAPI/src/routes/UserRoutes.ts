@@ -90,7 +90,7 @@ router.post('/login', validateUserLogin,async (req:any, res:any) => {
         const token = generateToken(user);
 
         // Return token and sanitized user data
-        res.json({
+        res.status(200).json({
             token,
             user: {
                 id: user.id,
