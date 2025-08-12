@@ -97,7 +97,7 @@ export default function GuestBookingAccessPage() {
               <dt>Booking ID</dt><dd>{booking.booking_id}</dd>
               <dt>Email</dt><dd>{booking.contact_email ?? "—"}</dd>
               <dt>Hotel ID</dt><dd>{booking.hotel_id}</dd>
-              <dt>Destination</dt><dd>{booking.destination_id}</dd>
+              <dt>Destination ID</dt><dd>{booking.destination_id}</dd>
               <dt>Check-in</dt><dd>{formatDisplayDate(booking.start_date)}</dd>
               <dt>Check-out</dt><dd>{formatDisplayDate(booking.end_date)}</dd>
               <dt>Guests</dt>
