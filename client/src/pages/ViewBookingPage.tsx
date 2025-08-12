@@ -49,8 +49,8 @@ function ViewBookingsPage() {
 
   useEffect(() => {
     async function fetchBookings() {
-      console.log("fetching bookings...");
-      console.log("token from context:", token);
+      //console.log("fetching bookings...");
+      //console.log("token from context:", token);
       if (!token) {
         console.warn("No token found, cannot fetch bookings.");
         return;
@@ -63,7 +63,7 @@ function ViewBookingsPage() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Fetch response status:", response.status);
+        //console.log("Fetch response status:", response.status);
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -71,7 +71,7 @@ function ViewBookingsPage() {
           throw new Error("Failed to fetch bookings");
         }
         const data: Booking[] = await response.json();
-        console.log("Fetch bookings data:", data);
+        //console.log("Fetch bookings data:", data);
 
 
         const bookingsWithHotels: Booking[] = await Promise.all(

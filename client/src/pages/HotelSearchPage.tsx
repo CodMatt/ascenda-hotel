@@ -28,7 +28,7 @@ export default function HotelSearchPage() {
   const searchParams = (location.state as any)?.searchParams;
   const { destinationId, checkin, checkout, guests, adults, children } = searchParams ?? {};
 
-  console.log(searchParams);
+  //console.log(searchParams);
 
   // Use URL values if present, otherwise use fixed ones as shown RsBU (SG)
   /*const destinationId = searchParams.get("destination_id") ?? "RsBU"; // Fallback to RsBU 
@@ -63,12 +63,12 @@ export default function HotelSearchPage() {
           checkout,
           guests
         );
-        console.log("Destination ID:", destinationId);
+        //console.log("Destination ID:", destinationId);
 
-        console.log("Total hotels received:", result.hotels.length);
+        //console.log("Total hotels received:", result.hotels.length);
         setHotelData(result.hotels);
       } catch (err: any) {
-        console.error("Failed to load hotels:", err.message || err);
+        //console.error("Failed to load hotels:", err.message || err);
         setError("Failed to load hotel data. Please try again.");
       } finally {
         setLoading(false);
@@ -83,7 +83,7 @@ export default function HotelSearchPage() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          console.log("Lazy loading more hotels...");
+          //console.log("Lazy loading more hotels...");
           setVisibleCount((prev) => prev + 10);
         }
       },

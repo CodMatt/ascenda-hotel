@@ -21,7 +21,7 @@ function PaymentPage(){
   // Check if we have booking data - if not, redirect to home
   useEffect(() => {
     if (!bookingInfo || !bookingInfo.totalPrice) {
-      console.log('No booking data found in PaymentPage - redirecting to home');
+      //console.log('No booking data found in PaymentPage - redirecting to home');
       navigate('/', { replace: true });
       return;
     }
@@ -42,7 +42,7 @@ function PaymentPage(){
     );
   }
   
-  console.log("Booking Info in Confirmation:", bookingInfo);
+  //console.log("Booking Info in Confirmation:", bookingInfo);
   const totalCostInCents = ((bookingInfo.totalPrice)*100).toFixed(0);
   const stripePromise = initStripe();
   const [clientSecretSettings, setClientSecretSettings] = useState({
@@ -53,12 +53,12 @@ function PaymentPage(){
   // Disable back button while loading payment intent
   useEffect(() => {
     if (clientSecretSettings.loading) {
-      console.log('Payment intent loading - disabling back button');
+      //console.log('Payment intent loading - disabling back button');
       
       window.history.pushState({ loading: true }, '', window.location.pathname);
       
       const handleBackButton = (event:any) => {
-        console.log('Back button blocked during payment intent loading');
+        //console.log('Back button blocked during payment intent loading');
         event.preventDefault();
         event.stopImmediatePropagation();
         alert('Please wait while we prepare your payment. Do not use the back button.');

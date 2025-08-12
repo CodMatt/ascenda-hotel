@@ -51,7 +51,7 @@ const DestinationSearchPage: React.FC = () => {
     try {
       //const { destinationId, checkin, checkout, guests } = searchParams;
       //const queryString = `destination_id=${destinationId}&checkin=${checkin}&checkout=${checkout}&guests=${guests}`;
-      console.log(searchParams);
+      //console.log(searchParams);
       navigate("/HotelSearchPage", {
         state: {
           searchParams,

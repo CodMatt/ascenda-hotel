@@ -53,7 +53,7 @@ function GuestInfoPage(){
   const userRef = location.state.userRef;
   const roomType = location.state.roomType;
 
-  console.log("user ref", userRef)
+  //console.log("user ref", userRef)
 
   // Info collected from user in this page
   const [firstName, setFirstName] = useState(location.state.firstName);
@@ -126,7 +126,7 @@ function GuestInfoPage(){
       
   };
 
-  console.log("totalPrice", totalPrice)
+  //console.log("totalPrice", totalPrice)
   const handleSubmit2 = async () => {
     navigate(-1); // go back to hotel searching page
   }
