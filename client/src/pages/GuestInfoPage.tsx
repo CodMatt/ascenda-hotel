@@ -126,10 +126,7 @@ function GuestInfoPage(){
       
   };
 
-  //console.log("totalPrice", totalPrice)
-  const handleSubmit2 = async () => {
-    navigate(-1); // go back to hotel searching page
-  }
+
 
 
   return(

@@ -1,30 +1,62 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import GuestInfoPage from '../pages/GuestInfoPage';
+import { MemoryRouter } from 'react-router-dom';
 
+// Create a mutable variable for location state (to test both with and without acct)
+let mockLocationState = {
+  hotelName: 'Marina Bay Sands',
+  hotelAddr: '10 Bayfront Avenue',
+  totalPrice: '1050.00',
+  rates: '350.00',
+  checkin: new Date('2025-08-15'),
+  checkout: new Date('2025-08-18'),
+  noAdults: 2,
+  noChildren: 1,
+  noRooms: 1,
+  authToken: '',
+  userRef: '',
+  firstName: '',
+  lastName: '',
+  salutation: '',
+  phoneNumber: '',
+  emailAddress: ''
+};
+
+// Mock react-router-dom once & ref that var
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
   return {
     ...actual,
     useNavigate: () => vi.fn(),
-    useLocation: () => ({
-      state: {
-        hotelName: 'Marina Bay Sands',
-        hotelAddr: '10 Bayfront Avenue',
-        totalPrice: '1050.00',
-        rates: '350.00',
-        checkin: new Date('2025-08-15'),
-        checkout: new Date('2025-08-18'),
-        noAdults: 2,
-        noChildren: 1,
-        noRooms: 1,
-        authToken: '' // Testing non-authenticated user
-      }
-    })
+    useLocation: () => ({ state: mockLocationState })
   };
 });
+
+// helper to update state in tests
+const setMockLocationState = (overrides: Partial<typeof mockLocationState>) => {
+  mockLocationState = { ...mockLocationState, ...overrides };
+};
+
+beforeEach(() => {
+  // Reset to default before each test
+  setMockLocationState({
+    hotelName: 'Marina Bay Sands',
+    hotelAddr: '10 Bayfront Avenue',
+    totalPrice: '1050.00',
+    rates: '350.00',
+    checkin: new Date('2025-08-15'),
+    checkout: new Date('2025-08-18'),
+    noAdults: 2,
+    noChildren: 1,
+    noRooms: 1,
+    authToken: '',
+    userRef: ''
+  });
+});
+
 
 vi.mock('../components/EmptyNavBar', () => ({
   default: () => <div>Navigation Bar</div>
@@ -34,7 +66,39 @@ vi.mock('../components/BookingSummary', () => ({
   default: () => <div>Booking Summary Panel</div>
 }));
 
+
 describe('GuestInfoPage UI Tests', () => {
+
+    test('Guest user: renders all personal information field description', () => {
+      render(
+        <MemoryRouter>
+          <GuestInfoPage />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByRole('heading', { name: /Payment Details/i })).toBeInTheDocument();
+      expect(screen.getByText(/Enter Personal Information/i)).toBeDefined();
+
+      expect(screen.getByLabelText(/Salutation/i)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Salutation \(if others\)/i)).toBeDefined();
+
+      expect(screen.getByLabelText(/First Name/i)).toBeDefined();
+      expect(screen.getByPlaceholderText(/First Name/i)).toBeDefined();
+
+      expect(screen.getByLabelText(/Last Name/i)).toBeDefined();
+      expect(screen.getByPlaceholderText(/Last Name/i)).toBeDefined();
+
+      expect(screen.getByLabelText(/Country/i)).toBeDefined();
+
+      expect(screen.getByPlaceholderText(/Code/i)).toBeDefined();
+      expect(screen.getByPlaceholderText(/Phone Number/i)).toBeDefined();
+
+      expect(screen.getByLabelText(/Email Address/i)).toBeDefined();
+      expect(screen.getByPlaceholderText(/Email Address/i)).toBeDefined();
+
+      expect(screen.getByLabelText(/Special Request/i)).toBeDefined();
+      expect(screen.getByPlaceholderText(/Special Request/i)).toBeDefined();
+    });
 
   test('Page title and progress bar are displayed', () => {
     render(
@@ -168,4 +232,45 @@ describe('GuestInfoPage UI Tests', () => {
     
     expect(emailInput).toHaveValue('test@example.com');
   });
+
+  test('Authenticated user - displays pre-filled info and only special request is editable', async () => {
+
+    // Add info for authenticated user
+    setMockLocationState({
+      authToken: 'token123',
+      userRef: 'user123',
+      firstName: 'Alice',
+      lastName: 'Wonderland',
+      salutation: 'Ms',
+      phoneNumber: '65 12345678',
+      emailAddress: 'alice@example.com'
+    });
+
+
+    render(
+      <BrowserRouter>
+        <GuestInfoPage />
+      </BrowserRouter>
+    );
+
+    // Prefilled info section
+    expect(screen.getByRole('heading', { name: /Your Information/i })).toBeInTheDocument();
+    expect(screen.getByText(/Alice Wonderland/)).toBeInTheDocument();
+    expect(screen.getByText('Ms')).toBeInTheDocument();
+    expect(screen.getByText('65 12345678')).toBeInTheDocument();
+    expect(screen.getByText('alice@example.com')).toBeInTheDocument();
+
+    // No other personal info inputs
+    expect(screen.queryByPlaceholderText('First Name')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Last Name')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Phone Number')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Email Address')).not.toBeInTheDocument();
+
+    // Special request still present and editable
+    const special = screen.getByPlaceholderText(/Special Request/);
+    await userEvent.type(special, 'Late check-in');
+    expect(special).toHaveValue('Late check-in');
+  });
+
+  
 });
