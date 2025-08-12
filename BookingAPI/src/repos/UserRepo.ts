@@ -18,8 +18,8 @@ export async function sync() {
                 last_name VARCHAR(255),
                 first_name VARCHAR(255),
                 salutation VARCHAR(255),
-                email VARCHAR(255) UNIQUE,
-                phone_num VARCHAR(15),
+                email VARCHAR(255) UNIQUE NOT NULL,
+                phone_num VARCHAR(15) NOT NULL,
                 created TIMESTAMP
             )
         `);

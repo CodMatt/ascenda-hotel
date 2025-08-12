@@ -20,7 +20,7 @@ const dbConfig: DatabaseConfig = {
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'ce3q1',
   port: parseInt(process.env.DB_PORT || '5432'),
-  max: 10,
+  max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000
 };

@@ -1,8 +1,6 @@
-// tests/unit/routes/EmailRoutes.test.ts
 import request from 'supertest';
 import express from 'express';
 
-// Mock the emailService module - this gets hoisted
 vi.mock('../../../src/services/emailService', () => ({
   emailService: {
     sendBookingAccessEmail: vi.fn(),
@@ -13,7 +11,6 @@ vi.mock('../../../src/services/emailService', () => ({
   createGuestAccessTable: vi.fn()
 }));
 
-// Mock the booking repository - this gets hoisted
 vi.mock('../../../src/repos/bookingRepo', () => ({
   getBookingWithContactById: vi.fn()
 }));

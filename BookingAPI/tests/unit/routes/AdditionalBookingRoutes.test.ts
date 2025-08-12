@@ -1,5 +1,3 @@
-// tests/unit/repos/bookingRepo-missing-functions.test.ts
-
 import * as bookingRepo from '../../../src/repos/bookingRepo';
 import db from '../../../src/models/db';
 import HelperFunctions from '../../support/HelperFunctions';
