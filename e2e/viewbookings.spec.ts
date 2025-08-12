@@ -1,0 +1,30 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  await page.goto('http://localhost:4242/');
+  await page.getByRole('button', { name: 'View Booking' }).click();
+  await page.getByRole('textbox', { name: 'Booking ID' }).click();
+  await page.getByRole('textbox', { name: 'Booking ID' }).fill('booking-1754880038414');
+  await page.getByRole('textbox', { name: 'Email' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).fill('javier');
+  await page.getByRole('button', { name: 'Email me a secure link' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).fill('javier@gmail.com');
+  await page.getByRole('button', { name: 'Email me a secure link' }).click();
+  await page.getByRole('textbox', { name: 'Booking ID' }).click();
+  await page.getByRole('textbox', { name: 'Booking ID' }).fill('booking-17548800');
+  await page.getByRole('button', { name: 'Email me a secure link' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).press('Alt+ArrowLeft');
+  await page.getByRole('textbox', { name: 'Email' }).press('Alt+ArrowLeft');
+  await page.getByRole('textbox', { name: 'Email' }).press('Alt+ArrowLeft');
+  await page.getByRole('textbox', { name: 'Email' }).press('ArrowLeft');
+  await page.getByRole('textbox', { name: 'Email' }).fill('javiercjw1@gmail.com');
+  await page.getByRole('button', { name: 'Email me a secure link' }).click();
+  await page.getByRole('textbox', { name: 'Booking ID' }).dblclick();
+  await page.getByRole('textbox', { name: 'Booking ID' }).fill('booking-booking-1754880038414');
+  await page.getByRole('textbox', { name: 'Booking ID' }).press('ControlOrMeta+a');
+  await page.getByRole('textbox', { name: 'Booking ID' }).fill('booking-1754880038414');
+  await page.getByRole('button', { name: 'Email me a secure link' }).click();
+  await page.getByRole('button', { name: 'Back' }).click();
+});

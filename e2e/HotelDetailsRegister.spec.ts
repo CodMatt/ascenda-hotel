@@ -1,0 +1,34 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  await page.goto('http://localhost:4242/');
+  await page.getByRole('textbox', { name: 'Destination' }).click();
+  await page.getByRole('textbox', { name: 'Destination' }).fill('Kuala');
+  await page.getByText('Kuala Lumpur, Malaysia,').click();
+  await page.locator('div').filter({ hasText: /^Check-in\(Must be at least 3 days in advance\)$/ }).getByRole('textbox').click();
+  await page.getByRole('option', { name: 'Choose Wednesday, September 3rd,' }).click();
+  await page.locator('div').filter({ hasText: /^Check-out\(Placeholder to align height\)$/ }).getByRole('textbox').click();
+  await page.getByRole('option', { name: 'Choose Wednesday, September 10th,' }).click();
+  await page.getByRole('button', { name: '+ Add Room' }).click();
+  await page.getByRole('button', { name: '+' }).nth(2).click();
+  await page.getByText('Children-0+').first().click();
+  await page.getByRole('button', { name: '+' }).nth(1).click();
+  await page.getByRole('button', { name: '+ Add Room' }).click();
+  await page.locator('div').filter({ hasText: /^Adults-2\+Children-0\+$/ }).getByRole('button').nth(1).click();
+  await page.getByRole('button', { name: 'Search Hotels' }).click();
+  await page.getByRole('link', { name: 'ANSA Kuala Lumpur ANSA Kuala' }).click();
+  await page.locator('div').filter({ hasText: /^Room OnlyNon-refundable\$ 995\.29\/nightSelect$/ }).getByRole('button').click();
+  await page.getByRole('button', { name: 'Register' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).fill('Bob123@gmail.com');
+  await page.getByRole('textbox', { name: 'Email' }).press('Tab');
+  await page.getByRole('textbox', { name: 'Password' }).fill('Bob123bob');
+  await page.getByRole('textbox', { name: 'Phone Number' }).click();
+  await page.getByRole('textbox', { name: 'Phone Number' }).fill('93280872');
+  await page.getByRole('textbox', { name: 'First Name' }).click();
+  await page.getByRole('textbox', { name: 'First Name' }).fill('Javier');
+  await page.getByRole('textbox', { name: 'Last Name' }).click();
+  await page.getByRole('textbox', { name: 'Last Name' }).fill('Chan');
+  await page.locator('select[name="salutation"]').selectOption('Mr');
+  await page.getByRole('button', { name: 'Create Account' }).click();
+});
