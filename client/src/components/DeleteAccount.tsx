@@ -11,10 +11,10 @@ const DeleteAccount = () => {
   const handleDeleteClick = () => {
     const userId = user?.id || sessionStorage.getItem('userId');
 
-    console.log("Delete account clicked");
-    console.log("User:", user);
-    console.log("Token:", token);
-    console.log("User ID:", userId);
+    //console.log("Delete account clicked");
+    //console.log("User:", user);
+    //console.log("Token:", token);
+    //console.log("User ID:", userId);
     
     if (!token) {
       console.error("No token found - user not authenticated");

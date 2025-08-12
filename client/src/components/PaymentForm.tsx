@@ -43,12 +43,12 @@ function PaymentForm() {
   // Disable back button while processing payment
   useEffect(() => {
     if (processing) {
-      console.log('Payment processing - disabling back button');
+      //console.log('Payment processing - disabling back button');
       
       window.history.pushState({ processing: true }, '', window.location.pathname);
       
       const handleBackButton = (event:any) => {
-        console.log('Back button blocked during payment processing');
+        //console.log('Back button blocked during payment processing');
         event.preventDefault();
         event.stopImmediatePropagation();
         alert('Please wait while your payment is being processed. Do not use the back button.');
@@ -92,7 +92,7 @@ function PaymentForm() {
 
   if (bookingData){
     sessionStorage.setItem('pendingBookingData', JSON.stringify(bookingData));
-    console.log("Stored booking data in sessionStorage:", bookingData);
+    //console.log("Stored booking data in sessionStorage:", bookingData);
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -120,7 +120,7 @@ function PaymentForm() {
         setTimeout(() => setCardDeclined(false), 3000);
       } else if (result.error){
         setErrorMsg("Payment Declined!");
-        console.log(result.error);
+        //console.log(result.error);
       }
       setIsProcessing(false);
     }

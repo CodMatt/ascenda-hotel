@@ -64,9 +64,9 @@ function CheckHotelDetailsPage() {
     });
   };
 
-  console.log("noRooms", state.noRooms)
-  console.log("rates", state.rates)
-  console.log("price", state.price)
+  //console.log("noRooms", state.noRooms)
+  //console.log("rates", state.rates)
+  //console.log("price", state.price)
 
 return (
         <div className="booking-info-page">

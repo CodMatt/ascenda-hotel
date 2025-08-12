@@ -16,7 +16,7 @@ const mockBooking = {
   contact_email: "jane.doe@example.com",
   contact_first_name: "Jane",
   contact_last_name: "Doe",
-  contact_phone: "+65 8123 4567",
+  contact_phone: "65 8123 4567",
   contact_salutation: "Ms",
   hotelName: "Ascenda Grand Marina",
   hotelAddress: "88 Ocean Drive, Singapore",

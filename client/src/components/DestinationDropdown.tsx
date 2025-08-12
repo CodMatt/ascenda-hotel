@@ -20,6 +20,22 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { destinations, loading, searchDestinations } = useDestinations();
 
+
+  useEffect(() => {
+    if (selectedDestination) {
+      setInputValue(selectedDestination.term);
+    } else {
+      setInputValue("");
+    }
+  }, [selectedDestination]);
+
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(debounceTimer);
+    };
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -38,18 +54,12 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
-    searchDestinations(value);
     setIsOpen(true);
 
     if (!hasSearched) {
       setHasSearched(true); // First interaction
     }
 
-    //debounce search
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      searchDestinations(value);
-    }, 300);
     //debounce search (avoids too many API calls)
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {

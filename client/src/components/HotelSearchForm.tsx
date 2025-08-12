@@ -41,12 +41,12 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
   const minCheckoutDate = checkinDate
     ? addDays(checkinDate, 1)
     : addDays(minCheckinDate, 1);
-  console.log("Current state:", {
+  /*console.log("Current state:", {
     checkinDate,
     checkoutDate,
     minCheckoutDate,
     "checkout >= minCheckout": checkoutDate && checkoutDate >= minCheckoutDate,
-  });
+  });*/
 
   useEffect(() => {
     if (!checkinDate) return;
@@ -182,7 +182,7 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
         <DatePicker
           selected={checkinDate}
           onChange={(date) => {
-            console.log("Check-in changed to:", date);
+            //console.log("Check-in changed to:", date);
             setCheckinDate(date);
           }}
           minDate={minCheckinDate}
@@ -201,7 +201,7 @@ const HotelSearchForm: React.FC<HotelSearchFormProps> = ({ onSearch }) => {
           selected={checkoutDate}
           dateFormat="dd/MM/yyyy"
           onChange={(date) => {
-            console.log("Checkout selected:", date);
+            //console.log("Checkout selected:", date);
             setCheckoutDate(date);
           }}
           minDate={

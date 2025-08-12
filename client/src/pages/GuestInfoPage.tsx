@@ -53,7 +53,7 @@ function GuestInfoPage(){
   const userRef = location.state.userRef;
   const roomType = location.state.roomType;
 
-  console.log("user ref", userRef)
+  //console.log("user ref", userRef)
 
   // Info collected from user in this page
   const [firstName, setFirstName] = useState(location.state.firstName);
@@ -126,7 +126,7 @@ function GuestInfoPage(){
       
   };
 
-  console.log("totalPrice", totalPrice)
+  //console.log("totalPrice", totalPrice)
   const handleSubmit2 = async () => {
     navigate(-1); // go back to hotel searching page
   }
@@ -175,10 +175,11 @@ function GuestInfoPage(){
               // If user is not authenticated
               <>
                 <div className="form-group">
-                  <label>Salutation</label>
+                  <label htmlFor="salutation">Salutation</label>
                   <div className="salutation-row">
                     <select 
                       name="salutation" 
+                      aria-label="Salutation"
                       onChange={(event) => setSalutation(event.target.value)} 
                       defaultValue="" 
                       required={true}
@@ -202,8 +203,9 @@ function GuestInfoPage(){
                 </div>
 
                 <div className="form-group">
-                  <label>First Name</label>
+                  <label htmlFor="firstName">First Name</label>
                   <input
+                    id="firstName"
                     name="firstName"
                     type="text"
                     placeholder="First Name"
@@ -214,8 +216,9 @@ function GuestInfoPage(){
                 </div>
 
                 <div className="form-group">
-                  <label>Last Name</label>
+                  <label htmlFor="lastName">Last Name</label>
                   <input
+                    id = "lastName"
                     name="lastName"
                     type="text"
                     placeholder="Last Name"
@@ -226,8 +229,9 @@ function GuestInfoPage(){
                 </div>
 
                 <div className="form-group">
-                  <label>Country</label>
+                  <label htmlFor="country">Country</label>
                   <select 
+                    id = "country"
                     name="phoneCode" 
                     onChange={(event) => updateCountry(event.target.value)} 
                     defaultValue="" 
@@ -268,8 +272,9 @@ function GuestInfoPage(){
                 </div>
 
                 <div className="form-group">
-                  <label>Email Address</label>
+                  <label htmlFor="emailAddress">Email Address</label>
                   <input
+                    id = "emailAddress"
                     name="emailAddress"
                     type="text"
                     placeholder="Email Address"
@@ -282,8 +287,9 @@ function GuestInfoPage(){
             )}
             
             <div className="form-group">
-              <label>Special Request</label>
+              <label htmlFor="specialRequest">Special Request</label>
               <textarea
+                id = "specialRequest"
                 name="specialRequest"
                 className="specialReqBox"
                 placeholder="Special Request (max: 150 characters)"

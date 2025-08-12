@@ -15,12 +15,12 @@ function SuccessPage() {
   // Disable back button during loading and saving
   useEffect(() => {
     if (loading || saving) {
-      console.log('Success page loading/saving - disabling back button');
+      //console.log('Success page loading/saving - disabling back button');
       
       window.history.pushState({ loading: true }, '', window.location.pathname);
       
       const handleBackButton = (event:any) => {
-        console.log('Back button blocked during loading/saving');
+        //console.log('Back button blocked during loading/saving');
         event.preventDefault();
         event.stopImmediatePropagation();
         alert('Please wait while we process your booking. Do not use the back button.');
@@ -39,14 +39,14 @@ function SuccessPage() {
   // After saving is complete, prevent going back to payment page
   useEffect(() => {
     if (!loading && !saving && bookingData) {
-      console.log('Booking saved - setting up permanent back button protection');
+      //console.log('Booking saved - setting up permanent back button protection');
       
       // Replace current history to remove payment page from history
       window.history.replaceState(null, '', window.location.pathname);
       window.history.pushState({ preventBack: true }, '', window.location.pathname);
       
       const handleBackButton = () => {
-        console.log('Back button pressed after booking saved - redirecting to home');
+        //console.log('Back button pressed after booking saved - redirecting to home');
         navigate('/');
       };
 
@@ -60,13 +60,13 @@ function SuccessPage() {
 
   async function saveBooking(bookingData: any) {
     if (!bookingData) {
-      console.log('No booking data to save');
+      //console.log('No booking data to save');
       return;
     }
 
     let contents = null;
     
-    console.log('Saving booking data:', JSON.stringify(bookingData));
+    //console.log('Saving booking data:', JSON.stringify(bookingData));
     
     if (bookingData.userRef) {
       contents = { // logged in
@@ -109,22 +109,22 @@ function SuccessPage() {
           body: JSON.stringify(contents)
         });
 
-        console.log("response", response)
+        //console.log("response", response)
         const data = await response.json();
-        console.log("responsee: ", data);
+        //console.log("responsee: ", data);
 
         if (response.ok) {
           setBookingId(data.booking_id);
           setSaving(false);
           return data; // Return the promise
         } else {
-          console.log("check", data);
+          //console.log("check", data);
           setFail(true);
           setSaving(false);
         }
 
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         setFail(true);
         setSaving(false);
       }

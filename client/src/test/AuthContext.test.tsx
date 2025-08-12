@@ -65,6 +65,8 @@ describe('AuthProvider', () => {
     last_name: 'Doe',
     phone_num: '1234567890',
     salutations: 'Mr.',
+    username: '',
+    created: ''
   };
 
   const mockToken = 'mock-jwt-token';
