@@ -45,7 +45,7 @@ const LoginForm: React.FC = () =>{
                     }, 2000)
             } else{
                 const respJson = await response.json()
-                console.log(respJson.error)
+                //console.log(respJson.error)
                 if (!respJson || !respJson.error){ // Other reasons for failure
                     setError('Login failed');
                 } else if (respJson.error == "No account with that email exists"){
@@ -57,7 +57,7 @@ const LoginForm: React.FC = () =>{
                 }
             }
         } catch (err){
-            console.log(err)
+            //console.log(err)
             setError('Network error occurred');
             } 
         

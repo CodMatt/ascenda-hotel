@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
 
     useEffect(() => {
         if (token) {
-            console.log("token", token);
+            //console.log("token", token);
             verifyToken();
             const interval = setInterval(verifyToken, 60000); // Check every minute
             return () => clearInterval(interval);
@@ -42,9 +42,9 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
         try{
             const userId = StorageUtils.getItem('userId'); //get stored user id
             const token = StorageUtils.getItem('token');
-            console.log("userId",userId)
-            console.log("token", token)
-            console.log(new Date().toString())
+            //console.log("userId",userId)
+            //console.log("token", token)
+            //console.log(new Date().toString())
             if (!userId || !token){
                 logout();
                 return;
@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             });
 
             if (response.ok){
-                console.log("pass token check");
+                //console.log("pass token check");
                 const userData: User = await response.json();
                 setUser(userData);
             } else{
@@ -77,11 +77,11 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({email, password})
             });
-            console.log("hello there"+ JSON.stringify(response))
+            //console.log("hello there"+ JSON.stringify(response))
             if (response.ok){
-                console.log("check")
+                //console.log("check")
                 const respJson = await response.json()
-                console.log("resp.json"+respJson)
+                //console.log("resp.json"+respJson)
                 
                 // Handle both response formats:
                 // Format 1: { token: "...", user: {...} } (expected)
@@ -92,22 +92,22 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
                     // Format 1: Wrapped format like signup API
                     token = respJson.token;
                     user = respJson.user;
-                    console.log("Using wrapped format - token:", token, "user:", user);
+                    //console.log("Using wrapped format - token:", token, "user:", user);
                 } else if (respJson.id && respJson.token) {
                     // Format 2: User object with token included
                     token = respJson.token;
                     user = respJson;
-                    console.log("Using user-with-token format - token:", token, "user:", user);
+                    //console.log("Using user-with-token format - token:", token, "user:", user);
                 } else if (respJson.id) {
                     // Format 3: Just user object (no token) - this seems to be your current API
-                    console.log("ERROR: No token found in response, only user object");
-                    console.log("Your login API needs to return a token");
+                    //console.log("ERROR: No token found in response, only user object");
+                    //console.log("Your login API needs to return a token");
                     return response; // Return early, can't proceed without token
                 } else {
-                    console.log("ERROR: Unrecognized response format:", respJson);
+                    //console.log("ERROR: Unrecognized response format:", respJson);
                     return response;
                 }
-                console.log("stuffs"+token+user)
+                //console.log("stuffs"+token+user)
                 
                 StorageUtils.clear(); // clear all current data
                 StorageUtils.setItem('token', token);
@@ -123,7 +123,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             return response;
 
         } catch (error){
-            console.log(error)
+            //console.log(error)
         }
     };
     
@@ -143,7 +143,7 @@ export const AuthProvider: React.FC<AuthProviderProps> =({children}) =>{
             
             // Auto-login after signup
             const loginResponse = await login(userData.email, userData.password);
-            console.log("loginresponse: " + JSON.stringify(loginResponse))
+            //console.log("loginresponse: " + JSON.stringify(loginResponse))
             if (!loginResponse.ok) {
                 throw new Error('Auto-login failed after signup');
             }
