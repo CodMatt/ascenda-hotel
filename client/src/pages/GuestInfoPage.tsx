@@ -310,21 +310,11 @@ function GuestInfoPage(){
             ))}
 
             <div className="payment-actions">
-              <button type="submit" className="pay-btn" id="payment-button">
+              <button type="submit" className="pay-btn" id="payment-button1">
                 <span>Proceed to Payment</span>
               </button>
             </div>
           </form>
-
-          <div className="payment-actions" style={{ marginTop: '15px' }}>
-            <button 
-              type="button"
-              className="back-btn"
-              onClick={handleSubmit2}
-            >
-              <span>Change Booking Details</span>
-            </button>
-          </div>
         </div>
 
         <BookingSummary hotelName = {hotelName} 

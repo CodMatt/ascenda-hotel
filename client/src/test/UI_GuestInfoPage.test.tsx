@@ -125,7 +125,6 @@ describe('GuestInfoPage UI Tests', () => {
     );
     
     expect(screen.getByRole('button', { name: /Proceed to Payment/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Change Booking Details/i })).toBeInTheDocument();
   });
 
   test('Booking summary panel is displayed', () => {
