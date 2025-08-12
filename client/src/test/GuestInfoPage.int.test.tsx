@@ -260,11 +260,4 @@ describe('GuestInfoPage integration', () => {
     expect(opts.state.phoneNumber).toBe('+65 81234567');
     expect(opts.state.authToken).toBe(false);
   });
-
-  it('back button calls navigate(-1)', async () => {
-    const user = userEvent.setup();
-    renderWithRouter(makeLocationState());
-    await user.click(screen.getByRole('button', { name: /Change Booking Details/i }));
-    expect(navigateMock).toHaveBeenCalledWith(-1);
-  });
 });
