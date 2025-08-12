@@ -291,9 +291,13 @@ body {
   transition: all 0.3s;
 }
 
-.pay-btn {
+.pay-btn  {
   background: #0066CC;
   color: white;
+  flex: 1;
+}
+
+#payment-button1 {
   flex: 1;
 }
 

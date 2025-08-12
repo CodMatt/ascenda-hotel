@@ -203,7 +203,7 @@ function PaymentForm() {
                 type="submit"
                 className="pay-btn"
                 disabled={processing || !stripe || !elements || cardDeclined}
-                id="button-text"
+                id="payment-button1"
               >
                 <span>
                   {processing ? (
