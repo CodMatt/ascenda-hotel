@@ -255,7 +255,7 @@ describe('Destination Search to Hotel Search Integration', () => {
 
     // Wait for results
     await waitFor(() => {
-      expect(screen.getByText('No hotels found.')).toBeInTheDocument();
+      expect(screen.getByText('No hotels found')).toBeInTheDocument();
     });
 
     // Map should still be present but with 0 hotels
