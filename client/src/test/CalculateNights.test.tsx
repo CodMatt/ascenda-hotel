@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import calculateNights from '../lib/CalculateNights'
 
-describe ("CalculateNights isEmailValid test-suite", () => {
+describe ("CalculateNights test-suite", () => {
 
     const today = new Date();
     
@@ -11,14 +11,14 @@ describe ("CalculateNights isEmailValid test-suite", () => {
         expect(result).toBe(0);
     });
 
-    test ("5 days later", () => {
+    test ("Checkout after checkin", () => {
         const otherDate: Date = new Date(today);
-        otherDate.setDate(otherDate.getDate() + 5)
+        otherDate.setDate(otherDate.getDate() + 999)
         const result = calculateNights(today, otherDate);
-        expect(result).toBe(5);
+        expect(result).toBe(999);
     });
 
-    test ("checkout before checkin", () => {
+    test ("Checkout before Checkin", () => {
         const otherDate: Date = new Date(today);
         otherDate.setDate(otherDate.getDate() + -5)
         const result = calculateNights(today, otherDate);

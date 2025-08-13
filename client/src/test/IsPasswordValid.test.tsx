@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import isPasswordValid from '../lib/IsPasswordValid';
 
-describe('isPasswordValid - Equivalence Class Tests', () => {
+describe('isPasswordValid - Robust boundary tests', () => {
   
   test('EC1: Valid - meets all requirements', () => {
     expect(isPasswordValid("Abcdefg1")).toBe(true);
@@ -43,8 +43,11 @@ describe('isPasswordValid - Equivalence Class Tests', () => {
     expect(isPasswordValid("        ")).toBe(false);
   });
 
-  test('EC11: Invalid - leading/trailing space', () => {
-    expect(isPasswordValid("  Abcdef1")).toBe(false);
+  test('EC11: Invalid - trailing space', () => {
+    expect(isPasswordValid("Abcdef1 ")).toBe(false);
   });
 
+  test('EC11: Invalid - leading space', () => {
+    expect(isPasswordValid(" Abcdef1")).toBe(false);
+  });
 });

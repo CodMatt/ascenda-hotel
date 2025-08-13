@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest'
 import isCountryValid from '../lib/IsCountryValid'
 
 
-describe ("IsNameValid isNameValid test-suite", () => {
+describe ("IsCountryValid test-suite", () => {
 
     test ("Valid country that exists in CountryCodes", () => {
         const result = isCountryValid("Macedonia, the Former Yugoslav Republic of");

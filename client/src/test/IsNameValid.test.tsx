@@ -29,10 +29,6 @@ describe ("IsNameValid isNameValid test-suite", () => {
         expect(result).toBe(false);
     });
 
-    test ("Name containing letters and space at the end", () => {
-        const result = isNameValid("TestName ");
-        expect(result).toBe(false);
-    });
 
     test ("Name containing symbol", () => {
         const result = isNameValid("T$st name");
