@@ -149,34 +149,12 @@ const SignupForm: React.FC = () => {
         />
       </div>
   
-      {/* <div>
-        <select 
-          name="country" 
-          onChange={(event) => updateCountry(event.target.value)} 
-          defaultValue="" 
-          required={true}
-        >
-          <option value="" key="select">Select One</option>
-          {Object.keys(countryCodes).map((countryCode) => (
-            <option value={countryCode} key={countryCode}>{countryCode}</option>
-          ))}
-          <option value="others" key="others">Others</option>
-        </select>
-        <input
-          name="country code"
-          type="text"
-          placeholder="Code"
-          value={countryCode}
-          onChange={(event) => setCountryCode(event.target.value)}
-          required={true}
-          disabled={country === "others" ? false : true || success || isLoading}
-          className="phone-code-select"
-        />
-      </div> */}
 
       <div className ="country-phone-row">
+        {/* <label htmlFor="country-select">Country</label> */}
         <div className="country-select">
           <select
+            id = "country-select"
             name="country"
             onChange={(event) => {
               const selectedCountry = event.target.value;
@@ -232,9 +210,10 @@ const SignupForm: React.FC = () => {
           disabled={isLoading || success}
         />
       </div>
-
+      {/* <label htmlFor="salutation-select">Salutation</label> */}
       <div className="salutation-row">
         <select 
+          id = "salutation-select"
           name="salutation" 
           onChange={(event) => setSalutation(event.target.value)} 
           defaultValue="" 
