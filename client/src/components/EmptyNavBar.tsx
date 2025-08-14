@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { useAuth } from "../context/AuthContext";
+
 
 function EmptyNavBar() {
   

@@ -30,28 +30,28 @@ const BookingSummary = (bookingdetails: BookingDetails) => {
           <div className="summary-item">
             <strong>Room Type:</strong> Double Room
           </div>
-          <div className="summary-item">
+          <div className="summary-item" data-testid="checkin">
             <strong>Check-in:</strong> {formatDisplayDate(bookingdetails.checkin)}
           </div>
-          <div className="summary-item">
+          <div className="summary-item" data-testid="checkout">
             <strong>Check-out:</strong> {formatDisplayDate(bookingdetails.checkout)}
           </div>
-          <div className="summary-item">
+          <div className="summary-item" data-testid="noNights">
             <strong>Duration:</strong> {calculateNights(bookingdetails.checkin, bookingdetails.checkout)} nights
           </div>
-          <div className="summary-item">
+          <div className="summary-item" data-testid="noAdults">
             <strong>Adults:</strong> {bookingdetails.noAdults}
           </div>
           {bookingdetails.noChildren > 0 && (
-            <div className="summary-item">
+            <div className="summary-item" data-testid="noChildren">
               <strong>Children:</strong> {bookingdetails.noChildren}
             </div>
           )}
-          <div className="summary-item">
+          <div className="summary-item" data-testid="noRooms">
             <strong>No. Rooms:</strong> {bookingdetails.noRooms} rooms
           </div>
 
-          <div className="summary-item total">
+          <div className="summary-item total" data-testid="totalPrice">
             <strong>Total: ${bookingdetails.totalPrice} SGD</strong>
           </div>
         </div>)
