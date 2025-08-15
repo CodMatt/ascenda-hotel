@@ -70,8 +70,13 @@ const DeleteAccount = () => {
 
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Delete Account</h3>
+          <div 
+          className="modal-content"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-heading"
+          >
+            <h3 id="modal-heading">Delete Account</h3>
             <p>Are you sure you want to delete your account? This action cannot be undone.</p>
             <div className="modal-buttons">
               <button 
