@@ -9,19 +9,28 @@ vi.mock("../components/SignupForm", () => {
   };
 });
 
-describe("RegisterPage", () => {
-  it("renders the logo, title, and SignupForm", () => {
-    render(<RegisterPage />);
+describe("RegisterPage UI", () => {
+  render(<RegisterPage />);
+
+  it("renders the logo", () => {
 
     // Check logo
     const logo = screen.getByAltText("Logo");
     expect(logo).toBeInTheDocument();
     expect(logo).toHaveAttribute("src", expect.stringContaining("logo.png"));
+  });
 
+  it("renders the title", () => {
+    
     // Check title
     expect(screen.getByText("Create an Account")).toBeInTheDocument();
 
+  });
+
+  it("renders the SignupForm", () => {
+
     // Check that mocked SignupForm is rendered
     expect(screen.getByTestId("mock-signup-form")).toBeInTheDocument();
+
   });
 });

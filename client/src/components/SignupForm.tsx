@@ -154,6 +154,7 @@ const SignupForm: React.FC = () => {
         {/* <label htmlFor="country-select">Country</label> */}
         <div className="country-select">
           <select
+            data-testid='country-select'
             id = "country-select"
             name="country"
             onChange={(event) => {
@@ -213,6 +214,7 @@ const SignupForm: React.FC = () => {
       {/* <label htmlFor="salutation-select">Salutation</label> */}
       <div className="salutation-row">
         <select 
+          data-testid='salutation-select'
           id = "salutation-select"
           name="salutation" 
           onChange={(event) => setSalutation(event.target.value)} 
