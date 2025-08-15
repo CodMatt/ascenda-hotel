@@ -3,13 +3,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Mock } from "vitest";
 import GuestInfoPage from "../pages/GuestInfoPage";
 import { MemoryRouter } from "react-router-dom";
+
 import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import * as NameValidation from '../lib/IsNameValid';
-import * as CountryValidation from '../lib/IsCountryValid';
-import * as PhoneValidation from '../lib/IsPhoneNumberValid';
-import * as EmailValidation from '../lib/IsEmailValid';
 
 const checkin = new Date("2025-08-20");
 const checkout = new Date("2025-08-22")
@@ -55,6 +52,7 @@ vi.mock("react-router-dom", async () => {
 });
 
 import { useLocation } from "react-router-dom";
+
 
 describe("GuestInfoPage", () => {
   beforeEach(() => {
@@ -166,107 +164,63 @@ describe("GuestInfoPage", () => {
 
   });
 
-  // it("shows validation error notifications when logged-in user submits invalid data", async () => {
-  //   (useLocation as Mock).mockReturnValue({
-  //     state: createState({
-  //       authToken: "valid-token", // logged in but fields empty
-  //       firstName: "123",
-  //       lastName: "",
-  //       phoneNumber: "",
-  //       emailAddress: "",
-  //       country: "",
-  //       countryCode: "",
-  //     }),
-  //   });
+    it("renders submits form and shows no errors with invalid inputs", async () => {
+    (useLocation as Mock).mockReturnValue({
+      state: createState({
+        authToken: "", // no login
+      }),
+    });
 
-  //   render(
-  //     <MemoryRouter>
-  //       <GuestInfoPage />
-  //     </MemoryRouter>
-  //   );
+    render(
+      <MemoryRouter>
+        <GuestInfoPage />
+      </MemoryRouter>
+    );
 
-  //   // Click submit
-  //   const submitButton = screen.getByRole("button", { name: /Proceed to Payment/i });
-  //   await userEvent.click(submitButton); // triggers onSubmit & state updates
-  //   console.log("pressed")
+    // Select country and salutation
+    await userEvent.selectOptions(screen.getByLabelText("Country"), "Singapore");
+    await userEvent.selectOptions(screen.getByLabelText("Salutation"), "Mrs");
 
-  //   // CANNOT CHANGE IN MOCK - WILL FAIl
-  //   // Error notifications should appear
-  //   await waitFor(() => {
-  //     expect(
-  //       screen.getByText((content, element) => 
-  //         content.includes("Invalid First Name")
-  //       )
-  //     ).toBeInTheDocument();
+    await userEvent.type(screen.getByPlaceholderText("Email Address"), "test@example.com");
+    await userEvent.type(screen.getByPlaceholderText("First Name"), "John");
+    await userEvent.type(screen.getByPlaceholderText("Last Name"), "Doe");
+    await userEvent.type(screen.getByPlaceholderText("Phone Number"), "12345678");
 
-  //     expect(
-  //       screen.getByText((content, element) => 
-  //         content.includes("Invalid Last Name")
-  //       )
-  //     ).toBeInTheDocument();
+    // Submit
+    userEvent.click(screen.getByText("Proceed to Payment"));
 
-  //     expect(
-  //       screen.getByText((content, element) => 
-  //         content.includes("Invalid Country")
-  //       )
-  //     ).toBeInTheDocument();
+    expect(screen.queryByText(/Invalid/i)).not.toBeInTheDocument();
+  });
 
-  //     expect(
-  //       screen.getByText((content, element) => 
-  //         content.includes("Invalid Phone Number")
-  //       )
-  //     ).toBeInTheDocument();
+  it("renders submits form and renders error with invalid inputs", async () => {
+    (useLocation as Mock).mockReturnValue({
+      state: createState({
+        authToken: "", // no login
+      }),
+    });
 
-  //     expect(
-  //       screen.getByText((content, element) => 
-  //         content.includes("Invalid Email Address")
-  //       )
-  //     ).toBeInTheDocument();
+    render(
+      <MemoryRouter>
+        <GuestInfoPage />
+      </MemoryRouter>
+    );
 
-  //   })
+    // Select country and salutation
+    await userEvent.selectOptions(screen.getByLabelText("Country"), "Singapore");
+    await userEvent.selectOptions(screen.getByLabelText("Salutation"), "Mrs");
+
+    await userEvent.type(screen.getByPlaceholderText("Email Address"), "te1st@example.com");
+    await userEvent.type(screen.getByPlaceholderText("First Name"), "John");
+    await userEvent.type(screen.getByPlaceholderText("Last Name"), "Doe");
+    await userEvent.type(screen.getByPlaceholderText("Phone Number"), "12345678a");
+
+    // Submit
+    userEvent.click(screen.getByText("Proceed to Payment"));
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Invalid/i)).toBeInTheDocument();
+    });
     
-  // });
+  });
 
-  // it("calls validation functions on submit", async () => {
-
-  //   const form = screen.getByRole('form', { name: /personal-details-form/i });
-  //   await fireEvent.submit(form);
-  //   // Spy on imported validation functions
-  //   const nameSpy = vi.spyOn(NameValidation, "default");
-  //   const countrySpy = vi.spyOn(CountryValidation, "default");
-  //   const phoneSpy = vi.spyOn(PhoneValidation, "default");
-  //   const emailSpy = vi.spyOn(EmailValidation, "default");
-
-
-  //   (useLocation as Mock).mockReturnValue({
-  //     state: {
-  //       authToken: "", // not logged-in
-  //       firstName: "123",
-  //       lastName: "",
-  //       phoneNumber: "",
-  //       emailAddress: "",
-  //       country: "",
-  //       countryCode: "",
-  //       checkin: checkin,
-  //       checkout: checkout,
-  //     },
-  //   });
-
-  //   render(
-  //     <MemoryRouter>
-  //       <GuestInfoPage/>
-  //     </MemoryRouter>
-  //   );
-
-  //   // Submit the form
-  //   const submitButton = screen.getByRole("button", { name: /Proceed to Payment/i });
-  //   await userEvent.click(submitButton);
-
-  //   // Check that validation functions were called
-  //   expect(nameSpy).toHaveBeenCalledWith("123");
-  //   expect(nameSpy).toHaveBeenCalledWith(""); // lastName
-  //   expect(countrySpy).toHaveBeenCalled();
-  //   expect(phoneSpy).toHaveBeenCalled();
-  //   expect(emailSpy).toHaveBeenCalled();
-  // });
 });
